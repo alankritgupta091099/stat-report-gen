@@ -1,4 +1,4 @@
-var db = require('./DB/db.js');
+require('./DB/db.js');
 var express = require('express');
 var bodyParser = require('body-parser');
 
@@ -12,16 +12,8 @@ const webScraper=require('./Routes/scraper.js');
 
 var PORT = process.env.PORT || 3000;
 
-db.connect((err)=>{
-    if(err){
-        console.log("unable to connect to db")
-        process.exit(1);
-    } else {
-        app.listen( PORT , ()=>{
-            console.log("Server Listening to port ", PORT);
-            console.log("DB Connected")
-        })
-    }
+app.listen( PORT , ()=>{
+    console.log("Server Listening to port ", PORT);
 })
 
 //Setup routes here

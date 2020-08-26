@@ -1,36 +1,6 @@
-const MongoClient = require('mongodb').MongoClient;
-const OnjectID = require('mongodb').ObjectID;
-const db_name = "report-gen";
-const url = "mongodb://localhost:27017/";
-const mongoOptions = { useNewUrlParser:true , useUnifiedTopology: true };
+const mongoose = require('mongoose');
 
-const state = {
-    db : null
-}
-
-const connect = (cb) => {
-    if(state.db)
-        cb();
-    else{
-        MongoClient.connect(url, mongoOptions, (err,client)=>{
-            if(err)
-                cb();
-            else{
-                state.db = client.db(db_name);
-                cb();
-            }
-        })
-    }
-}
-
-const getPrimaryKey = (_id) => {
-    return ObjectID(_id);
-}
-
-const getDB = () => {
-    return state.db;
-}
-
-module.exports = {
-    connect, getPrimaryKey, getDB
-};
+mongoose
+    .connect(process.env.MONGO_URL || 'mongodb://localhost:27017/klaviyo-demo',{ useNewUrlParser:true , useUnifiedTopology: true })
+    .then(()=>{console.log('DB Connected')})
+    .catch(err=>{console.log(err)})
