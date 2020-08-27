@@ -7,7 +7,7 @@ const statSchema = new mongoose.Schema({
         required:true
     },
     dailyPageViews:{
-        type:Number,
+        type:Number, 
         required:true
     },
     dailyVisitors:{

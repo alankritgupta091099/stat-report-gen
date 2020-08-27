@@ -79,8 +79,8 @@ async function scrapStatShow(req,res) {
                     
                     const statData = new Stat({
                         site_name: domain,
-                        dailyPageViews: list[0] ? parseInt(list[0]):"N/A",
-                        dailyVisitors: list[1] ? parseInt(list[1]):"N/A" 
+                        dailyPageViews: parseInt(list[0].replace(/,/g,"")),
+                        dailyVisitors: parseInt(list[1].replace(/,/g,""))   
                     })
                     console.log("Scrapped data: ", statData)
                     console.log('Took', Date.now() - start, 'ms to scrap data from statshow');
@@ -101,7 +101,7 @@ async function scrapStatShow(req,res) {
     await reqTypeSingle ? console.log("Execution of single query completed !!"):console.log("Execution on List of URL's completed !!")
 }
 
-function extractURL(url){
+function extractURL(url){//===========================================www aur non www wale ka issue pending hai
     var urlParts = url.replace('http://','').replace('https://','').split(/[/?#]/);
     var domain = urlParts[0];
     console.log('Converted Domain from the link: ',domain);
