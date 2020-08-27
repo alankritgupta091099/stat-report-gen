@@ -1,5 +1,8 @@
 const puppeteer = require('puppeteer');
 
+const Stat = require('../DB/stat.modal.js');
+const data =  require('./URL_list.json');
+
 module.exports = {
     webScraper: webScraper,
     scrapStatShow: scrapStatShow
@@ -32,27 +35,75 @@ async function webScraper(req,res) {
 } 
 
 //to scrap the the data from statshow
-async function scrapStatShow(req,res) {
-    let statShowURL = 'https://www.statshow.com/'+'http://www.businessworld.in/article/Modicare-Limited-recognized-as-India-s-5th-Best-Mid-size-Company-to-Work-for-by-Great-Place-to-Work-174-/07-07-2020-295012/' 
+async function scrapStatShow(req,res) { 
 
-    let start = Date.now();
-    let browser = await puppeteer.launch()
-    let page = await browser.newPage();
-    await page.goto(statShowURL,{waitUntil:'networkidle2'});
+    let list;
+    var siteARR = [req.body.site_name]
+    var reqTypeSingle = true; //acts as trigger for single request or a list of URL's
 
-    let list = await page.evaluate(()=>{
-        let data = [];
-        let nodeList = document.querySelectorAll('div[id="box_1"] > span[class="red_bold"]');
-        let nodeArray = Array.from(nodeList);
-        nodeArray.forEach((node)=>{data.push(node.innerHTML)})
-        return data
-    })
+    //check of the input is a single request or multiple
+    if(data.status){   
+        reqTypeSingle = false;
+        siteARR = data.list;
+        console.log("Working on list of URL's..")
+    }
 
-    await page.close();
-    await browser.close();
-    console.log('Took', Date.now() - start, 'ms to scrap data from statshow');
-    res.send({
-        'dailyPageViews':list[0],
-        'dailyVisitors':list[1]
-    })
+    console.log(siteARR) 
+    for (let i=0;i< siteARR.length;i++) {
+        console.log("//================== Working on Stat #",i+1," ===================//")
+        var domain = await extractURL(siteARR[i])
+        await Stat.findOne({"site_name": domain}) 
+            .then(async stat => { 
+                if(stat){//========================================Date ka time ka check lagana bacha hai
+                    if(reqTypeSingle) res.status(200).json(stat); 
+                    console.log("Stat found in DB: ", stat);
+                } else {
+                    console.log("Scrapping Statshow..")
+                    let statShowURL = 'https://www.statshow.com/'+siteARR[i]; 
+                    let start = Date.now();
+                    let browser = await puppeteer.launch()
+                    let page = await browser.newPage();
+                    await page.goto(statShowURL,{waitUntil:'networkidle2'});
+                    
+                    //returns list of stats for a particular site
+                    list = await page.evaluate(()=>{
+                        let data = [];
+                        let nodeList = document.querySelectorAll('div[id="box_1"] > span[class="red_bold"]');
+                        let nodeArray = Array.from(nodeList);
+                        nodeArray.forEach((node)=>{data.push(node.innerHTML)})
+                        return data
+                    })
+
+                    await page.close();
+                    await browser.close();
+                    
+                    const statData = new Stat({
+                        site_name: domain,
+                        dailyPageViews: list[0] ? parseInt(list[0]):"N/A",
+                        dailyVisitors: list[1] ? parseInt(list[1]):"N/A" 
+                    })
+                    console.log("Scrapped data: ", statData)
+                    console.log('Took', Date.now() - start, 'ms to scrap data from statshow');
+                    await statData
+                        .save()
+                        .then(()=>{console.log("Stat saved: ", statData)}) 
+                        .catch((err)=>{console.log(err)})
+                    if(reqTypeSingle){
+                        res.status(200).json(statData)
+                    }
+                }
+            })
+            .catch(err=>{
+                console.log(err)
+                return res.status(404).json({msg:'Something went wrong !'})
+            })
+    };
+    await reqTypeSingle ? console.log("Execution of single query completed !!"):console.log("Execution on List of URL's completed !!")
+}
+
+function extractURL(url){
+    var urlParts = url.replace('http://','').replace('https://','').split(/[/?#]/);
+    var domain = urlParts[0];
+    console.log('Converted Domain from the link: ',domain);
+    return domain
 }
