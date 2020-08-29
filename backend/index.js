@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 //Import all the route files here
 const webScraper=require('./Routes/scraper.js');
+const insta=require('./Routes/GET/insta.js');
 
 var PORT = process.env.PORT || 3000;
 
@@ -18,3 +19,4 @@ app.listen( PORT , ()=>{
 
 //Setup routes here
 app.use('/scrap',webScraper);
+app.use('/insta',insta);

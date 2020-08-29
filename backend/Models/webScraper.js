@@ -101,7 +101,7 @@ async function scrapStatShow(req,res) {
     await reqTypeSingle ? console.log("Execution of single query completed !!"):console.log("Execution on List of URL's completed !!")
 }
 
-function extractURL(url){//===========================================www aur non www wale ka issue pending hai
+function extractURL(url){//===========================================www aur non www wale ka issue pending hai due to which redundant data can be stored in db
     var urlParts = url.replace('http://','').replace('https://','').split(/[/?#]/);
     var domain = urlParts[0];
     console.log('Converted Domain from the link: ',domain);
