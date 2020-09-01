@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 const webScraper=require('./Routes/scraper.js');
 const insta=require('./Routes/GET/insta.js');
 
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 8080;
 
 app.listen( PORT , ()=>{
     console.log("Server Listening to port ", PORT);
