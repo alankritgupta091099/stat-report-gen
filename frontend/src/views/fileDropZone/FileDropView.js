@@ -1,5 +1,6 @@
 import React,{ useState } from 'react';
-import { Box, Container, Card, CardContent, Typography , Grid , List , ListItem , ListItemText , Button } from '@material-ui/core';
+import { Box, Container, Card, CardContent, Typography , Grid , List , ListItem , ListItemText , Button , Snackbar } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 import { OutTable , ExcelRenderer } from 'react-excel-renderer';
@@ -51,7 +52,13 @@ function FileDropView (props) {
         console.log(err);            
       }
       else{
-        setTable(resp)
+        const {rows , cols} = resp;
+        console.log(resp)
+        if( cols.length == 1 && rows[0] == 'Links' ){
+          setTable(resp)
+        } else {
+          //add error section
+        }        
       }
     });  
 
@@ -70,7 +77,7 @@ function FileDropView (props) {
             <CardContent>
               <Typography gutterBottom variant="h1">Generate your report</Typography>
               <div>
-                <DropBox {...getRootProps({isDragActive, isDragAccept, isDragReject})}>
+                <DropBox {...getRootProps({isDragActive, isDragAccept, isDragReject})}>{/* Later add Hover styling and others as well */}
                   <input {...getInputProps()} />
                   <h3>Drag 'n' drop some files here, or click on this section to upload files</h3><br/>
                   <h4>Accepted formats xlsx, xls, csv, odf</h4>
@@ -80,15 +87,15 @@ function FileDropView (props) {
               <br/>
               <Grid container>
                 <Grid item xs={6}>
-                  <Button variant="contained" color="primary" disableElevation>
-                    Generate Report
-                  </Button>
-                  <br/><br/>
                   {
                     table ? <>
-                      <Typography variant="h2">Selected File: 
+                    <Typography variant="h2">Selected File: 
                       <Typography variant="subtitle1" color="textSecondary">{files}</Typography>
                     </Typography>
+                    <br/>
+                    <Button variant="contained" color="primary" disableElevation>
+                      Generate Report
+                    </Button>
                     </> : ""
                   }
                 </Grid>
@@ -105,7 +112,7 @@ function FileDropView (props) {
                       </ListItem>
                       <ListItem>
                         <ListItemText
-                          primary='2. Make sure that the file has single column only and value of row 1 "Email list"'
+                          primary='2. Make sure that the file has single column only and value of Row 1 "Links"'
                         />
                       </ListItem>
                       <ListItem>
