@@ -1,5 +1,6 @@
 const { webScraper , scrapStatShow } = require('./webScraper.js');
 const { fetchFollowerCount } = require('./instaFetch.js');
+const { generateReport } = require('./report.js');
 
 module.exports = {
 
@@ -8,6 +9,9 @@ module.exports = {
     scrapStatShow: scrapStatShow,
 
     //insta
-    fetchFollowerCount:fetchFollowerCount
+    fetchFollowerCount:fetchFollowerCount,
+
+    //report
+    generateReport:generateReport
     
 }

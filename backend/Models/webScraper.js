@@ -9,15 +9,22 @@ module.exports = {
 }
 
 // to scrap the heading of news headline
-async function webScraper(req,res) {
-    let articleURL = 'http://www.uniindia.com/modicare-limited-recognized-as-india-s-5th-best-mid-size-company-to-work-for-by-great-place-to-work/business-wire-india/news/2069391.html';
+async function webScraper(req,res, Test_btn = true) {
+
+    // if (Test_btn = true) 
+    //  send_response(use it for debugging purpose - to check functionality of the function ) 
+    // if (Test_btn = false) 
+    //  return_values(use it to return values for report generation API)
+
+    let articleURL = (res) ? req.body.link : req;
     let screenShotOptions = {
-        path:'img.png',
+        encoding: "base64", 
         fullPage:false,
         omitBackground:false
     };
     
     let start = Date.now();
+    console.log("Scraping started ")
     let browser = await puppeteer.launch()
     let page = await browser.newPage();
     await page.setViewport({
@@ -27,11 +34,24 @@ async function webScraper(req,res) {
 
     await page.goto(articleURL);
     let articleTitle = await page.title();
-    await page.screenshot(screenShotOptions);
+    const base64 = await page.screenshot(screenShotOptions);
     await browser.close();
-    console.log('Took', Date.now() - start, 'ms to fecth title- ',articleTitle,' & take screenshot');
-    //console.log(articleTitle)
-    res.send(articleTitle)
+    console.log('Took', Date.now() - start, 'ms to fetch title- ',articleTitle,' & took screenshot');
+
+    if(Test_btn){
+        res.status(200).json({
+            "article-url":articleURL,
+            "article-headline":articleTitle,
+            "screen-shot":base64
+        })
+    } else {        
+        return {
+            "article-url":articleURL,
+            "article-headline":articleTitle,
+            "screen-shot":base64
+        }
+    }
+    
 } 
 
 //to scrap the the data from statshow

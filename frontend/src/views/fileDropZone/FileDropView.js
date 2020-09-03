@@ -53,9 +53,10 @@ function FileDropView (props) {
       }
       else{
         const {rows , cols} = resp;
-        console.log(resp)
+        //console.log(resp)
         if( cols.length == 1 && rows[0] == 'Links' ){
           setTable(resp)
+          console.log(rows)
         } else {
           //add error section
         }        
