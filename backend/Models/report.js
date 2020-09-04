@@ -1,4 +1,4 @@
-var { webScraper } =  require('./webScraper.js');
+var { webScraper , scrapStatShow } =  require('./webScraper.js');
 
 module.exports={
     generateReport:generateReport
@@ -7,14 +7,21 @@ module.exports={
 async function generateReport(req,res) {
     try {
         var list = req.body.list;
-        var  articleDetails = [];
+        var articleDetails, siteDetails;
+        var responseData = []
         console.log("Fetching data for report...")
         for (let i = 0; i < list.length; i++) {
-            console.log("Reprt item #",i+1)
-            articleDetails.push(await webScraper(list[i],null,false));
+            console.log("Report item #",i+1)
+            articleDetails = await webScraper(list[i],null,false);
+            siteDetails = await scrapStatShow(list[i],null,false);
+            responseData.push({
+                articleDetails , 
+                siteDetails
+            })
         }
+        //console.log(siteDetails)
         console.log("All data fetched !!!")
-        res.status(200).json(articleDetails)
+        res.status(200).json(responseData)
     } catch (error) {
         console.log(error)       
     }

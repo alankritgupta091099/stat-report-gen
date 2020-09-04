@@ -34,6 +34,7 @@ async function webScraper(req,res, Test_btn = true) {
 
     await page.goto(articleURL);
     let articleTitle = await page.title();
+    //Date scrap - pending!
     const base64 = await page.screenshot(screenShotOptions);
     await browser.close();
     console.log('Took', Date.now() - start, 'ms to fetch title- ',articleTitle,' & took screenshot');
@@ -55,10 +56,10 @@ async function webScraper(req,res, Test_btn = true) {
 } 
 
 //to scrap the the data from statshow
-async function scrapStatShow(req,res) { 
+async function scrapStatShow(req,res,Test_btn = true) { 
 
-    let list;
-    var siteARR = [req.body.site_name]
+    let list, statsToReturn;
+    var siteARR = (res) ? [req.body.site_name] : [req]
     var reqTypeSingle = true; //acts as trigger for single request or a list of URL's
 
     //check of the input is a single request or multiple
@@ -75,7 +76,9 @@ async function scrapStatShow(req,res) {
         await Stat.findOne({"site_name": domain}) 
             .then(async stat => { 
                 if(stat){//========================================Date ka time ka check lagana bacha hai
-                    if(reqTypeSingle) res.status(200).json(stat); 
+                    if(reqTypeSingle) {
+                        Test_btn ? res.status(200).json(stat) : statsToReturn=stat; 
+                    }
                     console.log("Stat found in DB: ", stat);
                 } else {
                     console.log("Scrapping Statshow..")
@@ -109,7 +112,7 @@ async function scrapStatShow(req,res) {
                         .then(()=>{console.log("Stat saved: ", statData)}) 
                         .catch((err)=>{console.log(err)})
                     if(reqTypeSingle){
-                        res.status(200).json(statData)
+                        Test_btn ? res.status(200).json(statData) : statsToReturn=stat;                        
                     }
                 }
             })
@@ -119,6 +122,7 @@ async function scrapStatShow(req,res) {
             })
     };
     await reqTypeSingle ? console.log("Execution of single query completed !!"):console.log("Execution on List of URL's completed !!")
+    return statsToReturn
 }
 
 function extractURL(url){//===========================================www aur non www wale ka issue pending hai due to which redundant data can be stored in db
