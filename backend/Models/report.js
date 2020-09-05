@@ -5,8 +5,9 @@ module.exports={
 }
 
 async function generateReport(req,res) {
-    try {
-        var list = req.body.list;
+    try { 
+        console.log(req.body.list);
+        var list = req.body.list; 
         var articleDetails, siteDetails;
         var responseData = []
         console.log("Fetching data for report...")

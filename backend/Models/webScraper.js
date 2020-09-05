@@ -34,6 +34,7 @@ async function webScraper(req,res, Test_btn = true) {
 
     await page.goto(articleURL);
     let articleTitle = await page.title();
+    await page.setDefaultNavigationTimeout(0); 
     //Date scrap - pending!
     const base64 = await page.screenshot(screenShotOptions);
     await browser.close();
@@ -41,15 +42,15 @@ async function webScraper(req,res, Test_btn = true) {
 
     if(Test_btn){
         res.status(200).json({
-            "article-url":articleURL,
-            "article-headline":articleTitle,
-            "screen-shot":base64
+            "articleURL":articleURL,
+            "articleHeadline":articleTitle,
+            "screenShot":base64
         })
     } else {        
         return {
-            "article-url":articleURL,
-            "article-headline":articleTitle,
-            "screen-shot":base64
+            "articleURL":articleURL,
+            "articleHeadline":articleTitle,
+            "screenShot":base64
         }
     }
     
@@ -87,7 +88,8 @@ async function scrapStatShow(req,res,Test_btn = true) {
                     let browser = await puppeteer.launch()
                     let page = await browser.newPage();
                     await page.goto(statShowURL,{waitUntil:'networkidle2'});
-                    
+                    await page.setDefaultNavigationTimeout(0); 
+
                     //returns list of stats for a particular site
                     list = await page.evaluate(()=>{
                         let data = [];

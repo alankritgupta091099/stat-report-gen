@@ -3,6 +3,6 @@ var router = express.Router();
 
 var models =  require('../../Models');
 
-router.get('/gen',models.generateReport);
+router.post('/gen',models.generateReport);
 
 module.exports = router;
