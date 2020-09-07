@@ -6,9 +6,8 @@ import { useDropzone } from 'react-dropzone';
 import styled from 'styled-components';
 import axios from 'axios';
 import { OutTable , ExcelRenderer } from 'react-excel-renderer';
-import { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, VerticalPositionAlign, VerticalPositionRelativeFrom } from "docx";
 import { saveAs } from "file-saver";
-
+import { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, Header, VerticalPositionAlign, VerticalPositionRelativeFrom, Table, TableRow, WidthType, TableCell,VerticalAlign, TextDirection, HeadingLevel, HyperlinkRef, HyperlinkType } from "docx";
 import Page from 'src/components/Page';
 
 const getColor = (props) => {
@@ -44,6 +43,44 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+var mainTableRows = [
+    new TableRow({
+        children: [
+            new TableCell({
+                children: [new Paragraph({text:"S. No."})],
+                verticalAlign: VerticalAlign.CENTER
+            }),
+            new TableCell({
+                children: [new Paragraph({text: "Publication"})],
+                verticalAlign: VerticalAlign.CENTER
+            }),
+            new TableCell({
+                children: [new Paragraph({ text: "Headline" })],
+                verticalAlign: VerticalAlign.CENTER
+            }),
+            new TableCell({
+                children: [new Paragraph({ text: "Daily Page Viewers" })],
+                verticalAlign: VerticalAlign.CENTER
+            }),
+        ],
+        tableHeader: true,                
+    }
+)];
+
+var secondaryPage = [];
+
+var returnTableFromRows = (rows) => {
+    return new Table({
+        cantSplit: true,
+        columnWidths: [20,80],
+        width: {
+            size: 100,
+            type: WidthType.PERCENTAGE,
+        },
+        rows: [rows.secondaryTableData_Publication, rows.secondaryTableData_Headline, rows.secondaryTableData_DailyPageViews] 
+    }) 
+}
+
 function FileDropView(props) {
   const {acceptedFiles, getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject} = useDropzone();
   
@@ -54,28 +91,113 @@ function FileDropView(props) {
   const [finalList, setFinalList] = useState([]);
 
   const docxFile = async (data) => {
+    
     const doc = new Document({
         creator: "media-measurements.com",
         description: "a Detailed Client Report",
         title: "Client Report",
     });
-    var imgArr = [];
+
+    //logo header pending
+
     for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      await doc.addSection({
-          children: [
-              new Paragraph(Media.addImage( doc ,
-              Uint8Array.from(atob(item.articleDetails.screenShot), c => c.charCodeAt(0))
-            ))
-          ]
-      });
+        var item = data[i];
+
+        mainTableRows.push(
+            new TableRow({
+                children: [
+                    new TableCell({
+                        children: [new Paragraph({text: ""+(i+1)})],
+                        verticalAlign: VerticalAlign.CENTER
+                    }),
+                    new TableCell({
+                        children: [new Paragraph({text:item.siteDetails.site_name.split('.')[1]})],//capitalise first letter pending
+                        verticalAlign: VerticalAlign.CENTER
+                    }),
+                    new TableCell({
+                        children: [new Paragraph({text: item.articleDetails.articleHeadline})],
+                        verticalAlign: VerticalAlign.CENTER
+                    }),
+                    new TableCell({
+                        children:[new Paragraph({text:""+item.siteDetails.dailyPageViews})],//add commas
+                        verticalAlign: VerticalAlign.CENTER
+                    })
+                ]               
+            })
+        )
+
+        secondaryPage.push(
+            {
+                "secondaryTableData_Publication": new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [new Paragraph({text:"Publication: "})],
+                            verticalAlign: VerticalAlign.CENTER
+                        }),
+                        new TableCell({
+                            children:[new Paragraph({text:item.siteDetails.site_name.split('.')[1]})],
+                            verticalAlign: VerticalAlign.CENTER
+                        })
+                    ]               
+                }),             
+                "secondaryTableData_Headline": new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [new Paragraph({text:"Headline: "})],//hyperlinking pending
+                            verticalAlign: VerticalAlign.CENTER
+                        }),
+                        new TableCell({
+                            children:[new Paragraph({text:item.articleDetails.articleHeadline})],
+                            verticalAlign: VerticalAlign.CENTER
+                        })
+                    ]               
+                }),
+                "secondaryTableData_DailyPageViews": new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [new Paragraph({text:"Headline: "})],//hyperlinking pending
+                            verticalAlign: VerticalAlign.CENTER
+                        }),
+                        new TableCell({
+                            children:[new Paragraph({text:""+item.siteDetails.dailyPageViews})],
+                            verticalAlign: VerticalAlign.CENTER
+                        })
+                    ]               
+                }),
+                "screenShot":new Paragraph({
+                    children:[Media.addImage(doc, Buffer.from(item.articleDetails.screenShot, "base64"), 600, 400)]
+                })
+            }
+        )
+
     }
 
-    await Packer.toBlob(doc).then(blob => {
+    const mainTable = new Table({
+        cantSplit: true,
+        columnWidths: [10, 30, 40, 20],
+        width: {
+            size: 100,
+            type: WidthType.PERCENTAGE,
+        },
+        rows: mainTableRows 
+    });
+
+    doc.addSection({
+      children: [mainTable]
+    });
+
+    for (let i = 0; i < data.length; i++) {
+        doc.addSection({
+            children: [returnTableFromRows(secondaryPage[i]), new Paragraph({}), new Paragraph({}), secondaryPage[i].screenShot]
+        });    
+    }
+    
+    Packer.toBlob(doc).then(blob => {
       console.log(blob);
-      saveAs(blob, "report.docx");
+      saveAs(blob, "example.docx");
       console.log("Document created successfully");
       setLoader(false);
+      setDialogCloseBtn(true);
     });
   }
 
@@ -89,11 +211,8 @@ function FileDropView(props) {
     axios.post('http://localhost:8080/report/gen',{
         list:finalList
       })
-      .then((res)=>{
-        //setLoader(false);        
+      .then((res)=>{        
         docxFile(res.data)
-        //setDialogCloseBtn(true)
-        console.log(res.data)
       })
       .catch(err=>{
         console.log(err)
