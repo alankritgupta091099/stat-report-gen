@@ -12,45 +12,61 @@ module.exports = {
 async function webScraper(req,res, Test_btn = true) {
 
     // if (Test_btn = true) 
-    //  send_response(use it for debugging purpose - to check functionality of the function ) 
+    //  send_response(use it for debugging purpose - to check working of function ) 
     // if (Test_btn = false) 
     //  return_values(use it to return values for report generation API)
-
+    
     let articleURL = (res) ? req.body.link : req;
+    let articleTitle = "Some Heading";
+    let base64 = "img";
     let screenShotOptions = {
         encoding: "base64", 
         fullPage:false,
-        omitBackground:false
-    };
-    
+        type:"jpeg",
+        quality:40
+    };    
     let start = Date.now();
-    console.log("Scraping started ")
-    let browser = await puppeteer.launch()
-    let page = await browser.newPage();
-    await page.setViewport({
-        width: 1080,
-        height: 720,
-    });
+    console.log("Scraping headline!!")
+    try {
+        let browser = await puppeteer.launch()
+        let page = await browser.newPage();
+        
+        await page.setViewport({
+            width: 1080,
+            height: 720,
+        });
+        await page.goto(articleURL,{waitUntil:'load',timeout:30000});
+        articleTitle = await page.title(); //Date scrap - pending!
+        base64 = await page.screenshot(screenShotOptions);
+        await browser.close();
+        
+        console.log('==>Took', Date.now() - start, 'ms to fetch title & take screenshot- ',articleTitle);
 
-    await page.goto(articleURL);
-    let articleTitle = await page.title();
-    await page.setDefaultNavigationTimeout(0); 
-    //Date scrap - pending!
-    const base64 = await page.screenshot(screenShotOptions);
-    await browser.close();
-    console.log('Took', Date.now() - start, 'ms to fetch title- ',articleTitle,' & took screenshot');
-
-    if(Test_btn){
-        res.status(200).json({
-            "articleURL":articleURL,
-            "articleHeadline":articleTitle,
-            "screenShot":base64
-        })
-    } else {        
-        return {
-            "articleURL":articleURL,
-            "articleHeadline":articleTitle,
-            "screenShot":base64
+        if(Test_btn){
+            res.status(200).json({
+                "articleURL":articleURL,
+                "articleHeadline":articleTitle,
+                "screenShot":base64
+            })
+        } else {        
+            return {
+                "articleURL":articleURL,
+                "articleHeadline":articleTitle,
+                "screenShot":base64
+            }
+        }
+    } catch (error) {
+        console.log("Could not fetch headline")
+        if(Test_btn){
+            res.status(400).json({msg:"Something went wrong"})
+        }
+        else{ 
+            console.log(error)   
+            return {
+                "articleURL":"N/A",
+                "articleHeadline":"N/A",
+                "screenShot":"N/A"
+            }
         }
     }
     
@@ -67,12 +83,12 @@ async function scrapStatShow(req,res,Test_btn = true) {
     if(data.status){   
         reqTypeSingle = false;
         siteARR = data.list;
-        console.log("Working on list of URL's..")
+        console.log("Scraping list of URL's via local file from statshow..")
     }
 
-    console.log(siteARR) 
+    //console.log(siteARR) 
     for (let i=0;i< siteARR.length;i++) {
-        console.log("//================== Working on Stat #",i+1," ===================//")
+        //console.log("//================== Working on Stat #",i+1," ===================//")
         var domain = await extractURL(siteARR[i])
         await Stat.findOne({"site_name": domain}) 
             .then(async stat => { 
@@ -82,13 +98,13 @@ async function scrapStatShow(req,res,Test_btn = true) {
                     }
                     console.log("Stat found in DB: ", stat);
                 } else {
-                    console.log("Scrapping Statshow..")
-                    let statShowURL = 'https://www.statshow.com/'+siteARR[i]; 
+                    await console.log("Scrapping Statshow for: ",siteARR[i])
+                    let statShowURL = await 'https://www.statshow.com/'+siteARR[i]; 
                     let start = Date.now();
                     let browser = await puppeteer.launch()
                     let page = await browser.newPage();
-                    await page.goto(statShowURL,{waitUntil:'networkidle2'});
-                    await page.setDefaultNavigationTimeout(0); 
+                    await page.goto(statShowURL);
+                    await page.waitFor('.worth_left_box');
 
                     //returns list of stats for a particular site
                     list = await page.evaluate(()=>{
@@ -107,8 +123,8 @@ async function scrapStatShow(req,res,Test_btn = true) {
                         dailyPageViews: parseInt(list[0].replace(/,/g,"")),
                         dailyVisitors: parseInt(list[1].replace(/,/g,""))   
                     })
-                    console.log("Scrapped data: ", statData)
-                    console.log('Took', Date.now() - start, 'ms to scrap data from statshow');
+                    //console.log("Scrapped data: ", statData)
+                    await console.log('==> Took', Date.now() - start, 'ms to scrap data from statshow');
                     await statData
                         .save()
                         .then(()=>{console.log("Stat saved: ", statData)}) 
@@ -130,6 +146,6 @@ async function scrapStatShow(req,res,Test_btn = true) {
 function extractURL(url){//===========================================www aur non www wale ka issue pending hai due to which redundant data can be stored in db
     var urlParts = url.replace('http://','').replace('https://','').split(/[/?#]/);
     var domain = urlParts[0];
-    console.log('Converted Domain from the link: ',domain);
+    //console.log('Converted Domain from the link: ',domain);
     return domain
 }

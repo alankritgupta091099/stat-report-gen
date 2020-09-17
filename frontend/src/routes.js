@@ -11,7 +11,7 @@ import ProductListView from 'src/views/product/ProductListView';
 import RegisterView from 'src/views/auth/RegisterView';
 import SettingsView from 'src/views/settings/SettingsView';
 import FileDropView from 'src/views/fileDropZone/FileDropView';
-import WordDoc from 'src/views/fileDropZone/WordDoc';
+//import WordDoc from 'src/views/fileDropZone/WordDoc';
 
 const routes = [
   {
@@ -34,7 +34,7 @@ const routes = [
       { path: 'register', element: <RegisterView /> },
       { path: '404', element: <NotFoundView /> },
       { path: '/', element: <Navigate to="/app/dashboard" /> },
-      { path: '/word', element: <WordDoc/> },
+      // { path: '/word', element: <WordDoc/> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },

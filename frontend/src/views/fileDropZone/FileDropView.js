@@ -8,6 +8,7 @@ import axios from 'axios';
 import { OutTable , ExcelRenderer } from 'react-excel-renderer';
 import { saveAs } from "file-saver";
 import { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, Header, VerticalPositionAlign, VerticalPositionRelativeFrom, Table, TableRow, WidthType, TableCell,VerticalAlign, TextDirection, HeadingLevel, HyperlinkRef, HyperlinkType } from "docx";
+
 import Page from 'src/components/Page';
 
 const getColor = (props) => {
@@ -69,6 +70,10 @@ var mainTableRows = [
 
 var secondaryPage = [];
 
+function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 var returnTableFromRows = (rows) => {
     return new Table({
         cantSplit: true,
@@ -99,24 +104,40 @@ function FileDropView(props) {
     });
 
     //logo header pending
-
     for (let i = 0; i < data.length; i++) {
         var item = data[i];
+        var publication_name;
+        if(item.siteDetails.site_name.split('.').length=='3')
+          publication_name=capitalize(item.siteDetails.site_name.split('.')[1])
+        else 
+          publication_name=capitalize(item.siteDetails.site_name.split('.')[0])
 
         mainTableRows.push(
             new TableRow({
                 children: [
                     new TableCell({
                         children: [new Paragraph({text: ""+(i+1)})],
-                        verticalAlign: VerticalAlign.CENTER
+                        verticalAlign: VerticalAlign.CENTER,
+                        margins: {
+                          left: 10,
+                        }
                     }),
                     new TableCell({
-                        children: [new Paragraph({text:item.siteDetails.site_name.split('.')[1]})],//capitalise first letter pending
-                        verticalAlign: VerticalAlign.CENTER
+                        children: [new Paragraph({text:publication_name})],//capitalise first letter pending
+                        verticalAlign: VerticalAlign.CENTER,
+                        margins: {
+                          left: 10,
+                        }
                     }),
                     new TableCell({
                         children: [new Paragraph({text: item.articleDetails.articleHeadline})],
-                        verticalAlign: VerticalAlign.CENTER
+                        verticalAlign: VerticalAlign.CENTER,
+                        margins: {
+                          top: 15,
+                          bottom: 15,
+                          left: 15,
+                          right: 15,
+                        }
                     }),
                     new TableCell({
                         children:[new Paragraph({text:""+item.siteDetails.dailyPageViews})],//add commas
@@ -135,7 +156,7 @@ function FileDropView(props) {
                             verticalAlign: VerticalAlign.CENTER
                         }),
                         new TableCell({
-                            children:[new Paragraph({text:item.siteDetails.site_name.split('.')[1]})],
+                            children:[new Paragraph({text:publication_name})],
                             verticalAlign: VerticalAlign.CENTER
                         })
                     ]               
@@ -148,14 +169,20 @@ function FileDropView(props) {
                         }),
                         new TableCell({
                             children:[new Paragraph({text:item.articleDetails.articleHeadline})],
-                            verticalAlign: VerticalAlign.CENTER
+                            verticalAlign: VerticalAlign.CENTER,
+                            margins: {
+                              top: 15,
+                              bottom: 15,
+                              left: 15,
+                              right: 15,
+                            }
                         })
                     ]               
                 }),
                 "secondaryTableData_DailyPageViews": new TableRow({
                     children: [
                         new TableCell({
-                            children: [new Paragraph({text:"Headline: "})],//hyperlinking pending
+                            children: [new Paragraph({text:"Daily Page Viewers: "})],//hyperlinking pending
                             verticalAlign: VerticalAlign.CENTER
                         }),
                         new TableCell({
@@ -191,13 +218,16 @@ function FileDropView(props) {
             children: [returnTableFromRows(secondaryPage[i]), new Paragraph({}), new Paragraph({}), secondaryPage[i].screenShot]
         });    
     }
-    
-    Packer.toBlob(doc).then(blob => {
+    console.log(doc)
+    let start = Date.now();
+
+    Packer.toBlob(doc).then(blob => {//R&D pending!! -  find a way to speed it up
       console.log(blob);
-      saveAs(blob, "example.docx");
-      console.log("Document created successfully");
+      saveAs(blob, "report.docx");
+      console.log("Document created successfully in ",Date.now() - start);
       setLoader(false);
       setDialogCloseBtn(true);
+      setTable(false);
     });
   }
 
@@ -208,15 +238,28 @@ function FileDropView(props) {
   const genButton = () => {
     setDialog(true);
     setLoader(true);
-    axios.post('http://localhost:8080/report/gen',{
-        list:finalList
+    var reqArr = []
+    for (let i = 0; i < Math.ceil(finalList.length/4) ; i++) {
+      reqArr.push(axios({
+        method:'post',
+        url:'http://localhost:8080/report/gen',
+        data:{
+          list:finalList.slice(4*i,4*i+4)
+        }
+      }))
+    }
+    axios
+      .all(reqArr)
+      .then(res=>{
+        console.log("Date received from backend")
+        var docArr=[];
+        console.log(res)
+        res.forEach(item => {
+          docArr.push(...item.data)
+        });
+        docxFile(docArr)
       })
-      .then((res)=>{        
-        docxFile(res.data)
-      })
-      .catch(err=>{
-        console.log(err)
-      })
+      .catch(err=>console.log(err))
   }
 
   const files = acceptedFiles.map(file => {  
@@ -226,7 +269,7 @@ function FileDropView(props) {
       }
       else{
         const {rows , cols} = resp;     
-        if( cols.length == 1 && rows[0] == 'Links' ){
+        if( cols.length == 1 ){
           setTable(true)
           var linksKiList = [];
           rows.slice(1).forEach(item => {

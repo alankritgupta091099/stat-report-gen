@@ -9,6 +9,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
+app.use(function (req,res,next) {
+    console.log("Request From ===>",req.url," @ ",Date(Date.now()).toString())
+    next();
+})
+
 //Import all the route files here
 const webScraper=require('./Routes/GET/scraper.js');
 const insta=require('./Routes/GET/insta.js');

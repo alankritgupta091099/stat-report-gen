@@ -3,7 +3,7 @@ var router = express.Router();
 
 var models =  require('../../Models');
 
-router.get('/heading',models.webScraper);
-router.get('/stats',models.scrapStatShow);
+router.post('/heading',models.webScraper);
+router.post('/stats',models.scrapStatShow);
 
 module.exports = router;
