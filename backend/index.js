@@ -15,9 +15,9 @@ app.use(function (req,res,next) {
 })
 
 //Import all the route files here
-const webScraper=require('./Routes/GET/scraper.js');
-const insta=require('./Routes/GET/insta.js');
-const reportGen=require('./Routes/GET/report-gen.js');
+const webScraper=require('./Routes/POST/scraper.js');
+const insta=require('./Routes/POST/insta.js');
+const reportGen=require('./Routes/POST/report-gen.js');
 
 var PORT = process.env.PORT || 8080;
 
