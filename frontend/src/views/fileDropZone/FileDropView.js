@@ -87,8 +87,8 @@ var returnTableFromRows = (rows) => {
 }
 
 function FileDropView(props) {
-  const {acceptedFiles, getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject} = useDropzone();
-  
+  const {acceptedFiles, getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject} = useDropzone({accept:"text/csv , application/vnd.oasis.opendocument.spreadsheet , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+
   const [table, setTable] = useState(false)
   const [dialog, setDialog] = useState(false);
   const [dialogCloseBtn, setDialogCloseBtn] = useState(false);
