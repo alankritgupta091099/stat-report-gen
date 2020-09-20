@@ -50,7 +50,7 @@ const RegisterView = () => {
               orgPosition:'',
               mobNumber:'',
               password: '',
-              policy: false
+              //policy: false
             }}
             validationSchema={
               Yup.object().shape({
@@ -61,7 +61,7 @@ const RegisterView = () => {
                 orgPosition: Yup.string().max(255).required('Position in organisation is required'),
                 mobNumber: Yup.string().required().matches(phoneRegExp, 'Phone number is not valid'),
                 password: Yup.string().max(255).required('password is required'),
-                policy: Yup.boolean().oneOf([true], 'This field must be checked')
+                //policy: Yup.boolean().oneOf([true], 'This field must be checked')
               })
             }
           >

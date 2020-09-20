@@ -3,8 +3,11 @@ var { webScraper , scrapStatShow } =  require('./webScraper.js');
 module.exports={
     generateReport:generateReport
 }
-// This function is working completely fine - tried and tested backend only - for 30+ linkes from postman
-//Some issue in frontend while calling this API -  due to which function is getting called multiple times therefore report is restarting again & again.
+
+// @route POST /report/gen
+// @desc Generate report 
+// @access --------Pending
+
 async function generateReport(req,res) {
 
     var list = req.body.list; 

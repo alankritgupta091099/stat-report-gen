@@ -8,7 +8,10 @@ module.exports = {
     scrapStatShow: scrapStatShow
 }
 
-// to scrap the heading of news headline
+// @route POST /scrap/heading
+// @desc Scrap the heading of news headline
+// @access --------Pending
+
 async function webScraper(req,res, Test_btn = true) {
 
     // if (Test_btn = true) 
@@ -72,7 +75,10 @@ async function webScraper(req,res, Test_btn = true) {
     
 } 
 
-//to scrap the the data from statshow
+// @route POST /scrap/stats
+// @desc Scrap the the data from statshow
+// @access --------Pending
+
 async function scrapStatShow(req,res,Test_btn = true) { 
 
     let list, statsToReturn;
