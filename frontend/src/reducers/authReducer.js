@@ -31,13 +31,21 @@ export default function( state = initialState , action ) {
                 user:action.payload
             }
         case LOGIN_SUCCESS:
-        case REGISTER_SUCCESS:
             localStorage.setItem('user-token', action.payload.token )
             return{
                 ...state,
                 ...action.payload,
                 isAuthenticated:true,
                 isLoading:false
+            };
+        case REGISTER_SUCCESS:
+            // console.log(action.payload)
+            // localStorage.setItem('user-token', action.payload.token )
+            return{
+                ...state,
+                //...action.payload,
+                //isAuthenticated:true,
+                //isLoading:false
             };
         case AUTH_ERROR:
         case LOGIN_FAIL:

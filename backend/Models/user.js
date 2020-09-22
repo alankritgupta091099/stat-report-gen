@@ -34,7 +34,7 @@ function createUser(req,res){
                 userData
                     .save()
                     .then(user=>{
-                        return res.status(200).json({status:user.email+' registered!'})
+                        return res.status(200).json({status:user.email+' Registered!!'})
                     })
                     .catch(err=>{
                         return res.status(400).json({msg: 'Something Went Wrong'})

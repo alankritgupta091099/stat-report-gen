@@ -9,23 +9,22 @@ import { API_URL } from '../helpers/utils.js';
 
 //const navigate = useRef(useNavigate());
 
-export const registerUser = ( newUser ) => dispatch => {
-    console.log(newUser)
+export const registerUser = ( newUser ) => ( dispatch , getState ) => {
     axios.post(`${API_URL}/post/user/reg`,newUser)
         .then(res=>{
-            dispatch(returnNotifications("Registered Successfully!!","REGISTER_SUCCESS"))
+            dispatch(returnNotifications(res.data.status,"REGISTER_SUCCESS"))
             dispatch({
                 type:REGISTER_SUCCESS,
-                payload:res.data
+                //payload:res.data
             })
 //            navigate('/app/dashboard', { replace: true });
         })
         .catch(err=>{
-            dispatch(returnErrors(err.response.data.msg, err.response.status,'REGISTER_FAIL'))
+            dispatch(returnErrors(err.response.data, err.response.status,'REGISTER_FAIL'))
             dispatch({
                 type:REGISTER_FAIL
             })
-        })
+        })    
 }
 
 export const loadUser = () => ( dispatch , getState ) => {

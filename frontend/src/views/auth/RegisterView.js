@@ -1,12 +1,15 @@
-import React from 'react';
+import React , { useState , useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
 
-import { Box , Button , Checkbox , Container, FormHelperText , Grid , Link , TextField , Typography , makeStyles } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
+import { Box , Button , Checkbox , Container, FormHelperText , Grid , Link , Snackbar , TextField , Typography , makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import { registerUser } from 'src/actions/authActions.js';
+import { clearNotifications } from 'src/actions/notificationActions.js';
+import { clearErrors } from 'src/actions/errorActions.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,8 +27,38 @@ const useStyles = makeStyles((theme) => ({
 const RegisterView = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const [notification, setnotification] = useState("")
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [error, setError] = useState(false)
 
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
+
+    const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setnotification("");
+    props.clearNotifications()
+    setNotificationOpen(false);
+  };
+
+  useEffect(() => {
+    if(props.notification.id=="REGISTER_SUCCESS"){
+      setNotificationOpen(true);
+      setnotification(props.notification.msg);
+      setTimeout(() => {
+        setnotification("");
+        props.clearNotifications();
+      }, 6000);
+    }
+    if(props.error.id=="REGISTER_FAIL"){
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+        //props.clearErrors(); Clear error is not working properly!!
+      }, 6000);
+    }
+  }, [props.notification, props.error])
 
   return (
     <Page
@@ -38,6 +71,16 @@ const RegisterView = (props) => {
         height="100%"
         justifyContent="center"
       >
+      <Snackbar open={notificationOpen} autoHideDuration={6000} onClose={()=>setNotificationOpen(false)}>
+        <Alert onClose={()=>setNotificationOpen(false)} elevation={6} variant="filled" severity="success">
+          {notification}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={error} autoHideDuration={6000} onClose={()=>setError(false)}>
+        <Alert onClose={()=>setError(false)} elevation={6} variant="filled" severity="error">
+          {props.error.msg}
+        </Alert>
+      </Snackbar>
         <Container maxWidth="md" className={classes.formStyle}>
           <Formik            
             initialValues={{
@@ -47,8 +90,7 @@ const RegisterView = (props) => {
               orgName:'',
               orgPosition:'',
               mobNumber:'',
-              password: '',
-              //policy: false
+              password: ''
             }}
             validationSchema={
               Yup.object().shape({
@@ -57,13 +99,14 @@ const RegisterView = (props) => {
                 lastName: Yup.string().max(255).required('Last name is required'),
                 orgName: Yup.string().max(255).required('Organisation name is required'),
                 orgPosition: Yup.string().max(255).required('Position in organisation is required'),
-                mobNumber: Yup.string().required().matches(phoneRegExp, 'Phone number is not valid'),
-                password: Yup.string().max(255).required('password is required'),
-                //policy: Yup.boolean().oneOf([true], 'This field must be checked')
+                mobNumber: Yup.string().required('Mobile Number is required').matches(phoneRegExp, 'Phone number is not valid'),
+                password: Yup.string().max(255).required('Password is required')
               })
             }
-            onSubmit = {(values,{setSubmitting})=>{
+            onSubmit = {(values,{setSubmitting,resetForm})=>{
               props.registerUser(values)
+              resetForm({})
+              setSubmitting(false);
             }}
           >
             {({
@@ -71,6 +114,7 @@ const RegisterView = (props) => {
               handleBlur,
               handleChange,
               handleSubmit,
+              handleReset,
               isSubmitting,
               touched,
               values
@@ -215,8 +259,9 @@ const RegisterView = (props) => {
 };
 
 const mapStateToProps = state => ({
-  isAuthenticated:state.auth.isAuthenticated
+  notification:state.notification,
+  error:state.error
 })
 
 
-export default connect(mapStateToProps, { registerUser })(RegisterView);
+export default connect(mapStateToProps, { registerUser , clearNotifications , clearErrors })(RegisterView);
