@@ -2,8 +2,11 @@ import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { connect } from 'react-redux';
+
 import { Box , Button , Checkbox , Container, FormHelperText , Grid , Link , TextField , Typography , makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
+import { registerUser } from 'src/actions/authActions.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,16 +21,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const RegisterView = () => {
+const RegisterView = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
-
-  const handleSubmit = () => {
-    console.log("object")
-    navigate('/app/dashboard', { replace: true });
-  }
 
   return (
     <Page
@@ -64,12 +62,15 @@ const RegisterView = () => {
                 //policy: Yup.boolean().oneOf([true], 'This field must be checked')
               })
             }
+            onSubmit = {(values,{setSubmitting})=>{
+              props.registerUser(values)
+            }}
           >
             {({
               errors,
               handleBlur,
               handleChange,
-              //handleSubmit,
+              handleSubmit,
               isSubmitting,
               touched,
               values
@@ -213,4 +214,9 @@ const RegisterView = () => {
   );
 };
 
-export default RegisterView;
+const mapStateToProps = state => ({
+  isAuthenticated:state.auth.isAuthenticated
+})
+
+
+export default connect(mapStateToProps, { registerUser })(RegisterView);
