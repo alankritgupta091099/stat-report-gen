@@ -52,6 +52,9 @@ const RegisterView = (props) => {
         props.clearNotifications();
       }, 6000);
     }
+  }, [props.notification])
+
+  useEffect(() => {    
     if(props.error.id=="REGISTER_FAIL"){
       setError(true);
       setTimeout(() => {
@@ -59,7 +62,7 @@ const RegisterView = (props) => {
         props.clearErrors();
       }, 6000);
     }
-  }, [props.notification, props.error])
+  }, [props.error])
 
   return (
     <Page
