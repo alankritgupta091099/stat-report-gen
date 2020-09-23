@@ -7,7 +7,23 @@ import { returnErrors , clearErrors } from './errorActions';
 import { returnNotifications , clearNotifications } from './notificationActions';
 import { API_URL } from '../helpers/utils.js';
 
-//const navigate = useRef(useNavigate());
+export const loginUser = ( user ) => ( dispatch , getState ) => {
+    axios.post(`${API_URL}/post/user/login`,user)
+        .then(res=>{
+            console.log(res.data)
+            dispatch(returnNotifications("Login Successful!!","LOGIN_SUCCESS"))
+            dispatch({
+                type:LOGIN_SUCCESS,
+                payload:res.data
+            })
+        })
+        .catch(err=>{
+            dispatch(returnErrors(err.response.data, err.response.status,'LOGIN_FAIL'))
+            dispatch({
+                type:LOGIN_FAIL
+            })
+        })    
+}
 
 export const registerUser = ( newUser ) => ( dispatch , getState ) => {
     axios.post(`${API_URL}/post/user/reg`,newUser)
@@ -17,7 +33,6 @@ export const registerUser = ( newUser ) => ( dispatch , getState ) => {
                 type:REGISTER_SUCCESS,
                 //payload:res.data
             })
-//            navigate('/app/dashboard', { replace: true });
         })
         .catch(err=>{
             dispatch(returnErrors(err.response.data, err.response.status,'REGISTER_FAIL'))

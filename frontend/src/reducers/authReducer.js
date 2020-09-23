@@ -34,7 +34,6 @@ export default function( state = initialState , action ) {
             localStorage.setItem('user-token', action.payload.token )
             return{
                 ...state,
-                ...action.payload,
                 isAuthenticated:true,
                 isLoading:false
             };

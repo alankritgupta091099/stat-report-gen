@@ -3,9 +3,9 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
-
 import Alert from '@material-ui/lab/Alert';
 import { Box , Button , Checkbox , Container, FormHelperText , Grid , Link , Snackbar , TextField , Typography , makeStyles } from '@material-ui/core';
+
 import Page from 'src/components/Page';
 import { registerUser } from 'src/actions/authActions.js';
 import { clearNotifications } from 'src/actions/notificationActions.js';
@@ -28,13 +28,13 @@ const useStyles = makeStyles((theme) => ({
 const RegisterView = (props) => {
   const classes = useStyles();
   const navigate = useNavigate();
-  const [notification, setnotification] = useState("")
+  const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [error, setError] = useState(false)
+  const [error, setError] = useState(false);
 
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
 
-    const handleClose = (event, reason) => {
+  const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
@@ -50,7 +50,7 @@ const RegisterView = (props) => {
       setTimeout(() => {
         setnotification("");
         props.clearNotifications();
-      }, 6000);
+      }, 2000);
     }
   }, [props.notification])
 
@@ -60,7 +60,7 @@ const RegisterView = (props) => {
       setTimeout(() => {
         setError(false);
         props.clearErrors();
-      }, 6000);
+      }, 2000);
     }
   }, [props.error])
 
@@ -75,12 +75,12 @@ const RegisterView = (props) => {
         height="100%"
         justifyContent="center"
       >
-      <Snackbar open={notificationOpen} autoHideDuration={6000} onClose={()=>setNotificationOpen(false)}>
+      <Snackbar open={notificationOpen} autoHideDuration={2000} onClose={()=>setNotificationOpen(false)}>
         <Alert onClose={()=>setNotificationOpen(false)} elevation={6} variant="filled" severity="success">
           {notification}
         </Alert>
       </Snackbar>
-      <Snackbar open={error} autoHideDuration={6000} onClose={()=>setError(false)}>
+      <Snackbar open={error} autoHideDuration={2000} onClose={()=>setError(false)}>
         <Alert onClose={()=>setError(false)} elevation={6} variant="filled" severity="error">
           {props.error.msg}
         </Alert>

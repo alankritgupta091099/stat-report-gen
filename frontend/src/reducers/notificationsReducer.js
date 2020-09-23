@@ -1,7 +1,7 @@
 import { GET_NOTIFICATION , CLEAR_NOTIFICATION } from '../actions/types.js';
 
 const initialState={
-    msg:{},
+    msg:'',
     id:null
 }
 
@@ -16,7 +16,7 @@ export default function ( state = initialState , action ){
         case CLEAR_NOTIFICATION:
             return {
                 ...state,
-                msg:{},
+                msg:'',
                 id:null
             };
         default:

@@ -69,6 +69,9 @@ function loginUser(req,res){
             .then((isMatch) => {
                 if(!isMatch) 
                     return res.status(400).json({msg:"Invalid Credentials"})
+                //var x = user;
+                delete(user["password"])
+                console.log()
                 jwt.sign(
                     { id:user.id , email:user.email },
                     process.env.SECRET_KEY,
@@ -77,7 +80,17 @@ function loginUser(req,res){
                         if(err) throw err
                         res.json({
                             token,
-                            user
+                            user:{
+                                _id:user.id,
+                                firstName:user.firstName,
+                                lastName:user.lastName,
+                                email:user.email,
+                                accountType:user.accountType,
+                                orgName:user.orgName,
+                                orgPosition:user.orgPosition,
+                                mobNumber:user.mobNumber,
+                                date:user.date
+                            }
                         })
                     }
                 )    
