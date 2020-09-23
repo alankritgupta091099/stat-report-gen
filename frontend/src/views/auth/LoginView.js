@@ -11,6 +11,11 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
+  },
+  formStyle:{
+    backgroundColor: theme.palette.background.default,
+    border: '2px solid '+theme.palette.primary.main,
+    borderRadius: '15px'
   }
 }));
 
@@ -29,7 +34,7 @@ const LoginView = () => {
         height="100%"
         justifyContent="center"
       >
-        <Container maxWidth="sm">
+        <Container maxWidth="sm" className={classes.formStyle}>
           <Formik
             initialValues={{
               email: 'demo@devias.io',
@@ -52,7 +57,7 @@ const LoginView = () => {
               touched,
               values
             }) => (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} style={{padding:'1.5rem'}}>
                 <Box mb={3}>
                   <Typography
                     color="textPrimary"

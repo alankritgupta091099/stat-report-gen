@@ -19,6 +19,8 @@ const routes = [
     element: <DashboardLayout />,
     children: [
       { path: 'account', element: <AccountView /> },
+      { path: 'register-new', element: <RegisterView /> },
+      { path: 'report-gen', element: <FileDropView /> },
       { path: 'customers', element: <CustomerListView /> },
       { path: 'dashboard', element: <DashboardView /> },
       { path: 'products', element: <ProductListView /> },
@@ -30,19 +32,9 @@ const routes = [
     path: '/',
     element: <MainLayout />,
     children: [
-      { path: 'login', element: <LoginView /> },
-      { path: 'register', element: <RegisterView /> },
+      { path: 'login', element: <LoginView /> },      
       { path: '404', element: <NotFoundView /> },
       { path: '/', element: <Navigate to="/app/dashboard" /> },
-      // { path: '/word', element: <WordDoc/> },
-      { path: '*', element: <Navigate to="/404" /> }
-    ]
-  },
-  {
-    path: '/client',
-    element: <DashboardLayout />,
-    children: [
-      { path: 'report-gen', element: <FileDropView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   }

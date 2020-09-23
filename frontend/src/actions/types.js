@@ -9,8 +9,8 @@ export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAIL = "REGISTER_FAIL";
 
 //Error
-export const GET_ERRORS = "GET_ERROR";
-export const CLEAR_ERRORS = "CLEAR_ERROR";
+export const GET_ERRORS = "GET_ERRORS";
+export const CLEAR_ERRORS = "CLEAR_ERRORS";
 
 //Notification
 export const GET_NOTIFICATION = "GET_NOTIFICATION";

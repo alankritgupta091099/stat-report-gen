@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(4),
   },
   formStyle:{
+    backgroundColor: theme.palette.background.default,
     border: '2px solid '+theme.palette.primary.main,
     borderRadius: '15px'
   }
@@ -55,7 +56,7 @@ const RegisterView = (props) => {
       setError(true);
       setTimeout(() => {
         setError(false);
-        //props.clearErrors(); Clear error is not working properly!!
+        props.clearErrors();
       }, 6000);
     }
   }, [props.notification, props.error])
