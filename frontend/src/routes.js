@@ -11,7 +11,7 @@ import ProductListView from 'src/views/product/ProductListView';
 import RegisterView from 'src/views/auth/RegisterView';
 import SettingsView from 'src/views/settings/SettingsView';
 import FileDropView from 'src/views/fileDropZone/FileDropView';
-//import WordDoc from 'src/views/fileDropZone/WordDoc';
+import Home from 'src/views/home';
 
 const routes = [
   {
@@ -34,7 +34,7 @@ const routes = [
     children: [
       { path: 'login', element: <LoginView /> },      
       { path: '404', element: <NotFoundView /> },
-      { path: '/', element: <Navigate to="/app/dashboard" /> },
+      { path: '/', element: <Home /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   }
