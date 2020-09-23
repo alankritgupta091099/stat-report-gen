@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
+
 import NavBar from './NavBar';
 import TopBar from './TopBar';
+import { logoutUser } from "src/actions/authActions.js";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DashboardLayout = () => {
+const DashboardLayout = (props) => {
   const classes = useStyles();
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -41,6 +44,7 @@ const DashboardLayout = () => {
     <div className={classes.root}>
       <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
       <NavBar
+        logout={()=>props.logoutUser()}
         onMobileClose={() => setMobileNavOpen(false)}
         openMobile={isMobileNavOpen}
       />
@@ -55,4 +59,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default connect(null,{logoutUser})(DashboardLayout);

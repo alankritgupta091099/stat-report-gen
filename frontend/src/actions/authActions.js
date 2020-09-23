@@ -7,11 +7,18 @@ import { returnErrors , clearErrors } from './errorActions';
 import { returnNotifications , clearNotifications } from './notificationActions';
 import { API_URL } from '../helpers/utils.js';
 
+export const logoutUser = () => (dispatch) =>{
+    dispatch({
+        type:LOGOUT_SUCCESS
+    }) 
+}
+
 export const loginUser = ( user ) => ( dispatch , getState ) => {
     axios.post(`${API_URL}/post/user/login`,user)
         .then(res=>{
             console.log(res.data)
             dispatch(returnNotifications("Login Successful!!","LOGIN_SUCCESS"))
+            dispatch(clearErrors());
             dispatch({
                 type:LOGIN_SUCCESS,
                 payload:res.data

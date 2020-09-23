@@ -34,17 +34,14 @@ export default function( state = initialState , action ) {
             localStorage.setItem('user-token', action.payload.token )
             return{
                 ...state,
+                token:action.payload.token,
+                user:action.payload.user,
                 isAuthenticated:true,
                 isLoading:false
             };
         case REGISTER_SUCCESS:
-            // console.log(action.payload)
-            // localStorage.setItem('user-token', action.payload.token )
             return{
                 ...state,
-                //...action.payload,
-                //isAuthenticated:true,
-                //isLoading:false
             };
         case AUTH_ERROR:
         case LOGIN_FAIL:
