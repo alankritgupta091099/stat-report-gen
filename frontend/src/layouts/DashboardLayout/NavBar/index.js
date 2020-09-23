@@ -26,11 +26,12 @@ import {
 } from 'react-feather';
 
 import NavItem from './NavItem';
+import { connect } from 'react-redux';
 
 const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith'
+  avatar: 'A',
+  orgName: 'Organisation Name',
+  name: 'Name'
 };
 
 const items = [
@@ -98,7 +99,8 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const NavBar = ({ logout , onMobileClose, openMobile }) => {
+const NavBar = (props) => {
+  const { logout , onMobileClose, openMobile } = props;
   const classes = useStyles();
   const location = useLocation();
 
@@ -106,8 +108,15 @@ const NavBar = ({ logout , onMobileClose, openMobile }) => {
     if (openMobile && onMobileClose) {
       onMobileClose();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
+
+  useEffect(() => {    
+    return () => {      
+      user.avatar=props.user.firstName.charAt(0);
+      user.orgName=props.user.orgName;
+      user.name=props.user.firstName+" "+props.user.lastName;
+    }
+  }, [props.user])
 
   const content = (
     <Box
@@ -124,9 +133,10 @@ const NavBar = ({ logout , onMobileClose, openMobile }) => {
         <Avatar
           className={classes.avatar}
           component={RouterLink}
-          src={user.avatar}
           to="/app/account"
-        />
+        >
+        {user.avatar}
+        </Avatar>
         <Typography
           className={classes.name}
           color="textPrimary"
@@ -138,7 +148,7 @@ const NavBar = ({ logout , onMobileClose, openMobile }) => {
           color="textSecondary"
           variant="body2"
         >
-          {user.jobTitle}
+          {user.orgName}
         </Typography>
       </Box>
       <Divider />
@@ -211,4 +221,8 @@ NavBar.defaultProps = {
   openMobile: false
 };
 
-export default NavBar;
+const mapStateToProps = state => ({
+  user:state.auth.user
+})
+
+export default connect(mapStateToProps,null)(NavBar);

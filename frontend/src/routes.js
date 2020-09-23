@@ -12,19 +12,22 @@ import RegisterView from 'src/views/auth/RegisterView';
 import SettingsView from 'src/views/settings/SettingsView';
 import FileDropView from 'src/views/fileDropZone/FileDropView';
 import Home from 'src/views/home';
+import PrivateRoute from "./protectedRoutes.js";
+import store from './store';
 
 const routes = [
   {
     path: 'app',
-    element: <DashboardLayout />,
+    element: <PrivateRoute component={DashboardLayout} />,
     children: [
-      { path: 'account', element: <AccountView /> },
-      { path: 'register-new', element: <RegisterView /> },
-      { path: 'report-gen', element: <FileDropView /> },
-      { path: 'customers', element: <CustomerListView /> },
-      { path: 'dashboard', element: <DashboardView /> },
-      { path: 'products', element: <ProductListView /> },
-      { path: 'settings', element: <SettingsView /> },
+      { path: 'account', element: <PrivateRoute component={AccountView} /> },
+      { path: 'register-new', element: <PrivateRoute component={RegisterView} /> },
+      { path: 'report-gen', element: <PrivateRoute component={FileDropView}/> },
+      { path: 'customers', element: <PrivateRoute component={CustomerListView}/> },
+      { path: 'dashboard', element: <PrivateRoute component={DashboardView}/> },
+      { path: 'products', element: <PrivateRoute component={ProductListView}/> },
+      { path: 'settings', element: <PrivateRoute component={SettingsView}/> },
+      { path: '/', element: <Navigate to="/404" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },

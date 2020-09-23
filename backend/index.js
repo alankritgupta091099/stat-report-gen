@@ -36,8 +36,8 @@ app.listen( PORT , ()=>{
 })
 
 //Setup routes here
-app.use('/scrap',webScraper);
+app.use('/scrap' , Middlewares , webScraper);
 app.use( '/insta' , Middlewares , insta );
-app.use('/report',reportGen);
+app.use('/report', Middlewares , reportGen);
 app.use('/post/user',createUser);
 app.use('/get/user',verifyUser);

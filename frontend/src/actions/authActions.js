@@ -33,7 +33,7 @@ export const loginUser = ( user ) => ( dispatch , getState ) => {
 }
 
 export const registerUser = ( newUser ) => ( dispatch , getState ) => {
-    axios.post(`${API_URL}/post/user/reg`,newUser)
+    axios.post(`${API_URL}/post/user/reg`,newUser, tokenConfig(getState))
         .then(res=>{
             dispatch(returnNotifications(res.data.status,"REGISTER_SUCCESS"))
             dispatch({

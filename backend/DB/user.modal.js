@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     },
     accountType:{
         type:String,
-        default:'trial',
+        default:'Trial',
         required:true
     },
     date:{

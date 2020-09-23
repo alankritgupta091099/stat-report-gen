@@ -1,7 +1,7 @@
-import React from 'react';
+import React , { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import moment from 'moment';
+import { connect } from 'react-redux';
 import {
   Avatar,
   Box,
@@ -14,15 +14,6 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  city: 'Los Angeles',
-  country: 'USA',
-  jobTitle: 'Senior Developer',
-  name: 'Katarina Smith',
-  timezone: 'GTM-7'
-};
-
 const useStyles = makeStyles(() => ({
   root: {},
   avatar: {
@@ -31,7 +22,8 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const Profile = ({ className, ...rest }) => {
+const Profile = (props) => {
+  const { className, ...rest } = props
   const classes = useStyles();
 
   return (
@@ -47,40 +39,31 @@ const Profile = ({ className, ...rest }) => {
         >
           <Avatar
             className={classes.avatar}
-            src={user.avatar}
-          />
+          >
+          {props.user.firstName.charAt(0)}
+          </Avatar>
           <Typography
             color="textPrimary"
             gutterBottom
             variant="h3"
           >
-            {user.name}
+            {props.user.firstName+" "+props.user.lastName}
           </Typography>
           <Typography
             color="textSecondary"
             variant="body1"
           >
-            {`${user.city} ${user.country}`}
+            {props.user.orgPosition}            
           </Typography>
           <Typography
             className={classes.dateText}
             color="textSecondary"
             variant="body1"
           >
-            {`${moment().format('hh:mm A')} ${user.timezone}`}
+          {props.user.orgName}
           </Typography>
         </Box>
       </CardContent>
-      <Divider />
-      <CardActions>
-        <Button
-          color="primary"
-          fullWidth
-          variant="text"
-        >
-          Upload picture
-        </Button>
-      </CardActions>
     </Card>
   );
 };
@@ -89,4 +72,8 @@ Profile.propTypes = {
   className: PropTypes.string
 };
 
-export default Profile;
+const mapStateToProps = state => ({
+  user:state.auth.user
+})
+
+export default connect(mapStateToProps,null)(Profile);

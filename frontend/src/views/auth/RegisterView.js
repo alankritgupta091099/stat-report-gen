@@ -1,5 +1,4 @@
 import React , { useState , useEffect } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { connect } from 'react-redux';
@@ -27,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
 
 const RegisterView = (props) => {
   const classes = useStyles();
-  const navigate = useNavigate();
   const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [error, setError] = useState(false);
