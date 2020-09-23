@@ -15,6 +15,7 @@ import {
 import {
   AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
+  FilePlus as FilePlusIcon,
   Lock as LockIcon,
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
@@ -37,6 +38,16 @@ const items = [
     title: 'Dashboard'
   },
   {
+    href:'/app/report-gen',
+    icon: FilePlusIcon,
+    title: 'Generate Report'
+  },
+  {
+    href: '/app/register-new',
+    icon: UserPlusIcon,
+    title: 'Create New User'
+  },
+  {
     href: '/app/customers',
     icon: UsersIcon,
     title: 'Customers'
@@ -56,21 +67,17 @@ const items = [
     icon: SettingsIcon,
     title: 'Settings'
   },
-  {
-    href: '/login',
-    icon: LockIcon,
-    title: 'Login'
-  },
-  {
-    href: '/app/register-new',
-    icon: UserPlusIcon,
-    title: 'Register'
-  },
-  {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
-  }
+  // {
+  //   href: '/login',
+  //   icon: LockIcon,
+  //   title: 'Login'
+  // }
+  // ,
+  // {
+  //   href: '/404',
+  //   icon: AlertCircleIcon,
+  //   title: 'Error'
+  // }
 ];
 
 const useStyles = makeStyles(() => ({
