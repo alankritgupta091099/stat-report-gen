@@ -8,7 +8,9 @@ import axios from 'axios';
 import { OutTable , ExcelRenderer } from 'react-excel-renderer';
 import { saveAs } from "file-saver";
 import { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, Header, VerticalPositionAlign, VerticalPositionRelativeFrom, Table, TableRow, WidthType, TableCell,VerticalAlign, TextDirection, HeadingLevel, HyperlinkRef, HyperlinkType } from "docx";
+import store from "src/store.js";
 
+import { API_URL } from 'src/helpers/utils.js';
 import Page from 'src/components/Page';
 
 const getColor = (props) => {
@@ -94,6 +96,7 @@ function FileDropView(props) {
   const [dialogCloseBtn, setDialogCloseBtn] = useState(false);
   const [loader, setLoader] = useState(false);
   const [finalList, setFinalList] = useState([]);
+  
 
   const docxFile = async (data) => {
     
@@ -242,7 +245,8 @@ function FileDropView(props) {
     for (let i = 0; i < Math.ceil(finalList.length/4) ; i++) {
       reqArr.push(axios({
         method:'post',
-        url:'http://localhost:8080/report/gen',
+        url:`${API_URL}/report/gen`,
+        headers:{'x-auth-token': store.getState().auth.token},
         data:{
           list:finalList.slice(4*i,4*i+4)
         }

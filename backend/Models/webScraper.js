@@ -31,7 +31,14 @@ async function webScraper(req,res, Test_btn = true) {
     let start = Date.now();
     console.log("Scraping headline!!")
     try {
-        let browser = await puppeteer.launch()
+        let browser = await puppeteer.launch({
+            headless: true,
+            executablePath: '/usr/bin/chromium-browser',
+            args: [
+            "--no-sandbox",
+            "--disable-gpu",
+            ]
+        })
         let page = await browser.newPage();
         
         await page.setViewport({
@@ -59,6 +66,7 @@ async function webScraper(req,res, Test_btn = true) {
             }
         }
     } catch (error) {
+        console.log(error)
         console.log("Could not fetch headline")
         if(Test_btn){
             res.status(400).json({msg:"Something went wrong"})
@@ -107,7 +115,14 @@ async function scrapStatShow(req,res,Test_btn = true) {
                     await console.log("Scrapping Statshow for: ",siteARR[i])
                     let statShowURL = await 'https://www.statshow.com/'+siteARR[i]; 
                     let start = Date.now();
-                    let browser = await puppeteer.launch()
+                    let browser = await puppeteer.launch({
+                        headless: true,
+                        executablePath: '/usr/bin/chromium-browser',
+                        args: [
+                        "--no-sandbox",
+                        "--disable-gpu",
+                        ]
+                    })
                     let page = await browser.newPage();
                     await page.goto(statShowURL);
                     await page.waitFor('.worth_left_box');

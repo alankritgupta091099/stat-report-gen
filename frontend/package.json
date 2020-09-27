@@ -8,7 +8,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "npm start",
+    "prod": "npm run build && serve -s build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -56,6 +58,7 @@
     "react-scripts": "^3.4.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "serve": "^11.3.2",
     "styled-components": "^5.1.1",
     "uuid": "^8.3.0",
     "yup": "^0.29.3"

@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+    mm_backend:
+        container_name: mm_backend
+        restart: unless-stopped
+        build: ./backend
+        environment:
+            - MONGO_URL=mongodb://mm_mongo:27017/report-gen
+        env_file: ./backend/.env
+        ports: 
+            - '80:8080'
+        links:
+            - mm_mongo
+        # volumes: 
+        #     - ./backend:/user/src/app
+    mm_frontend:
+        container_name: mm_frontend
+        restart: unless-stopped
+        tty: true
+        build: ./frontend
+        ports: 
+            - '4000:3000'
+        # volumes: 
+        #     - ./frontend:/user/src/app
+        environment:
+            - NODE_ENV=production            
+    mm_mongo:
+        container_name: mm_mongo
+        image: mongo
+        env_file: ./backend/.env
+        ports: 
+            - '2717:27017'
+        volumes: 
+            - data:/data/db
+volumes: 
+    data:
