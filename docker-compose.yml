@@ -1,6 +1,9 @@
 version: '3'
 
 services:
+    ##########################
+    ### SETUP BACKEND CONTAINER
+    ##########################
     mm_backend:
         container_name: mm_backend
         restart: unless-stopped
@@ -12,8 +15,11 @@ services:
             - '80:8080'
         links:
             - mm_mongo
-        # volumes: 
-        #     - ./backend:/user/src/app
+        volumes: 
+            - mmBackend_nodeModules:/user/src/app/node_modules
+    ############################
+    ### SETUP FRONTEND CONTAINER
+    ############################
     mm_frontend:
         container_name: mm_frontend
         restart: unless-stopped
@@ -21,10 +27,13 @@ services:
         build: ./frontend
         ports: 
             - '4000:3000'
-        # volumes: 
-        #     - ./frontend:/user/src/app
+        volumes: 
+            - mmFrontend_nodeModules:/user/src/app/node_modules
         environment:
             - NODE_ENV=production            
+    ############################
+    ### SETUP DATABASE CONTAINER
+    ############################
     mm_mongo:
         container_name: mm_mongo
         image: mongo
@@ -35,3 +44,5 @@ services:
             - data:/data/db
 volumes: 
     data:
+    mmBackend_nodeModules:
+    mmFrontend_nodeModules:
