@@ -33,10 +33,10 @@ async function webScraper(req,res, Test_btn = true) {
     try {
         let browser = await puppeteer.launch({
             headless: true,
-            executablePath: '/usr/bin/chromium-browser',
             args: [
             "--no-sandbox",
             "--disable-gpu",
+            '--disable-dev-shm-usage'
             ]
         })
         let page = await browser.newPage();
@@ -45,7 +45,7 @@ async function webScraper(req,res, Test_btn = true) {
             width: 1080,
             height: 720,
         });
-        await page.goto(articleURL,{waitUntil:'load',timeout:30000});
+        await page.goto(articleURL,{waitUntil:'load',timeout:45000});
         articleTitle = await page.title(); //Date scrap - pending!
         base64 = await page.screenshot(screenShotOptions);
         await browser.close();
@@ -117,10 +117,10 @@ async function scrapStatShow(req,res,Test_btn = true) {
                     let start = Date.now();
                     let browser = await puppeteer.launch({
                         headless: true,
-                        executablePath: '/usr/bin/chromium-browser',
                         args: [
                         "--no-sandbox",
                         "--disable-gpu",
+                        '--disable-dev-shm-usage'
                         ]
                     })
                     let page = await browser.newPage();
