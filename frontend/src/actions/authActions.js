@@ -16,7 +16,7 @@ export const logoutUser = () => (dispatch) =>{
 export const loginUser = ( user ) => ( dispatch , getState ) => {
     axios.post(`${API_URL}/post/user/login`,user)
         .then(res=>{
-            console.log(res.data)
+            //console.log(res.data)
             dispatch(returnNotifications("Login Successful!!","LOGIN_SUCCESS"))
             dispatch(clearErrors());
             dispatch({
@@ -25,7 +25,7 @@ export const loginUser = ( user ) => ( dispatch , getState ) => {
             })
         })
         .catch(err=>{
-            dispatch(returnErrors(err.response.data, err.response.status,'LOGIN_FAIL'))
+            dispatch(returnErrors(err.response.data.msg, err.response.status,'LOGIN_FAIL'))
             dispatch({
                 type:LOGIN_FAIL
             })
@@ -42,10 +42,11 @@ export const registerUser = ( newUser ) => ( dispatch , getState ) => {
             })
         })
         .catch(err=>{
-            dispatch(returnErrors(err.response.data, err.response.status,'REGISTER_FAIL'))
+            dispatch(returnErrors(err.response.data.msg, err.response.status,'REGISTER_FAIL'))
             dispatch({
                 type:REGISTER_FAIL
             })
+            logoutUser();
         })    
 }
 
@@ -54,12 +55,15 @@ export const loadUser = () => ( dispatch , getState ) => {
         type:USER_LOADING
     });
     axios.get(`${API_URL}/get/user/fromToken`,tokenConfig(getState))
-        .then(res=>dispatch({
-            type:USER_LOADED,
-            payload:res.data
-        }))
+        .then(res=>{
+            dispatch({
+                type:USER_LOADED,
+                payload:res.data
+            })
+        })
         .catch(err=>{
-            dispatch(returnErrors(err.response.data, err.response.status));
+            console.log(err)
+            dispatch(returnErrors("Something went wrong!!", err.response.status));
             dispatch({
                 type:AUTH_ERROR
             })

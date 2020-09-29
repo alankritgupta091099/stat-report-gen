@@ -13,7 +13,7 @@ const composeEnhancers = process.env.NODE_ENV !== 'production' && window.__REDUX
         actionsBlacklist: ['REDUX_STORAGE_SAVE']}) 
     : compose;
 
-//Disable the reduc extension in production environment
+//Disable the redux extension in production environment
 
 const store = createStore(
     rootReducer, 

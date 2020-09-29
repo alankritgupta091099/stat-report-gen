@@ -112,9 +112,9 @@ const NavBar = (props) => {
 
   useEffect(() => {    
     return () => {      
-      user.avatar=props.user.firstName.charAt(0);
-      user.orgName=props.user.orgName;
-      user.name=props.user.firstName+" "+props.user.lastName;
+      // user.avatar=props.user.firstName.charAt(0);
+      // user.orgName=props.user.orgName;
+      // user.name=props.user.firstName+" "+props.user.lastName;
     }
   }, [props.user])
 

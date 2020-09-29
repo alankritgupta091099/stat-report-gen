@@ -11,7 +11,7 @@ export default function ( state = initialState , action ){
         case GET_ERRORS:
             return {
                 ...state,
-                msg:action.payload.msg.msg,
+                msg:action.payload.msg,
                 status:action.payload.status,
                 id:action.payload.id
             };
