@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect , useRef , useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
@@ -28,11 +28,11 @@ import {
 import NavItem from './NavItem';
 import { connect } from 'react-redux';
 
-const user = {
-  avatar: 'A',
-  orgName: 'Organisation Name',
-  name: 'Name'
-};
+// const user = {
+//   avatar: 'A',
+//   orgName: 'Organisation Name',
+//   name: 'Name'
+// };
 
 const items = [
   {
@@ -104,6 +104,13 @@ const NavBar = (props) => {
   const classes = useStyles();
   const location = useLocation();
 
+  const userProp = useRef(props.user)
+  const [user, setUser] = useState({
+    avatar: 'A',
+    orgName: 'Organisation Name',
+    name: 'Name'
+  });
+
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -111,10 +118,13 @@ const NavBar = (props) => {
   }, [location.pathname]);
 
   useEffect(() => {    
-    return () => {      
-      // user.avatar=props.user.firstName.charAt(0);
-      // user.orgName=props.user.orgName;
-      // user.name=props.user.firstName+" "+props.user.lastName;
+    userProp.current=props.user;
+    if(userProp.current){
+      setUser({
+        avatar: userProp.current.firstName.charAt(0),
+        orgName: userProp.current.orgName,
+        name: userProp.current.firstName+" "+userProp.current.lastName
+      })        
     }
   }, [props.user])
 

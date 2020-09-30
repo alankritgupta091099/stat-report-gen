@@ -18,7 +18,7 @@ import store from './store';
 const routes = [
   {
     path: 'app',
-    element: <PrivateRoute component={DashboardLayout} />,
+    element: <DashboardLayout />,
     children: [
       { path: 'account', element: <PrivateRoute component={AccountView} /> },
       { path: 'register-new', element: <PrivateRoute component={RegisterView} /> },

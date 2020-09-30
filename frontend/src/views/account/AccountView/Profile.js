@@ -1,4 +1,4 @@
-import React , { useEffect } from 'react';
+import React , { useEffect , useState , useRef } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
@@ -26,6 +26,25 @@ const Profile = (props) => {
   const { className, ...rest } = props
   const classes = useStyles();
 
+  const userProp = useRef(props.user)
+  const [user, setUser] = useState({
+    avatar: 'A',
+    orgName: 'Organisation Name',
+    name: 'Name'
+  });
+
+  useEffect(() => {    
+    userProp.current=props.user;
+    if(userProp.current){
+      setUser({
+        avatar: userProp.current.firstName.charAt(0),
+        orgName: userProp.current.orgName,
+        orgPosition: userProp.current.orgPosition,
+        name: userProp.current.firstName+" "+userProp.current.lastName
+      })        
+    }
+  }, [props.user])
+
   return (
     <Card
       className={clsx(classes.root, className)}
@@ -40,27 +59,27 @@ const Profile = (props) => {
           <Avatar
             className={classes.avatar}
           >
-          {props.user.firstName.charAt(0)}
+            {user.avatar}
           </Avatar>
           <Typography
             color="textPrimary"
             gutterBottom
             variant="h3"
           >
-            {props.user.firstName+" "+props.user.lastName}
+            {user.name}
           </Typography>
           <Typography
             color="textSecondary"
             variant="body1"
           >
-            {props.user.orgPosition}            
+            {user.orgPosition}            
           </Typography>
           <Typography
             className={classes.dateText}
             color="textSecondary"
             variant="body1"
           >
-          {props.user.orgName}
+            {user.orgName}
           </Typography>
         </Box>
       </CardContent>

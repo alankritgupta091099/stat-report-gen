@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect , useRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -36,12 +36,14 @@ const useStyles = makeStyles(() => ({
 const ProfileDetails = (props) => {
   const { className, ...rest } = props;
   const classes = useStyles();
+  const userProp = useRef(props.user)
+
   const [values, setValues] = useState({
-    firstName: props.user.firstName,
-    lastName: props.user.lastName,
-    email: props.user.email,
-    phone: props.user.mobNumber,
-    type: props.user.accountType,
+    firstName: "First Name",
+    lastName: "Last Name",
+    email: "Email",
+    phone: "Mobile Number",
+    type: "Account Type",
     //add account validity
   });
 
@@ -51,6 +53,20 @@ const ProfileDetails = (props) => {
       [event.target.name]: event.target.value
     });
   };
+
+  useEffect(() => {
+    userProp.current=props.user;
+    console.log(userProp.current)
+    if(userProp.current){
+      setValues({
+        firstName: props.user.firstName,
+        lastName: props.user.lastName,
+        email: props.user.email,
+        phone: props.user.mobNumber,
+        type: props.user.accountType
+      })    
+    }    
+  }, [props.user])
 
   return (
     <form
