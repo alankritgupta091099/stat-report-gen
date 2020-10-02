@@ -293,7 +293,7 @@ function FileDropView(props) {
   );
 
   return (
-    <Page>
+    <Page title="Generate Report" >
       <Container>
         <Box mt={3}>
           <Card>

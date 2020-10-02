@@ -12,6 +12,9 @@ RUN apt-get install -yyq gconf-service lsb-release wget xdg-utils
 
 RUN apt-get install -yyq fonts-liberation
 
+# install pm2 process manager
+RUN npm install pm2 -g
+
 # set working directory
 WORKDIR /user/src/app
 
@@ -26,4 +29,4 @@ COPY . .
 EXPOSE 8080
 
 # start app
-CMD ["npm","start"]
+CMD ["pm2-runtime","ecosystem.config.js"]
