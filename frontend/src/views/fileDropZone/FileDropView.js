@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { OutTable , ExcelRenderer } from 'react-excel-renderer';
 import { saveAs } from "file-saver";
-import { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, Header, VerticalPositionAlign, VerticalPositionRelativeFrom, Table, TableRow, WidthType, TableCell,VerticalAlign, TextDirection, HeadingLevel, HyperlinkRef, HyperlinkType } from "docx";
+import { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, Header, VerticalPositionAlign, VerticalPositionRelativeFrom, Table, TableRow, WidthType, TableCell, VerticalAlign, HyperlinkRef, HyperlinkType } from "docx";
 import store from "src/store.js";
 
 import { API_URL } from 'src/helpers/utils.js';
@@ -99,14 +99,24 @@ function FileDropView(props) {
   
 
   const docxFile = async (data) => {
-    
+    var links = {};
+    //logo header pending
+    for (let i = 0; i < data.length; i++) {
+      var item = data[i];
+      links["link_"+i]={
+          link: item.articleDetails.articleURL,
+          text: item.articleDetails.articleHeadline,
+          type: HyperlinkType.EXTERNAL,
+        }      
+    }
+
     const doc = new Document({
-        creator: "media-measurements.com",
-        description: "a Detailed Client Report",
+        creator: "get-measurements.com",
+        description: "Detailed Client Report",
         title: "Client Report",
+        hyperlinks: links
     });
 
-    //logo header pending
     for (let i = 0; i < data.length; i++) {
         var item = data[i];
         var publication_name;
@@ -133,7 +143,9 @@ function FileDropView(props) {
                         }
                     }),
                     new TableCell({
-                        children: [new Paragraph({text: item.articleDetails.articleHeadline})],
+                        children: [new Paragraph({
+                            children: [new HyperlinkRef("link_"+i)],
+                        })],
                         verticalAlign: VerticalAlign.CENTER,
                         margins: {
                           top: 15,
@@ -171,7 +183,9 @@ function FileDropView(props) {
                             verticalAlign: VerticalAlign.CENTER
                         }),
                         new TableCell({
-                            children:[new Paragraph({text:item.articleDetails.articleHeadline})],
+                            children:[new Paragraph({
+                                children: [new HyperlinkRef("link_"+i)],
+                            })],
                             verticalAlign: VerticalAlign.CENTER,
                             margins: {
                               top: 15,
@@ -185,7 +199,7 @@ function FileDropView(props) {
                 "secondaryTableData_DailyPageViews": new TableRow({
                     children: [
                         new TableCell({
-                            children: [new Paragraph({text:"Daily Page Viewers: "})],//hyperlinking pending
+                            children: [new Paragraph({text:"Daily Page Viewers: "})],
                             verticalAlign: VerticalAlign.CENTER
                         }),
                         new TableCell({
@@ -195,7 +209,7 @@ function FileDropView(props) {
                     ]               
                 }),
                 "screenShot":new Paragraph({
-                    children:[Media.addImage(doc, Buffer.from(item.articleDetails.screenShot, "base64"), 600, 400)]
+                     children:[Media.addImage(doc, Buffer.from(item.articleDetails.screenShot, "base64"), 600, 400)]
                 })
             }
         )
