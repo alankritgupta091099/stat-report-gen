@@ -40,12 +40,12 @@ export default function( state = initialState , action ) {
                 isLoading:false
             };
         case REGISTER_SUCCESS:
+        case REGISTER_FAIL:
             return{
                 ...state,
             };
         case AUTH_ERROR:
         case LOGIN_FAIL:
-        case REGISTER_FAIL:
         case LOGOUT_SUCCESS:
             localStorage.removeItem('user-token')
             return{
