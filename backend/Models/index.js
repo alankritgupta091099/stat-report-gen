@@ -2,7 +2,7 @@ const { webScraper , scrapStatShow } = require('./webScraper.js');
 const { fetchFollowerCount } = require('./instaFetch.js');
 const { generateReport } = require('./report.js');
 const { createUser , loginUser , getUserFromToken } = require('./user.js');
-const { fetchCustomers } = require('./customer.js');
+const { fetchCustomers , editCustomer } = require('./customer.js');
 
 module.exports = {
 
@@ -22,5 +22,6 @@ module.exports = {
     getUserFromToken,
 
     //customer
-    fetchCustomers: fetchCustomers
+    fetchCustomers: fetchCustomers,
+    editCustomer:editCustomer
 }

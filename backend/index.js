@@ -26,6 +26,7 @@ const webScraper=require('./Routes/POST/scraper.js');
 const insta=require('./Routes/POST/insta.js');
 const reportGen=require('./Routes/POST/report-gen.js');
 const createUser=require('./Routes/POST/user.js');
+const editCustomer=require('./Routes/POST/customers.js');
 //GET routes
 const verifyUser=require('./Routes/GET/user.js');
 const fetchCustomers=require('./Routes/GET/customer.js');
@@ -40,6 +41,9 @@ app.listen( PORT , ()=>{
 app.use('/scrap' , Middlewares , webScraper);
 app.use( '/insta' , Middlewares , insta );
 app.use('/report', Middlewares , reportGen);
+//Post
 app.use('/post/user',createUser);
+app.use('/post/customer', Middlewares, editCustomer);
+//Get
 app.use('/get/user',verifyUser);
-app.use('/get/customers',fetchCustomers);
+app.use('/get/customers', Middlewares, fetchCustomers);

@@ -1,4 +1,5 @@
 const mongoose = require ('mongoose');
+const moment = require ('moment');
 
 const userSchema = new mongoose.Schema({
     firstName:{
@@ -33,6 +34,14 @@ const userSchema = new mongoose.Schema({
         type:String,
         default:'Trial',
         required:true
+    },
+    validFrom:{
+        type:Date,
+        default:Date.now()
+    },
+    validUntil:{
+        type:Date,
+        default:moment(Date.now()).add(15,'days')
     },
     date:{
         type:Date,
