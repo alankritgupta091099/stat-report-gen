@@ -7,7 +7,7 @@ module.exports = {
 function fetchCustomers (req,res) {
     try {
         User
-            .find({})
+            .find({accountType:{$ne:'Admin'}})
             .select('-password')
             .then((userList) => {
                 return res.status(200).json(userList);
