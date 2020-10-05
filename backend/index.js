@@ -28,6 +28,7 @@ const reportGen=require('./Routes/POST/report-gen.js');
 const createUser=require('./Routes/POST/user.js');
 //GET routes
 const verifyUser=require('./Routes/GET/user.js');
+const fetchCustomers=require('./Routes/GET/customer.js');
 
 var PORT = process.env.PORT || 8080;
 
@@ -41,3 +42,4 @@ app.use( '/insta' , Middlewares , insta );
 app.use('/report', Middlewares , reportGen);
 app.use('/post/user',createUser);
 app.use('/get/user',verifyUser);
+app.use('/get/customers',fetchCustomers);
