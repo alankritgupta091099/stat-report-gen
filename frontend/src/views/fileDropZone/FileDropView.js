@@ -12,6 +12,7 @@ import store from "src/store.js";
 
 import { API_URL } from 'src/helpers/utils.js';
 import Page from 'src/components/Page';
+import FormatForm from './FormatForm.js'
 
 const getColor = (props) => {
   if (props.isDragAccept) {
@@ -95,7 +96,7 @@ function FileDropView(props) {
 
   const [table, setTable] = useState(false)
   const [dialog, setDialog] = useState(false);
-  const [dialogCloseBtn, setDialogCloseBtn] = useState(false);
+  const [dialogCloseBtn, setDialogCloseBtn] = useState(true);
   const [loader, setLoader] = useState(false);
   const [finalList, setFinalList] = useState([]);
   
@@ -269,29 +270,29 @@ function FileDropView(props) {
   const genButton = () => {
     setDialog(true);
     setLoader(true);
-    var reqArr = []
-    for (let i = 0; i < Math.ceil(finalList.length/4) ; i++) {
-      reqArr.push(axios({
-        method:'post',
-        url:`${API_URL}/report/gen`,
-        headers:{'x-auth-token': store.getState().auth.token},
-        data:{
-          list:finalList.slice(4*i,4*i+4)
-        }
-      }))
-    }
-    axios
-      .all(reqArr)
-      .then(res=>{
-        console.log("Date received from backend")
-        var docArr=[];
-        console.log(res)
-        res.forEach(item => {
-          docArr.push(...item.data)
-        });
-        docxFile(docArr)
-      })
-      .catch(err=>console.log(err))
+    // var reqArr = []
+    // for (let i = 0; i < Math.ceil(finalList.length/4) ; i++) {
+    //   reqArr.push(axios({
+    //     method:'post',
+    //     url:`${API_URL}/report/gen`,
+    //     headers:{'x-auth-token': store.getState().auth.token},
+    //     data:{
+    //       list:finalList.slice(4*i,4*i+4)
+    //     }
+    //   }))
+    // }
+    // axios
+    //   .all(reqArr)
+    //   .then(res=>{
+    //     console.log("Date received from backend")
+    //     var docArr=[];
+    //     console.log(res)
+    //     res.forEach(item => {
+    //       docArr.push(...item.data)
+    //     });
+    //     docxFile(docArr)
+    //   })
+    //   .catch(err=>console.log(err))
   }
 
   const files = acceptedFiles.map(file => {  
@@ -395,10 +396,7 @@ function FileDropView(props) {
         </AppBar>
         <br/><br/>
         <br/><br/>
-        <h1>Please wait while we are generating your report..</h1>
-        {
-          loader ? <LinearProgress /> : ""
-        }       
+        <FormatForm/>
       </Dialog>
     </Page>
   );

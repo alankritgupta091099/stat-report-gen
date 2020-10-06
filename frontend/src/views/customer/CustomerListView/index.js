@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CustomerListView = () => {
   const classes = useStyles();
-
+  //Need to make searchbar active
   return (
     <Page
       className={classes.root}
