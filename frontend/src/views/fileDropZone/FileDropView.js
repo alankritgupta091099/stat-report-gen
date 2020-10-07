@@ -95,7 +95,7 @@ function FileDropView(props) {
   const {acceptedFiles, getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject} = useDropzone({accept:"text/csv , application/vnd.oasis.opendocument.spreadsheet , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
 
   const [table, setTable] = useState(false)
-  const [dialog, setDialog] = useState(false);
+  const [dialog, setDialog] = useState(true);
   const [dialogCloseBtn, setDialogCloseBtn] = useState(true);
   const [loader, setLoader] = useState(false);
   const [finalList, setFinalList] = useState([]);

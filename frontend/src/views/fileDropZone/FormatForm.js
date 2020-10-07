@@ -2,9 +2,12 @@ import React, { useState , useEffect , useRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, TextField, makeStyles , Typography, Paper, Tabs, Tab , useTheme , Switch , Tooltip , IconButton , Radio, RadioGroup, FormControlLabel, FormControl, FormLabel , CardActions} from '@material-ui/core';
+import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, TextField, makeStyles , Typography, Paper, Tabs, Tab , useTheme , Switch , Tooltip , IconButton , Radio, RadioGroup, FormControlLabel, FormControl, FormLabel , CardActions , Fab } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
+
 import InfoIcon from '@material-ui/icons/Info';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import ClearIcon from '@material-ui/icons/Clear';
 
 import Page from 'src/components/Page';
 
@@ -33,7 +36,8 @@ const infoMEssages = {
   statsType:"Select the type of Statistic you want to add in the report",
   userType:"Select the Statistic variety",
   secondaryButtonToggleInfo:"Enable secondary section",
-  secondaryTableSameInfo:"This value depends upon primary section detailes"
+  secondaryTableSameInfo:"This value depends upon primary section detailes",
+  headerLogoOption:"Enable Custom Header Option"
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -67,7 +71,9 @@ const FormatForm = (props) => {
       screenShot:true
     }
   })
-  const [secTable, setsecTable] = useState(true)
+  const [imgHeader, setimgHeader] = useState({name:"*Nothing Selected*"})
+  let [secTable, setsecTable] = useState(true)
+  const [Header, setHeader] = useState(true)
 
   const handleChangeTab = (event, newValue) => {
     setValue_1(newValue);
@@ -103,6 +109,61 @@ const FormatForm = (props) => {
             />
             <Divider />            
             <CardContent>
+              <Typography variant="body2">
+                Upload Header Logo
+                <Tooltip title={infoMEssages.headerLogoOption} placement="top">
+                  <IconButton>
+                    <InfoIcon/>
+                  </IconButton>
+                </Tooltip>
+                <Switch
+                  checked={Header}
+                  onChange={()=>{
+                    setHeader(!Header)
+                    if(Header===false) 
+                      setimgHeader({name:"*Nothing Selected*"})
+                  }}
+                  color="primary"
+                  inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+              </Typography>
+              <br/>
+              {
+                Header ?                 
+                <Paper square>
+                  <Grid
+                    container
+                    spacing={3}
+                  >
+                    <Grid
+                      item
+                      xs={12}
+                    >
+                    <IconButton
+                      variant="contained"
+                      component="label"
+                      style={{marginLeft:"2rem"}}
+                    >
+                      <CloudUploadIcon/>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e)=>{setimgHeader(e.target.files[0])}}
+                      />
+                    </IconButton>
+                    <Typography variant="caption">
+                      <i> {imgHeader.name}</i>
+                    </Typography>
+                    <IconButton onClick={()=>setimgHeader({name:"*Nothing Selected*"})}>
+                      <ClearIcon/>
+                    </IconButton>                    
+                    </Grid>
+                  </Grid>
+                </Paper> : <Divider/> 
+              }
+              <br/>
+              <br/>
               <Typography variant="body2">
                 Primary table will contain following Columns
               </Typography>
@@ -225,7 +286,9 @@ const FormatForm = (props) => {
                   </Paper>
                 </Grid>                
               </Grid>
-              <br/><br/>
+              <br/>
+              <Divider/>
+              <br/>
               <Typography variant="body2">
                 Secondary Section
                 <Tooltip title={infoMEssages.secondaryButtonToggleInfo} placement="top">
@@ -351,8 +414,7 @@ const FormatForm = (props) => {
                       </Paper>
                     </Grid>                
                   </Grid>
-                </>)
-                : ""
+                </>) : <><br/><Divider/></>
               }
             </CardContent>
             <CardActions style={{padding:"2rem 18rem"}}>
