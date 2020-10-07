@@ -87,9 +87,9 @@ async function webScraper(req,res, Test_btn = true) {
 // @desc Scrap the the data from statshow
 // @access --------Pending
 
-async function scrapStatShow(req,res,Test_btn = true) { 
+async function scrapStatShow(req,res,Test_btn = true, stats = {}) {
 
-    let list, statsToReturn;
+    let list, statsToReturn={};
     var siteARR = (res) ? [req.body.site_name] : [req]
     var reqTypeSingle = true; //acts as trigger for single request or a list of URL's
 
@@ -99,18 +99,30 @@ async function scrapStatShow(req,res,Test_btn = true) {
         siteARR = data.list;
         console.log("Scraping list of URL's via local file from statshow..")
     }
-
     //console.log(siteARR) 
+    let multiple=1;
+    if(stats.type=='Monthly') multiple=30
+    else if(stats.type=='Yearly') multiple=365
+
+    console.log(stats)
     for (let i=0;i< siteARR.length;i++) {
         //console.log("//================== Working on Stat #",i+1," ===================//")
         var domain = await extractURL(siteARR[i])
-        await Stat.findOne({"site_name": domain}) 
+        await Stat.findOne({"site_name": domain})
             .then(async stat => { 
                 if(stat){//========================================Date ka time ka check lagana bacha hai
                     if(reqTypeSingle) {
-                        Test_btn ? res.status(200).json(stat) : statsToReturn=stat; 
+                        if (Test_btn) 
+                            return res.status(200).json(stat) 
+                        else {
+                            statsToReturn.site_name=stat.site_name;
+                            if(stats['variety']==='Page-Viewers')
+                                statsToReturn.info=stat.dailyPageViews*multiple
+                            else
+                                statsToReturn.info=stat.dailyVisitors*multiple
+                        }; 
                     }
-                    console.log("Stat found in DB: ", stat);
+                    console.log("Stat found in DB: ", statsToReturn);
                 } else {
                     await console.log("Scrapping Statshow for: ",siteARR[i])
                     let statShowURL = await 'https://www.statshow.com/'+siteARR[i]; 
@@ -160,7 +172,7 @@ async function scrapStatShow(req,res,Test_btn = true) {
                 return res.status(404).json({msg:'Something went wrong !'})
             })
     };
-    await reqTypeSingle ? console.log("Execution of single query completed !!"):console.log("Execution on List of URL's completed !!")
+    reqTypeSingle ? console.log("Execution of single query completed !!"):console.log("Execution on List of URL's completed !!")
     return statsToReturn
 }
 

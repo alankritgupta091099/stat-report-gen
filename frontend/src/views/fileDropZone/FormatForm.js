@@ -66,13 +66,9 @@ const FormatForm = (props) => {
         variety:"Page-Viewers"
       }
     },
-    secondaryTable:{
-      required:true,
-      screenShot:true
-    }
+    secondaryTable:true
   })
   // const [imgHeader, setimgHeader] = useState({name:"*Nothing Selected*"})
-  let [secTable, setsecTable] = useState(true)
   const [Header, setHeader] = useState(true)
 
   const handleChangeTab = (event, newValue) => {
@@ -297,14 +293,18 @@ const FormatForm = (props) => {
                   </IconButton>
                 </Tooltip>
                 <Switch
-                  checked={secTable}
-                  onChange={()=>setsecTable(!secTable)}
+                  checked={format.secondaryTable}
+                  onChange={()=>setFormat(prevState=>{
+                      prevState.secondaryTable=!prevState.secondaryTable;
+                      return({...prevState})
+                    }
+                  )}
                   color="primary"
                   inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
               </Typography>
               {
-                secTable ? (
+                format.secondaryTable ? (
                 <>                 
                   <br/><br/>
                   <Grid
@@ -418,7 +418,7 @@ const FormatForm = (props) => {
               }
             </CardContent>
             <CardActions style={{padding:"2rem 18rem"}}>
-                <Button variant="contained" color="primary" fullWidth size="large" onClick={props.genButton}>
+                <Button variant="contained" color="primary" fullWidth size="large" onClick={()=>props.genButton(format)}>
                   Generate Report
                 </Button>
             </CardActions>

@@ -11,7 +11,8 @@ module.exports={
 async function generateReport(req,res) {
 
     var list = req.body.list; 
-
+    var format = req.body.format;
+    
     console.log("List of links ",list);
 
     var articleDetails, siteDetails, responseData = [];
@@ -21,8 +22,10 @@ async function generateReport(req,res) {
     try {
         for (let i = 0; i < list.length; i++) {
             console.log("Report item #",i+1)
+            console.log(format.primaryTable)
             articleDetails = await webScraper(list[i],null,false);
-            siteDetails = await scrapStatShow(list[i],null,false);
+            siteDetails = await scrapStatShow(list[i],null,false,format.primaryTable.stats);
+            console.log(siteDetails)
             responseData.push({
                 articleDetails , 
                 siteDetails
