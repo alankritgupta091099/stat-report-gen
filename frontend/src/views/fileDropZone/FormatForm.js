@@ -71,7 +71,7 @@ const FormatForm = (props) => {
       screenShot:true
     }
   })
-  const [imgHeader, setimgHeader] = useState({name:"*Nothing Selected*"})
+  // const [imgHeader, setimgHeader] = useState({name:"*Nothing Selected*"})
   let [secTable, setsecTable] = useState(true)
   const [Header, setHeader] = useState(true)
 
@@ -121,7 +121,7 @@ const FormatForm = (props) => {
                   onChange={()=>{
                     setHeader(!Header)
                     if(Header===false) 
-                      setimgHeader({name:"*Nothing Selected*"})
+                      props.setimgHeader({name:"*Nothing Selected*"})
                   }}
                   color="primary"
                   inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -149,13 +149,13 @@ const FormatForm = (props) => {
                         type="file"
                         accept="image/*"
                         style={{ display: "none" }}
-                        onChange={(e)=>{setimgHeader(e.target.files[0])}}
+                        onChange={(e)=>props.setimgHeader(e.target.files[0])}
                       />
                     </IconButton>
                     <Typography variant="caption">
-                      <i> {imgHeader.name}</i>
+                      <i> {props.imgHeader.name}</i>
                     </Typography>
-                    <IconButton onClick={()=>setimgHeader({name:"*Nothing Selected*"})}>
+                    <IconButton onClick={()=>props.setimgHeader({name:"*Nothing Selected*"})}>
                       <ClearIcon/>
                     </IconButton>                    
                     </Grid>
@@ -418,7 +418,7 @@ const FormatForm = (props) => {
               }
             </CardContent>
             <CardActions style={{padding:"2rem 18rem"}}>
-                <Button variant="contained" color="primary" fullWidth size="large">
+                <Button variant="contained" color="primary" fullWidth size="large" onClick={props.genButton}>
                   Generate Report
                 </Button>
             </CardActions>
