@@ -32,7 +32,6 @@ function TabPanel(props) {
 }
 
 const infoMEssages = {
-  headlineHyperlink:"Enable this option if you want the Article Heading to be Hyperlinked",
   statsType:"Select the type of Statistic you want to add in the report",
   userType:"Select the Statistic variety",
   secondaryButtonToggleInfo:"Enable secondary section",
@@ -53,14 +52,13 @@ const FormatForm = (props) => {
   const { className, ...rest } = props;
   const classes = useStyles();
   const userProp = useRef(props.user)
-  const [value_1, setValue_1] = useState(2);
+  const [value_1, setValue_1] = useState(3);
   const [index_1, setIndex_1] = useState(0);
-  const [value_2, setValue_2] = useState(1);
+  const [value_2, setValue_2] = useState(2);
   const [index_2, setIndex_2] = useState(0);
   const theme = useTheme();
   const [format, setFormat] = useState({
     primaryTable:{
-      headlineHyperlink: true,
       stats:{
         type:"Daily",
         variety:"Page-Viewers"
@@ -68,24 +66,23 @@ const FormatForm = (props) => {
     },
     secondaryTable:true
   })
-  // const [imgHeader, setimgHeader] = useState({name:"*Nothing Selected*"})
   const [Header, setHeader] = useState(true)
 
-  const handleChangeTab = (event, newValue) => {
-    setValue_1(newValue);
-  };
+  // const handleChangeTab = (event, newValue) => {
+  //   setValue_1(newValue);
+  // };
 
-  const handleChangeIndex = (index) => {
-    setValue_1(index);
-  };
+  // const handleChangeIndex = (index) => {
+  //   setValue_1(index);
+  // };
 
-  const handleChangeTab2 = (event, newValue) => {
-    setValue_2(newValue);
-  };
+  // const handleChangeTab2 = (event, newValue) => {
+  //   setValue_2(newValue);
+  // };
 
-  const handleChangeIndex2 = (index) => {
-    setValue_2(index);
-  };
+  // const handleChangeIndex2 = (index) => {
+  //   setValue_2(index);
+  // };
 
   return (
     <Page
@@ -180,18 +177,18 @@ const FormatForm = (props) => {
                       value={value_1}
                       indicatorColor="primary"
                       textColor="primary"
-                      onChange={handleChangeTab}
+                      // onChange={handleChangeTab}
                       aria-label="disabled tabs example"
                     >
                       <Tab label="S.No." disabled/>
                       <Tab label="Publisher" disabled/>
-                      <Tab label="News Headline *" />
+                      <Tab label="News Headline " disabled/>
                       <Tab label="Statistics *" />
                     </Tabs>
                     <SwipeableViews
                       axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                       index={value_1}
-                      onChangeIndex={handleChangeIndex}
+                      //onChangeIndex={handleChangeIndex}
                     >
                       <TabPanel value={value_1} index={0} dir={theme.direction}>
                         Item One
@@ -202,23 +199,7 @@ const FormatForm = (props) => {
                       <TabPanel value={value_1} index={2} dir={theme.direction}>
                         <Typography variant="body2">
                           Hyper Linking
-                          <Tooltip title={infoMEssages.headlineHyperlink} placement="right">
-                            <IconButton>
-                              <InfoIcon/>
-                            </IconButton>
-                          </Tooltip>
                         </Typography>
-                        <Switch
-                          checked={format.primaryTable.headlineHyperlink}
-                          onChange={()=>setFormat(prevState=>{
-                              prevState.primaryTable.headlineHyperlink=!prevState.primaryTable.headlineHyperlink;
-                              return({...prevState})
-                            }
-                          )}
-                          color="primary"
-                          name="primaryTable.headlineHyperlink"
-                          inputProps={{ 'aria-label': 'primary checkbox' }}
-                        />
                       </TabPanel>
                       <TabPanel value={value_1} index={3} dir={theme.direction}>
                         <Grid
@@ -320,18 +301,18 @@ const FormatForm = (props) => {
                           value={value_2}
                           indicatorColor="primary"
                           textColor="primary"
-                          onChange={handleChangeTab2}
+                          // onChange={handleChangeTab2}
                           aria-label="disabled tabs example"
                         >
                           <Tab label="Publisher" disabled/>
-                          <Tab label="News Headline" />
+                          <Tab label="News Headline" disabled/>
                           <Tab label="Statistics" />
                           <Tab label="Screenshot of Article" disabled/>
                         </Tabs>
                         <SwipeableViews
                           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                           index={value_2}
-                          onChangeIndex={handleChangeIndex2}
+                          //onChangeIndex={handleChangeIndex2}
                         >
                           <TabPanel value={value_2} index={0} dir={theme.direction}>
                             Item Two
@@ -339,18 +320,7 @@ const FormatForm = (props) => {
                           <TabPanel value={value_2} index={1} dir={theme.direction}>
                             <Typography variant="body2">
                               Hyper Linking
-                              <Tooltip title={infoMEssages.secondaryTableSameInfo} placement="right">
-                                <IconButton>
-                                  <InfoIcon/>
-                                </IconButton>
-                              </Tooltip>
                             </Typography>
-                            <Switch
-                              checked={format.primaryTable.headlineHyperlink}                              
-                              color="primary"
-                              inputProps={{ 'aria-label': 'primary checkbox' }}
-                              disabled
-                            />
                           </TabPanel>
                           <TabPanel value={value_2} index={2} dir={theme.direction}>
                             <Grid

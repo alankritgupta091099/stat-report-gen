@@ -182,7 +182,7 @@ function FileDropView(props) {
                 "secondaryTableData_Publication": new TableRow({
                     children: [
                         new TableCell({
-                            children: [new Paragraph({text:"Publication: "})],
+                            children: [new Paragraph({text:"Publication "})],
                             verticalAlign: VerticalAlign.CENTER
                         }),
                         new TableCell({
@@ -194,7 +194,7 @@ function FileDropView(props) {
                 "secondaryTableData_Headline": new TableRow({
                     children: [
                         new TableCell({
-                            children: [new Paragraph({text:"Headline: "})],//hyperlinking pending
+                            children: [new Paragraph({text:"Headline "})],
                             verticalAlign: VerticalAlign.CENTER
                         }),
                         new TableCell({
