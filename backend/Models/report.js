@@ -23,7 +23,7 @@ async function generateReport(req,res) {
         for (let i = 0; i < list.length; i++) {
             console.log("Report item #",i+1)
             console.log(format.primaryTable)
-            articleDetails = await webScraper(list[i],null,false);
+            articleDetails = await webScraper(list[i],null,false,format.secondaryTable);
             siteDetails = await scrapStatShow(list[i],null,false,format.primaryTable.stats);
             console.log(siteDetails)
             responseData.push({

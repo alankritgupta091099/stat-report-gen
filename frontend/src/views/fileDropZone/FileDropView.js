@@ -176,8 +176,8 @@ function FileDropView(props) {
                 ]               
             })
         )
-
-        secondaryPage.push(
+        if(format.secondaryTable)
+          secondaryPage.push(
             {
                 "secondaryTableData_Publication": new TableRow({
                     children: [
@@ -227,7 +227,7 @@ function FileDropView(props) {
                      children:[Media.addImage(doc, Buffer.from(item.articleDetails.screenShot, "base64"), 600, 400)]
                 })
             }
-        )
+        ) 
 
     }
 
@@ -265,19 +265,20 @@ function FileDropView(props) {
       children: [mainTable]
     });
 
-    for (let i = 0; i < data.length; i++) {
-        doc.addSection({
-          headers: {
-              default: new Header({
-                  children: [ new Paragraph(image)],
-              })
-          },
-          children: [returnTableFromRows(secondaryPage[i]), new Paragraph({}), new Paragraph({}), secondaryPage[i].screenShot]
-        });    
-    }
-    console.log(doc)
-    let start = Date.now();
+    if(format.secondaryTable) 
+      for (let i = 0; i < data.length; i++) {
+          doc.addSection({
+            headers: {
+                default: new Header({
+                    children: [ new Paragraph(image)],
+                })
+            },
+            children: [returnTableFromRows(secondaryPage[i]), new Paragraph({}), new Paragraph({}), secondaryPage[i].screenShot]
+          });    
+      }
 
+    console.log("Doc conversion started")
+    let start = Date.now();
     Packer.toBlob(doc).then(blob => {//R&D pending!! -  find a way to speed it up
       console.log(blob);
       saveAs(blob, "report.docx");

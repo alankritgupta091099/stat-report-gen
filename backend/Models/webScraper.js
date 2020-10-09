@@ -12,7 +12,7 @@ module.exports = {
 // @desc Scrap the heading of news headline
 // @access --------Pending
 
-async function webScraper(req,res, Test_btn = true) {
+async function webScraper(req,res, Test_btn = true, ss = true) {
 
     // if (Test_btn = true) 
     //  send_response(use it for debugging purpose - to check working of function ) 
@@ -21,7 +21,7 @@ async function webScraper(req,res, Test_btn = true) {
     
     let articleURL = (res) ? req.body.link : req;
     let articleTitle = "Some Heading";
-    let base64 = "img";
+    let base64 = "no-img";
     let screenShotOptions = {
         encoding: "base64", 
         fullPage:false,
@@ -47,10 +47,10 @@ async function webScraper(req,res, Test_btn = true) {
         });
         await page.goto(articleURL,{waitUntil:'load',timeout:45000});
         articleTitle = await page.title(); //Date scrap - pending!
-        base64 = await page.screenshot(screenShotOptions);
+        if(ss) base64 = await page.screenshot(screenShotOptions);
         await browser.close();
         
-        console.log('==>Took', Date.now() - start, 'ms to fetch title & take screenshot- ',articleTitle);
+        console.log('==>Took', Date.now() - start, 'ms to go to headline- ',articleTitle);
 
         if(Test_btn){
             res.status(200).json({
