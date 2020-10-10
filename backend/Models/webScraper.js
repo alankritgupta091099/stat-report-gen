@@ -154,7 +154,8 @@ async function scrapStatShow(req,res,Test_btn = true, stats = {}) {
                     const statData = new Stat({
                         site_name: domain,
                         dailyPageViews: parseInt(list[0].replace(/,/g,"")),
-                        dailyVisitors: parseInt(list[1].replace(/,/g,""))   
+                        dailyVisitors: parseInt(list[1].replace(/,/g,"")),
+                        creator: "Admin"   
                     })
                     //console.log("Scrapped data: ", statData)
                     await console.log('==> Took', Date.now() - start, 'ms to scrap data from statshow');

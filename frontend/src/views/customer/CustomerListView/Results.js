@@ -35,6 +35,7 @@ const Results = ({ className, customers, ...rest }) => {
     type: "Account Type",
     orgName: "Organisation Name",
     orgPos: "Organisation Position",
+    cost:0,
     validFrom: moment(Date.now()),
     validUntil: moment(Date.now())
   });
@@ -56,8 +57,9 @@ const Results = ({ className, customers, ...rest }) => {
       type:customer.accountType,
       orgName:customer.orgName,
       orgPos:customer.orgPosition,
-      validFrom:customer.validFrom,
-      validUntil:customer.validUntil
+      cost:customer.plan.cost,
+      validFrom:customer.plan.validFrom,
+      validUntil:customer.plan.validUntil
     })
     setOpen(true);
   };
@@ -196,6 +198,9 @@ const Results = ({ className, customers, ...rest }) => {
                   Account Type
                 </TableCell>
                 <TableCell>
+                  Cost
+                </TableCell>
+                <TableCell>
                   Valid From<br/><small><i>(DD/MM/YYYY)</i></small>
                 </TableCell>
                 <TableCell>
@@ -238,10 +243,13 @@ const Results = ({ className, customers, ...rest }) => {
                     {customer.accountType}
                   </TableCell>
                   <TableCell>
-                    {moment(customer.validFrom).format('DD/MM/YYYY')}
+                    {customer.plan.cost}
                   </TableCell>
                   <TableCell>
-                    {moment(customer.validUntil).format('DD/MM/YYYY')}
+                    {moment(customer.plan.validFrom).format('DD/MM/YYYY')}
+                  </TableCell>
+                  <TableCell>
+                    {moment(customer.plan.validUntil).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
                     <Button variant="contained" size="small" color="primary" onClick={event=>handleClickOpen(event,customer._id)}>
@@ -341,6 +349,22 @@ const Results = ({ className, customers, ...rest }) => {
                         <MenuItem value="Paid">Paid</MenuItem>
                         <MenuItem value="Expired">Expired</MenuItem>
                       </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid
+                    item
+                    md={6}
+                    xs={12}
+                  >                
+                    <FormControl variant="outlined" className={classes.formControl}>
+                      <TextField
+                        fullWidth
+                        label="Cost"
+                        name="cost"
+                        onChange={handleChange}
+                        value={values.cost}
+                        variant="outlined"
+                      />
                     </FormControl>
                   </Grid>
                 </Grid>

@@ -1,5 +1,7 @@
 const mongoose = require ('mongoose');
 
+const lastVisitedSchema = new mongoose.Schema({ visitor_id: String , visitor_time: Date });
+
 const statSchema = new mongoose.Schema({
     site_name:{
         type:String,
@@ -14,7 +16,14 @@ const statSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    date:{
+    lastVisited:{
+        type:[lastVisitedSchema]
+    },
+    creator:{
+        type:String,
+        required:true
+    },
+    date_creation:{
         type:Date,
         default:Date.now()
     }

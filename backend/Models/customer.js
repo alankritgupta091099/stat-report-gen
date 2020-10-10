@@ -32,8 +32,11 @@ function editCustomer(req,res) {
                 orgPosition:req.body.orgPos,
                 mobNumber:req.body.phone,
                 accountType:req.body.type,
-                validFrom:req.body.validFrom,
-                validUntil: req.body.validUntil
+                plan:{
+                    cost:req.body.cost,
+                    validFrom:req.body.validFrom,
+                    validUntil:req.body.validUntil
+                }
             }, {new:true})
             .then((result) => {
                console.log(result);

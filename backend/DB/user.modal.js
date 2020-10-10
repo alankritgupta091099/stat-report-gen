@@ -35,15 +35,25 @@ const userSchema = new mongoose.Schema({
         default:'Trial',
         required:true
     },
-    validFrom:{
-        type:Date,
-        default:Date.now()
+    plan:{//change db and frontend customers section according to this
+        cost:{
+            type:Number,
+            default:0
+        },
+        validFrom:{
+            type:Date,
+            default:Date.now()
+        },
+        validUntil:{
+            type:Date,
+            default:moment(Date.now()).add(15,'days')
+        }
     },
-    validUntil:{
-        type:Date,
-        default:moment(Date.now()).add(15,'days')
+    docsCreated:{
+        type: Number,
+        default:0
     },
-    date:{
+    date_created:{
         type:Date,
         default:Date.now()
     }
