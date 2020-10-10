@@ -11,7 +11,7 @@ import LatestProducts from './LatestProducts';
 import Sales from './Sales';
 import TasksProgress from './TasksProgress';
 import TotalCustomers from './TotalCustomers';
-import TotalProfit from './TotalProfit';
+import TotalDocs from './TotalDocs';
 import TrafficByDevice from './TrafficByDevice';
 
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +70,7 @@ const Dashboard = () => {
             xl={3}
             xs={12}
           >
-            <TotalProfit />
+            <TotalDocs />
           </Grid>
           <Grid
             item

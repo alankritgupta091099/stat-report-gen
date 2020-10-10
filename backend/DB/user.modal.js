@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
         default:'Trial',
         required:true
     },
-    plan:{//change db and frontend customers section according to this
+    plan:{
         cost:{
             type:Number,
             default:0

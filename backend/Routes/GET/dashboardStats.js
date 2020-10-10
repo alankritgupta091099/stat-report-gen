@@ -3,6 +3,6 @@ var router = express.Router();
 
 var models =  require('../../Models');
 
-router.get('/all',models.fetchCustomers); 
+router.get('/totalDocs',models.totalDocs);
 
 module.exports = router;

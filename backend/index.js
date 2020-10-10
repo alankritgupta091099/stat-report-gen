@@ -30,6 +30,7 @@ const editCustomer=require('./Routes/POST/customers.js');
 //GET routes
 const verifyUser=require('./Routes/GET/user.js');
 const fetchCustomers=require('./Routes/GET/customer.js');
+const totalDocs=require('./Routes/GET/dashboardStats.js');
 
 var PORT = process.env.PORT || 8080;
 
@@ -47,3 +48,4 @@ app.use('/post/customer', Middlewares, editCustomer);
 //Get
 app.use('/get/user',verifyUser);
 app.use('/get/customers', Middlewares, fetchCustomers);
+app.use('/get/stats', Middlewares, totalDocs);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { useState , useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -10,7 +10,11 @@ import {
   makeStyles,
   colors
 } from '@material-ui/core';
-import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import { FileText } from 'react-feather';
+import axios from 'axios';
+
+import { API_URL } from 'src/helpers/utils.js';
+import store from "src/store.js";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -23,8 +27,21 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const TotalProfit = ({ className, ...rest }) => {
+const TotalDocs = ({ className, ...rest }) => {
   const classes = useStyles();
+  const [docsNum, setdocsNum] = useState(0)
+  useEffect(() => {
+    axios({
+        method:'GET',
+        url:`${API_URL}/get/stats/totalDocs`,
+        headers:{'x-auth-token': store.getState().auth.token}
+      })
+      .then((result) => {
+        setdocsNum(result.data)
+      }).catch((err) => {
+        console.log(err)
+      });
+  }, [])
 
   return (
     <Card
@@ -43,18 +60,18 @@ const TotalProfit = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              TOTAL PROFIT
+              TOTAL DOUMENTS
             </Typography>
             <Typography
               color="textPrimary"
               variant="h3"
             >
-              $23,200
+              {docsNum}
             </Typography>
           </Grid>
           <Grid item>
             <Avatar className={classes.avatar}>
-              <AttachMoneyIcon />
+              <FileText />
             </Avatar>
           </Grid>
         </Grid>
@@ -63,8 +80,8 @@ const TotalProfit = ({ className, ...rest }) => {
   );
 };
 
-TotalProfit.propTypes = {
+TotalDocs.propTypes = {
   className: PropTypes.string
 };
 
-export default TotalProfit;
+export default TotalDocs;

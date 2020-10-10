@@ -7,7 +7,6 @@ import Alert from '@material-ui/lab/Alert';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
-
 import axios from 'axios';
 
 import { API_URL } from 'src/helpers/utils.js';
@@ -357,7 +356,7 @@ const Results = ({ className, customers, ...rest }) => {
                     xs={12}
                   >                
                     <FormControl variant="outlined" className={classes.formControl}>
-                      <TextField
+                      <TextField //disable this section and set it to 0 when account type is not paid
                         fullWidth
                         label="Cost"
                         name="cost"
