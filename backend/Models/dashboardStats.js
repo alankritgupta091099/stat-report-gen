@@ -3,7 +3,8 @@ const User = require('../DB/user.modal.js');
 
 module.exports = {
     totalDocs,
-    calculateRevenue
+    calculateRevenue,
+    totalCustomers
 }
 
 function totalDocs(req,res) {
@@ -67,6 +68,29 @@ function calculateRevenue(req,res) {
                 return res.status(200).json(Math.round(totalCost * 10) / 10);
             }).catch((err) => {
                 return res.status(400).json({msg: 'Something Went Wrong'});
+            });
+    } catch (error) {
+        return res.status(400).json({msg: 'Something Went Wrong'})
+    }
+}
+
+function totalCustomers(req,res) {
+    try {
+        var paid = trial = expired = 0;
+        User
+            .find({accountType:{$ne:'Admin'}})
+            .then((result) => {
+                result.forEach(cust => {
+                    if(cust.accountType==="Paid") 
+                        paid+=1
+                    else if (cust.accountType==="Trial") 
+                        trial+=1
+                    else 
+                        expired+=1
+                });
+                return res.status(200).json({paid,trial,expired});
+            }).catch((err) => {
+                return res.status(400).json({msg: 'Something Went Wrong'})
             });
     } catch (error) {
         return res.status(400).json({msg: 'Something Went Wrong'})

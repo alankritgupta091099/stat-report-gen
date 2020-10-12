@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState , useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -13,6 +13,10 @@ import {
 } from '@material-ui/core';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import PeopleIcon from '@material-ui/icons/PeopleOutlined';
+import axios from 'axios';
+
+import { API_URL } from 'src/helpers/utils.js';
+import store from "src/store.js";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +38,20 @@ const useStyles = makeStyles((theme) => ({
 
 const TotalCustomers = ({ className, ...rest }) => {
   const classes = useStyles();
+  const [cust, setCust] = useState(0)
+
+  useEffect(() => {
+    axios({
+        method:'GET',
+        url:`${API_URL}/get/stats/totalCust`,
+        headers:{'x-auth-token': store.getState().auth.token}
+      })
+      .then((result) => {
+        setCust(result.data)
+      }).catch((err) => {
+        console.log(err)
+      });
+  }, [])
 
   return (
     <Card
@@ -58,7 +76,7 @@ const TotalCustomers = ({ className, ...rest }) => {
               color="textPrimary"
               variant="h3"
             >
-              1,600
+              {cust.paid+cust.trial+cust.expired}
             </Typography>
           </Grid>
           <Grid item>
@@ -72,20 +90,13 @@ const TotalCustomers = ({ className, ...rest }) => {
           display="flex"
           alignItems="center"
         >
-          <ArrowUpwardIcon className={classes.differenceIcon} />
           <Typography
             className={classes.differenceValue}
-            variant="body2"
+            variant="overline"
           >
-            16%
+            P: {cust.paid} | T: {cust.trial} | E: {cust.expired}
           </Typography>
-          <Typography
-            color="textSecondary"
-            variant="caption"
-          >
-            Since last month
-          </Typography>
-        </Box>
+        </Box>        
       </CardContent>
     </Card>
   );
