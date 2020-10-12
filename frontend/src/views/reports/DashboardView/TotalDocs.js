@@ -30,6 +30,7 @@ const useStyles = makeStyles(() => ({
 const TotalDocs = ({ className, ...rest }) => {
   const classes = useStyles();
   const [docsNum, setdocsNum] = useState(0)
+  
   useEffect(() => {
     axios({
         method:'GET',

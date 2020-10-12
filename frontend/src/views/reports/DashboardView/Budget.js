@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState , useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -13,6 +13,10 @@ import {
 } from '@material-ui/core';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import MoneyIcon from '@material-ui/icons/Money';
+import axios from 'axios';
+
+import { API_URL } from 'src/helpers/utils.js';
+import store from "src/store.js";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +38,20 @@ const useStyles = makeStyles((theme) => ({
 
 const Budget = ({ className, ...rest }) => {
   const classes = useStyles();
+  const [rev, setRev] = useState(0)
+
+  useEffect(() => {
+    axios({
+        method:'GET',
+        url:`${API_URL}/get/stats/calcRev`,
+        headers:{'x-auth-token': store.getState().auth.token}
+      })
+      .then((result) => {
+        setRev(result.data)
+      }).catch((err) => {
+        console.log(err)
+      });
+  }, [])
 
   return (
     <Card
@@ -52,13 +70,13 @@ const Budget = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              BUDGET
+              MONTHLY REVENUE
             </Typography>
             <Typography
               color="textPrimary"
               variant="h3"
             >
-              $24,000
+              Rs {rev}
             </Typography>
           </Grid>
           <Grid item>
@@ -67,7 +85,7 @@ const Budget = ({ className, ...rest }) => {
             </Avatar>
           </Grid>
         </Grid>
-        <Box
+        {/* <Box
           mt={2}
           display="flex"
           alignItems="center"
@@ -85,7 +103,7 @@ const Budget = ({ className, ...rest }) => {
           >
             Since last month
           </Typography>
-        </Box>
+        </Box> */}
       </CardContent>
     </Card>
   );
