@@ -8,7 +8,7 @@ var cors = require('cors')
 var app = express();
 app.use(cors());
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '5mb', extended: true}));
 app.use(bodyParser.urlencoded({extended:true}));
 
 //Import All Middlewares Here

@@ -64,25 +64,10 @@ const FormatForm = (props) => {
         variety:"Page-Viewers"
       }
     },
-    secondaryTable:true
+    secondaryTable:true,
+    header: true
   })
-  const [Header, setHeader] = useState(true)
-
-  // const handleChangeTab = (event, newValue) => {
-  //   setValue_1(newValue);
-  // };
-
-  // const handleChangeIndex = (index) => {
-  //   setValue_1(index);
-  // };
-
-  // const handleChangeTab2 = (event, newValue) => {
-  //   setValue_2(newValue);
-  // };
-
-  // const handleChangeIndex2 = (index) => {
-  //   setValue_2(index);
-  // };
+  //const [Header, setHeader] = useState(format.header)
 
   return (
     <Page
@@ -110,11 +95,15 @@ const FormatForm = (props) => {
                   </IconButton>
                 </Tooltip>
                 <Switch
-                  checked={Header}
+                  checked={format.header}
                   onChange={()=>{
-                    setHeader(!Header)
-                    if(Header===false) 
+                    if(format.header===false){
                       props.setimgHeader({name:"*Nothing Selected*"})
+                    }
+                    setFormat(prevState=>{
+                      prevState.header=!prevState.header
+                      return({...prevState})
+                    })
                   }}
                   color="primary"
                   inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -122,7 +111,7 @@ const FormatForm = (props) => {
               </Typography>
               <br/>
               {
-                Header ?                 
+                format.header?                 
                 <Paper square>
                   <Grid
                     container
@@ -148,9 +137,6 @@ const FormatForm = (props) => {
                     <Typography variant="caption">
                       <i> {props.imgHeader.name}</i>
                     </Typography>
-                    <IconButton onClick={()=>props.setimgHeader({name:"*Nothing Selected*"})}>
-                      <ClearIcon/>
-                    </IconButton>                    
                     </Grid>
                   </Grid>
                 </Paper> : <Divider/> 
