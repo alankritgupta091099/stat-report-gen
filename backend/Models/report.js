@@ -288,16 +288,16 @@ function sendMail(buff) {
     var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'alankritgupta091099@gmail.com',
-            pass: 'alankritgupta80@gmail.com'
+            user: process.env.MAIL_ID,
+            pass: process.env.MAIL_PASS
         }
     });
 
     var mailOptions = {
-        from: 'alankritgupta091099@gmail.com',
-        to: 'skwatra.shobhit@gmail.com',
+        from: process.env.MAIL_ID,
+        to: 'alankritgupta091099@gmail.com',
         subject: 'Client Report',
-        text: 'This is an automatically generated email. Download the attached file and open in Ms Word formatting will be perfectly fine.',
+        text: 'This is an automatically generated email. Download the attached file and open in Ms Word, formatting will be perfectly fine.',
         attachments : [{
             filename : "Report.docx",
             content : buff,
