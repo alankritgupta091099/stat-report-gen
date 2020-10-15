@@ -49,6 +49,7 @@ const userSchema = new mongoose.Schema({
             default:moment(Date.now()).add(15,'days')
         }
     },
+    coveragesScanned:0,
     docsCreated:{
         type: Number,
         default:0

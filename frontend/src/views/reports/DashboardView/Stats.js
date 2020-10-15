@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const Sales = ({ className, ...rest }) => {
+const Stats = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [newData, setnew] = useState([])
@@ -151,27 +151,12 @@ const Sales = ({ className, ...rest }) => {
           />
         </Box>
       </CardContent>
-      {/* <Divider />
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        p={2}
-      >
-        <Button
-          color="primary"
-          endIcon={<ArrowRightIcon />}
-          size="small"
-          variant="text"
-        >
-          Overview
-        </Button>
-      </Box> */}
     </Card>
   );
 };
 
-Sales.propTypes = {
+Stats.propTypes = {
   className: PropTypes.string
 };
 
-export default Sales;
+export default Stats;
