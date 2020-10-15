@@ -1,6 +1,6 @@
 const mongoose = require ('mongoose');
 
-const lastVisitedSchema = new mongoose.Schema({ visitor_id: String , visitor_time: Date });
+const lastVisitedSchema = new mongoose.Schema({ visitor_id: String , visitor_time: Date },{ _id : false });
 
 const statSchema = new mongoose.Schema({
     site_name:{

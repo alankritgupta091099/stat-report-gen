@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const moment = require('moment');
 
 const Stat = require('../DB/stat.modal.js');
 const data =  require('./URL_list.json');
@@ -10,7 +11,7 @@ module.exports = {
 
 // @route POST /scrap/heading
 // @desc Scrap the heading of news headline
-// @access --------Pending
+// @access PRIVATE  
 
 async function webScraper(req,res, Test_btn = true, ss = true) {
 
@@ -85,9 +86,9 @@ async function webScraper(req,res, Test_btn = true, ss = true) {
 
 // @route POST /scrap/stats
 // @desc Scrap the the data from statshow
-// @access --------Pending
+// @access PRIVATE
 
-async function scrapStatShow(req,res,Test_btn = true, stats = {}) {
+async function scrapStatShow(req,res,Test_btn = true, stats = {},decoded="") {
 
     let list, statsToReturn={};
     var siteARR = (res) ? [req.body.site_name] : [req]
@@ -106,22 +107,33 @@ async function scrapStatShow(req,res,Test_btn = true, stats = {}) {
 
     console.log(stats)
     for (let i=0;i< siteARR.length;i++) {
-        //console.log("//================== Working on Stat #",i+1," ===================//")
         var domain = await extractURL(siteARR[i])
         await Stat.findOne({"site_name": domain})
             .then(async stat => { 
                 if(stat){//========================================Date ka time ka check lagana bacha hai
                     if(reqTypeSingle) {
-                        if (Test_btn) 
+                        if (Test_btn) {                            
                             return res.status(200).json(stat) 
+                        }
                         else {
+                            var arr=[];
+                            stat.lastVisited.forEach(element => {
+                                if(!moment(element.visitor_time).isBefore(moment().subtract(7,'days')))
+                                    arr.push(element)
+                            });
+                            stat.lastVisited=arr;
+                            stat.lastVisited.push({
+                                visitor_id:decoded.id,
+                                visitor_time:moment(new Date(Date.now())).format("YYYY-MM-DD") 
+                            }) 
+                            stat.save();                           
                             statsToReturn.site_name=stat.site_name;
                             if(stats['variety']==='Page-Viewers')
                                 statsToReturn.info=stat.dailyPageViews*multiple
                             else
                                 statsToReturn.info=stat.dailyVisitors*multiple
                         }; 
-                    }
+                    } else statsToReturn=stat
                     console.log("Stat found in DB: ", statsToReturn);
                 } else {
                     await console.log("Scrapping Statshow for: ",siteARR[i])

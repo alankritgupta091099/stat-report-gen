@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 var fs = require("fs");
 
 var nodemailer = require('nodemailer');
@@ -24,12 +25,14 @@ async function generateReport(req,res) {
 
     console.log("Fetching data for report...")
 
+    const decoded = jwt.verify( req.header('x-auth-token') , process.env.SECRET_KEY )
+
     try {
         for (let i = 0; i < list.length; i++) {
             console.log("Report item #",i+1)
             console.log(format.primaryTable)
             articleDetails = await webScraper(list[i],null,false,format.secondaryTable);
-            siteDetails = await scrapStatShow(list[i],null,false,format.primaryTable.stats);
+            siteDetails = await scrapStatShow(list[i],null,false,format.primaryTable.stats,decoded);
             console.log(siteDetails)
             responseData.push({
                 articleDetails , 
