@@ -1,10 +1,12 @@
 const moment = require('moment');
 const User = require('../DB/user.modal.js');
+const Stat = require('../DB/stat.modal.js');
 
 module.exports = {
     totalDocs,
     calculateRevenue,
-    totalCustomers
+    totalCustomers,
+    StatHistory7Days
 }
 
 function totalDocs(req,res) {
@@ -89,6 +91,95 @@ function totalCustomers(req,res) {
                         expired+=1
                 });
                 return res.status(200).json({paid,trial,expired});
+            }).catch((err) => {
+                return res.status(400).json({msg: 'Something Went Wrong'})
+            });
+    } catch (error) {
+        return res.status(400).json({msg: 'Something Went Wrong'})
+    }
+}
+
+function StatHistory7Days(req,res) {
+    try {
+        var stats = {
+            'today':{
+                'new':0,
+                'old':0
+            },
+            'today-1':{
+                'new':0,
+                'old':0
+            },
+            'today-2':{
+                'new':0,
+                'old':0
+            },
+            'today-3':{
+                'new':0,
+                'old':0
+            },
+            'today-4':{
+                'new':0,
+                'old':0
+            },
+            'today-5':{
+                'new':0,
+                'old':0
+            },
+            'today-6':{
+                'new':0,
+                'old':0
+            },
+        }
+
+        Stat
+            .find({})
+            .then((allStats) => {
+                for (let i = 0; i < allStats.length; i++) {
+                    const stat = allStats[i];
+                    const daysDiff = moment().diff(moment(stat.date_creation),'days');
+                    switch (daysDiff) {
+                        case 6:{
+                            stats['today-6'].new+=1;
+                            break;
+                        }
+                        case 5:{
+                            stats['today-5'].new+=1;
+                            break;
+                        }
+                        case 4:{
+                            stats['today-4'].new+=1;
+                            break;
+                        }
+                        case 3:{
+                            stats['today-3'].new+=1;
+                            break;
+                        }
+                        case 2:{
+                            stats['today-2'].new+=1;
+                            break;
+                        }
+                        case 1:{
+                            stats['today-1'].new+=1;
+                            break;
+                        }
+                        case 0:{
+                            stats['today'].new+=1;
+                            break;
+                        }
+                        default:{
+                            stats['today-6'].old+=1;
+                        }
+                    }
+                }
+                stats['today-5'].old = stats['today-6'].new + stats['today-6'].old;
+                stats['today-4'].old = stats['today-5'].new + stats['today-5'].old;
+                stats['today-3'].old = stats['today-4'].new + stats['today-4'].old;
+                stats['today-2'].old = stats['today-3'].new + stats['today-3'].old;
+                stats['today-1'].old = stats['today-2'].new + stats['today-2'].old;
+                stats['today'].old = stats['today-1'].new + stats['today-1'].old;
+                console.log(stats)
+                return res.status(200).json(stats)
             }).catch((err) => {
                 return res.status(400).json({msg: 'Something Went Wrong'})
             });

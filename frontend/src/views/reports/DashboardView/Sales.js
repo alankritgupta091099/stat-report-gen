@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState , useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
@@ -15,6 +15,11 @@ import {
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import moment from 'moment';
+import axios from 'axios';
+
+import { API_URL } from 'src/helpers/utils.js';
+import store from "src/store.js";
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -23,21 +28,52 @@ const useStyles = makeStyles(() => ({
 const Sales = ({ className, ...rest }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const [newData, setnew] = useState([])
+  const [oldData, setold] = useState([])
+
+  useEffect(() => {
+     axios({
+        method:'GET',
+        url:`${API_URL}/get/stats/statHistory`,
+        headers:{'x-auth-token': store.getState().auth.token}
+      })
+      .then((result) => {
+        setnew([
+          result.data['today-6'].new,
+          result.data['today-5'].new,
+          result.data['today-4'].new,
+          result.data['today-3'].new,
+          result.data['today-2'].new,
+          result.data['today-1'].new,
+          result.data['today'].new
+        ])
+        setold([result.data['today-6'].old,result.data['today-5'].old,result.data['today-4'].old,result.data['today-3'].old,result.data['today-2'].old,result.data['today-1'].old,result.data['today'].old])
+      }).catch((err) => {
+        console.log(err)
+      });
+  }, [])
 
   const data = {
     datasets: [
       {
         backgroundColor: colors.indigo[500],
-        data: [18, 5, 19, 27, 29, 19, 20],
-        label: 'This year'
+        data: newData,
+        label: 'New Stats'
       },
       {
         backgroundColor: colors.grey[200],
-        data: [11, 20, 12, 29, 30, 25, 13],
-        label: 'Last year'
+        data: oldData,
+        label: 'Old Stats'
       }
     ],
-    labels: ['1 Aug', '2 Aug', '3 Aug', '4 Aug', '5 Aug', '6 Aug']
+    labels: [
+      moment().subtract(6,'days').format('D MMM'),
+      moment().subtract(5,'days').format('D MMM'), 
+      moment().subtract(4,'days').format('D MMM'), 
+      moment().subtract(3,'days').format('D MMM'), 
+      moment().subtract(2,'days').format('D MMM'), 
+      moment().subtract(1,'days').format('D MMM'), 
+      moment().format('D MMM')]
   };
 
   const options = {
@@ -110,7 +146,7 @@ const Sales = ({ className, ...rest }) => {
             Last 7 days
           </Button>
         )}
-        title="Latest Sales"
+        title="Stats in Database"
       />
       <Divider />
       <CardContent>

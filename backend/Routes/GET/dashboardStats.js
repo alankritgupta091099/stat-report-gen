@@ -6,5 +6,6 @@ var models =  require('../../Models');
 router.get('/totalDocs',models.totalDocs);
 router.get('/calcRev',models.calculateRevenue);
 router.get('/totalCust',models.totalCustomers);
+router.get('/statHistory',models.StatHistory7Days);
 
 module.exports = router;

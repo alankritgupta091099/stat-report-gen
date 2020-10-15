@@ -3,7 +3,7 @@ const { fetchFollowerCount } = require('./instaFetch.js');
 const { generateReport } = require('./report.js');
 const { createUser , loginUser , getUserFromToken } = require('./user.js');
 const { fetchCustomers , editCustomer } = require('./customer.js');
-const { totalDocs , calculateRevenue , totalCustomers } = require('./dashboardStats.js');
+const { totalDocs , calculateRevenue , totalCustomers , StatHistory7Days } = require('./dashboardStats.js');
 
 module.exports = {
 
@@ -29,5 +29,6 @@ module.exports = {
     //dashboard stats
     totalDocs,
     calculateRevenue,
-    totalCustomers
+    totalCustomers,
+    StatHistory7Days
 }
