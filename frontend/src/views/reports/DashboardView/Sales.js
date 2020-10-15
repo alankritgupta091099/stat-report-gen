@@ -137,16 +137,7 @@ const Sales = ({ className, ...rest }) => {
       {...rest}
     >
       <CardHeader
-        action={(
-          <Button
-            endIcon={<ArrowDropDownIcon />}
-            size="small"
-            variant="text"
-          >
-            Last 7 days
-          </Button>
-        )}
-        title="Stats in Database"
+        title="Publisher's Database"
       />
       <Divider />
       <CardContent>
@@ -160,7 +151,7 @@ const Sales = ({ className, ...rest }) => {
           />
         </Box>
       </CardContent>
-      <Divider />
+      {/* <Divider />
       <Box
         display="flex"
         justifyContent="flex-end"
@@ -174,7 +165,7 @@ const Sales = ({ className, ...rest }) => {
         >
           Overview
         </Button>
-      </Box>
+      </Box> */}
     </Card>
   );
 };

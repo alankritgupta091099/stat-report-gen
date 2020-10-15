@@ -55,21 +55,21 @@ const items = [
     icon: UsersIcon,
     title: 'Customers'
   },
-  {
-    href: '/app/products',
-    icon: ShoppingBagIcon,
-    title: 'Products'
-  },
+  // {
+  //   href: '/app/products',
+  //   icon: ShoppingBagIcon,
+  //   title: 'Products'
+  // },
   {
     href: '/app/account',
     icon: UserIcon,
     title: 'Account'
   },
-  {
-    href: '/app/settings',
-    icon: SettingsIcon,
-    title: 'Settings'
-  },
+  // {
+  //   href: '/app/settings',
+  //   icon: SettingsIcon,
+  //   title: 'Settings'
+  // },
   // {
   //   href: '/login',
   //   icon: LockIcon,
@@ -176,7 +176,7 @@ const NavBar = (props) => {
       </Box>
       <Box
         ml={7.5}
-        mt={4}
+        mt={17}
       >
         <Button
             color="primary"
