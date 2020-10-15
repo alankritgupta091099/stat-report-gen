@@ -148,7 +148,7 @@ async function scrapStatShow(req,res,Test_btn = true, stats = {},decoded="") {
                         ]
                     })
                     let page = await browser.newPage();
-                    await page.goto(statShowURL);
+                    await page.goto(statShowURL,{waitUntil:'load'});
                     await page.waitFor('.worth_left_box');
 
                     //returns list of stats for a particular site
@@ -169,6 +169,12 @@ async function scrapStatShow(req,res,Test_btn = true, stats = {},decoded="") {
                         dailyVisitors: parseInt(list[1].replace(/,/g,"")),
                         creator: "Admin"   
                     })
+                    if(!Test_btn){
+                        statData['lastVisited']=[{
+                            visitor_id:decoded.id,
+                            visitor_time:moment(new Date(Date.now())).format("YYYY-MM-DD")
+                        }]
+                    }
                     //console.log("Scrapped data: ", statData)
                     await console.log('==> Took', Date.now() - start, 'ms to scrap data from statshow');
                     await statData
@@ -176,13 +182,22 @@ async function scrapStatShow(req,res,Test_btn = true, stats = {},decoded="") {
                         .then(()=>{console.log("Stat saved: ", statData)}) 
                         .catch((err)=>{console.log(err)})
                     if(reqTypeSingle){
-                        Test_btn ? res.status(200).json(statData) : statsToReturn=stat;                        
+                        if (Test_btn) 
+                            return res.status(200).json(statData) 
+                        else statsToReturn=statData;                        
                     }
                 }
             })
             .catch(err=>{
-                console.log(err)
-                return res.status(404).json({msg:'Something went wrong !'})
+                if(Test_btn) 
+                    return res.status(404).json({msg:'Something went wrong!!'})
+                else statsToReturn = new Stat({
+                        site_name: domain,
+                        dailyPageViews: -1,
+                        dailyVisitors: -1,
+                        creator: "User",
+                        lastVisited:[]   
+                    })
             })
     };
     reqTypeSingle ? console.log("Execution of single query completed !!"):console.log("Execution on List of URL's completed !!")

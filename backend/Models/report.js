@@ -33,7 +33,6 @@ async function generateReport(req,res) {
             console.log(format.primaryTable)
             articleDetails = await webScraper(list[i],null,false,format.secondaryTable);
             siteDetails = await scrapStatShow(list[i],null,false,format.primaryTable.stats,decoded);
-            console.log(siteDetails)
             responseData.push({
                 articleDetails , 
                 siteDetails
