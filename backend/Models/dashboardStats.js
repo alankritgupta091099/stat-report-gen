@@ -136,8 +136,8 @@ function StatHistory7Days(req,res) {
             .find({})
             .then((allStats) => {
                 for (let i = 0; i < allStats.length; i++) {
-                    const stat = allStats[i];
-                    const daysDiff = moment().diff(moment(stat.date_creation),'days');
+                    const stat = allStats[i]
+                    const daysDiff = moment().diff(moment(stat.date_creation).format("YYYY-MM-DD"),'days');
                     switch (daysDiff) {
                         case 6:{
                             stats['today-6'].new+=1;
