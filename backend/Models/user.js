@@ -10,19 +10,18 @@ module.exports = {
 
 // @route POST /post/user/reg
 // @desc Create New User
-// @access --------Pending
+// @access PRIVATE
 
 function createUser(req,res){
-    const { firstName , email , lastName , orgName , orgPosition , mobNumber , password } = req.body;
+    const { firstName , email , lastName , orgName , orgPosition , mobNumber , password , type , cost , limit , validFrom } = req.body;
 
-    if( !firstName || !email || !lastName || !orgName || !orgPosition || !mobNumber || !password){
+    if( !firstName || !email || !lastName || !orgName || !orgPosition || !mobNumber || !password || !type || !limit || !validFrom){
         return res.status(400).json({msg:'Please enter all fields'})
     }
 
     const userData= new User({ 
-        firstName , email , lastName , orgName , orgPosition , mobNumber , password 
+        firstName , email , lastName , orgName , orgPosition , mobNumber , password , accountType:type , plan: {cost , limit , validFrom}
     })
-
     User.findOne({
         email
     })

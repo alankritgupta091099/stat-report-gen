@@ -1,9 +1,13 @@
 import React , { useState , useEffect } from 'react';
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { Formik , useField , useFormikContext } from 'formik';
 import { connect } from 'react-redux';
 import Alert from '@material-ui/lab/Alert';
-import { Box , Button , Checkbox , Container, FormHelperText , Grid , Link , Snackbar , TextField , Typography , makeStyles } from '@material-ui/core';
+import { Box , Button , Checkbox , Container, FormHelperText , Grid , Link , Snackbar , TextField , Typography , makeStyles , Card , CardContent , Divider , Select , MenuItem , FormControl , InputLabel , IconButton } from '@material-ui/core';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
+import moment from "moment";
+import AddIcon from '@material-ui/icons/Add';
 
 import Page from 'src/components/Page';
 import { registerUser } from 'src/actions/authActions.js';
@@ -14,14 +18,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     height: 'auto',
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(4),
+    padding: theme.spacing(3),
   },
-  formStyle:{
-    backgroundColor: theme.palette.background.default,
-    border: '2px solid '+theme.palette.primary.main,
-    borderRadius: '15px'
-  }
+  // formControl: {
+  //   minWidth: 432,
+  // }
 }));
 
 const RegisterView = (props) => {
@@ -31,6 +32,7 @@ const RegisterView = (props) => {
   const [error, setError] = useState(false);
 
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
+  const formikVal = useFormikContext();
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -83,6 +85,8 @@ const RegisterView = (props) => {
           {props.error.msg}
         </Alert>
       </Snackbar>
+      <Card>
+      <CardContent>
         <Container maxWidth="md" className={classes.formStyle}>
           <Formik            
             initialValues={{
@@ -92,7 +96,11 @@ const RegisterView = (props) => {
               orgName:'',
               orgPosition:'',
               mobNumber:'',
-              password: ''
+              password: '',
+              type:'Trial',
+              cost:0,
+              limit:250,
+              validFrom: moment(Date.now()),
             }}
             validationSchema={
               Yup.object().shape({
@@ -106,6 +114,7 @@ const RegisterView = (props) => {
               })
             }
             onSubmit = {(values,{setSubmitting,resetForm})=>{
+              console.log(values)
               props.registerUser(values)
               resetForm({})
               setSubmitting(false);
@@ -116,6 +125,7 @@ const RegisterView = (props) => {
               handleBlur,
               handleChange,
               handleSubmit,
+              setFieldValue,
               handleReset,
               isSubmitting,
               touched,
@@ -130,13 +140,16 @@ const RegisterView = (props) => {
                     >
                       Create new account
                     </Typography>
+                    <br/>
                     <Typography
                       color="textSecondary"
                       gutterBottom
-                      variant="body2"
+                      variant="h5"
                     >
-                      Fill the following details to create a new account
+                      Personal Information
                     </Typography>
+                    <br/>
+                  <Divider/>
                   </Grid>
                   <Grid item xs={6}>
                     <TextField
@@ -166,7 +179,7 @@ const RegisterView = (props) => {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <TextField
                       error={Boolean(touched.orgName && errors.orgName)}
                       fullWidth
@@ -180,7 +193,7 @@ const RegisterView = (props) => {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <TextField
                       error={Boolean(touched.orgPosition && errors.orgPosition)}
                       fullWidth
@@ -193,8 +206,27 @@ const RegisterView = (props) => {
                       value={values.orgPosition}
                       variant="outlined"
                     />
+                  </Grid>                  
+                  <Grid item xs={12}>
+                    <br/>
+                    <Divider/>
+                    <br/>
                   </Grid>
                   <Grid item xs={12}>
+                    <Typography
+                      color="textSecondary"
+                      gutterBottom
+                      variant="h5"
+                    >
+                      Contact Information
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <br/>
+                    <Divider/>
+                    <br/>
+                  </Grid>
+                  <Grid item xs={6}>
                     <TextField
                       error={Boolean(touched.email && errors.email)}
                       fullWidth
@@ -209,7 +241,7 @@ const RegisterView = (props) => {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12}>{/*Mobile number validation including country code*/}
+                  <Grid item xs={6}>{/*Mobile number validation including country code*/}
                     <TextField
                       error={Boolean(touched.mobNumber && errors.mobNumber)} 
                       fullWidth
@@ -223,7 +255,98 @@ const RegisterView = (props) => {
                       variant="outlined"
                     />
                   </Grid>
-                  <Grid item xs={12}>{/*Add Auto generate password*/} {/*Forget password section*/}
+                  <Grid item xs={12}>
+                    <br/>
+                    <Divider/>
+                    <br/>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      color="textSecondary"
+                      gutterBottom
+                      variant="h5"
+                    >
+                      Account Information
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <br/>
+                    <Divider/>
+                    <br/>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <InputLabel id="demo-simple-select-outlined-label">Account Type</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        value={values.type}
+                        name="type"
+                        onChange={(e)=>{
+                          if(e.target.value==='Trial'){
+                            setFieldValue("cost",0)
+                            setFieldValue("limit",250)
+                          }
+                          setFieldValue("type",e.target.value)
+                        }}
+                        label="Account Type"
+                      >
+                        <MenuItem value="Trial">Trial</MenuItem>
+                        <MenuItem value="Paid">Paid</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <TextField //disable this section and set it to 0 when account type is not paid
+                        label="Cost"
+                        name="cost"
+                        onChange={handleChange}
+                        value={values.cost}
+                        variant="outlined"
+                        type="number"
+                        InputProps={{ inputProps: { min: 0} }}
+                        disabled={(values.type==='Trial')?true:false}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={6} xs={12} >
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <KeyboardDatePicker
+                        disableToolbar
+                        variant="inline"
+                        format="DD/MM/YYYY"
+                        margin="normal"
+                        label="Account Valid From"
+                        name="validFrom"
+                        value={values.validFrom}
+                        onChange={date=>setFieldValue('validFrom',moment(date))}
+                        KeyboardButtonProps = {{
+                          'aria-label': 'change date',
+                        }}
+                        inputVariant="outlined"
+                        fullWidth
+                      />
+                      </FormControl>
+                    </MuiPickersUtilsProvider>
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                  <br/>
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <TextField
+                        label="Credit Limit"
+                        name="limit"
+                        onChange={handleChange}
+                        value={values.limit}
+                        variant="outlined"
+                        type="number"
+                        InputProps={{ inputProps: { min: 0} }}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>{/*Forget password section*/}
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
                     <TextField
                       error={Boolean(touched.password && errors.password)}
                       fullWidth
@@ -233,12 +356,17 @@ const RegisterView = (props) => {
                       name="password"
                       onBlur={handleBlur}
                       onChange={handleChange}
-                      type="password"
                       value={values.password}
                       variant="outlined"
+                      InputProps={{endAdornment: <IconButton size="small" onClick={()=>{
+                        setFieldValue("password",Math.random().toString(36).slice(-8));
+                      }}><AddIcon/></IconButton>}}
                     />
+                    </FormControl>
                   </Grid>
                   <Grid item xs={12}>
+                    <br/>
+                    <br/>
                     <Button
                       color="primary"
                       disabled={isSubmitting}
@@ -255,6 +383,8 @@ const RegisterView = (props) => {
             )}
           </Formik>
         </Container>
+      </CardContent>
+      </Card>
       </Box>
     </Page>
   );

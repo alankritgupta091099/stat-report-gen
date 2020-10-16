@@ -46,17 +46,13 @@ const userSchema = new mongoose.Schema({
             type:Date,
             default:Date.now()
         },
-        validUntil:{
-            type:Date,
-            default:moment(Date.now()).add(15,'days')
+        limit:{
+            type:Number,
+            required:true
         }
     },
     coveragesScanned:{
         type:[coverageSchema]
-    },
-    docsCreated:{
-        type: Number,
-        default:0
     },
     date_created:{
         type:Date,
