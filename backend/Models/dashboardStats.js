@@ -13,11 +13,11 @@ module.exports = {
 function totalDocs(req,res) {
     try {
         User
-            .find({})
+            .find({accountType:{$ne:'Admin'}})
             .then((userList)=>{
                 var totalDocs = 0;
                 for (let i = 0; i < userList.length; i++) {
-                    totalDocs+=userList[i].docsCreated
+                    totalDocs+= userList[i].coveragesScanned.length;                    
                 }
                 return res.status(200).json(totalDocs);
             })

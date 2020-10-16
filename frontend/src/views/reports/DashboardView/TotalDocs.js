@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { FileText } from 'react-feather';
 import axios from 'axios';
+import moment from 'moment';
 
 import { API_URL } from 'src/helpers/utils.js';
 import store from "src/store.js";
@@ -61,7 +62,7 @@ const TotalDocs = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              TOTAL DOUMENTS
+              TOTAL DOUMENTS<br/><small><i> in {moment().format('MMMM')}</i></small>
             </Typography>
             <Typography
               color="textPrimary"
