@@ -131,12 +131,21 @@ function StatHistory7Days(req,res) {
                 'old':0
             },
         }
-
+        var usedInLast7Days = 0;
         Stat
             .find({})
             .then((allStats) => {
                 for (let i = 0; i < allStats.length; i++) {
+
                     const stat = allStats[i]
+                    for (let j = 0; j < stat.lastVisited.length; j++) {
+                        const element = stat.lastVisited[j];
+                        if(!moment(element.visitor_time).isBefore(moment().subtract(7,'days'))){
+                            usedInLast7Days+=1;
+                            break;
+                        }
+                    }
+
                     const daysDiff = moment().diff(moment(stat.date_creation).format("YYYY-MM-DD"),'days');
                     switch (daysDiff) {
                         case 6:{
@@ -178,8 +187,8 @@ function StatHistory7Days(req,res) {
                 stats['today-2'].old = stats['today-3'].new + stats['today-3'].old;
                 stats['today-1'].old = stats['today-2'].new + stats['today-2'].old;
                 stats['today'].old = stats['today-1'].new + stats['today-1'].old;
-                console.log(stats)
-                return res.status(200).json(stats)
+                var perc = usedInLast7Days/(stats['today'].old + stats['today'].new);
+                return res.status(200).json({stats, perc})
             }).catch((err) => {
                 return res.status(400).json({msg: 'Something Went Wrong'})
             });

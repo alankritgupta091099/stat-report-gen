@@ -11,13 +11,14 @@ import {
   Divider,
   useTheme,
   makeStyles,
-  colors
+  colors, Grid
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import moment from 'moment';
 import axios from 'axios';
 
+import StatUsage from './StatUsage.js'
 import { API_URL } from 'src/helpers/utils.js';
 import store from "src/store.js";
 
@@ -30,6 +31,7 @@ const Stats = ({ className, ...rest }) => {
   const theme = useTheme();
   const [newData, setnew] = useState([])
   const [oldData, setold] = useState([])
+  const [usage, setUsage] = useState(0)
 
   useEffect(() => {
      axios({
@@ -38,16 +40,19 @@ const Stats = ({ className, ...rest }) => {
         headers:{'x-auth-token': store.getState().auth.token}
       })
       .then((result) => {
+        var stats= result.data.stats;
+        setUsage(result.data.perc*100)
+        console.log(usage)
         setnew([
-          result.data['today-6'].new,
-          result.data['today-5'].new,
-          result.data['today-4'].new,
-          result.data['today-3'].new,
-          result.data['today-2'].new,
-          result.data['today-1'].new,
-          result.data['today'].new
+          stats['today-6'].new,
+          stats['today-5'].new,
+          stats['today-4'].new,
+          stats['today-3'].new,
+          stats['today-2'].new,
+          stats['today-1'].new,
+          stats['today'].new
         ])
-        setold([result.data['today-6'].old,result.data['today-5'].old,result.data['today-4'].old,result.data['today-3'].old,result.data['today-2'].old,result.data['today-1'].old,result.data['today'].old])
+        setold([stats['today-6'].old,stats['today-5'].old,stats['today-4'].old,stats['today-3'].old,stats['today-2'].old,stats['today-1'].old,stats['today'].old])
       }).catch((err) => {
         console.log(err)
       });
@@ -132,6 +137,17 @@ const Stats = ({ className, ...rest }) => {
   };
 
   return (
+    <Grid
+      container
+      spacing={3}
+    >
+      <Grid
+        item
+        lg={8}
+        sm={6}
+        xl={3}
+        xs={12}
+      >          
     <Card
       className={clsx(classes.root, className)}
       {...rest}
@@ -161,6 +177,17 @@ const Stats = ({ className, ...rest }) => {
         </Box>
       </CardContent>
     </Card>
+    </Grid>
+     <Grid
+        item
+        lg={4}
+        sm={6}
+        xl={3}
+        xs={12}
+      >    
+        <StatUsage used={usage}/>
+      </Grid>
+    </Grid>
   );
 };
 
