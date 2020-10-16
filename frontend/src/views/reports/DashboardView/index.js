@@ -7,7 +7,7 @@ import {
 import Page from 'src/components/Page';
 import Budget from './Budget';
 import Stats from './Stats';
-import TasksProgress from './TasksProgress';
+import TotalCoverages from './TotalCoverages';
 import TotalCustomers from './TotalCustomers';
 import TotalDocs from './TotalDocs';
 
@@ -58,7 +58,7 @@ const Dashboard = () => {
             xl={3}
             xs={12}
           >
-            <TasksProgress />
+            <TotalCoverages />
           </Grid>
           <Grid
             item

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState , useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import {
@@ -13,6 +13,11 @@ import {
   colors
 } from '@material-ui/core';
 import InsertChartIcon from '@material-ui/icons/InsertChartOutlined';
+import axios from 'axios';
+import moment from 'moment';
+
+import { API_URL } from 'src/helpers/utils.js';
+import store from "src/store.js";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -25,8 +30,22 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const TasksProgress = ({ className, ...rest }) => {
+const TotalCoverages = ({ className, ...rest }) => {
   const classes = useStyles();
+  const [coverages, setcoverages] = useState(0)
+
+  useEffect(() => {
+    axios({
+        method:'GET',
+        url:`${API_URL}/get/stats/coveragesScanned`,
+        headers:{'x-auth-token': store.getState().auth.token}
+      })
+      .then((result) => {
+        setcoverages(result.data)
+      }).catch((err) => {
+        console.log(err)
+      });
+  }, [])
 
   return (
     <Card
@@ -45,13 +64,13 @@ const TasksProgress = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              TASKS PROGRESS
+              TOTAL COVERAGES<br/><small><i> in {moment().format('MMMM')}</i></small>
             </Typography>
             <Typography
               color="textPrimary"
               variant="h3"
             >
-              75.5%
+              {coverages}
             </Typography>
           </Grid>
           <Grid item>
@@ -60,19 +79,13 @@ const TasksProgress = ({ className, ...rest }) => {
             </Avatar>
           </Grid>
         </Grid>
-        <Box mt={3}>
-          <LinearProgress
-            value={75.5}
-            variant="determinate"
-          />
-        </Box>
       </CardContent>
     </Card>
   );
 };
 
-TasksProgress.propTypes = {
+TotalCoverages.propTypes = {
   className: PropTypes.string
 };
 
-export default TasksProgress;
+export default TotalCoverages;

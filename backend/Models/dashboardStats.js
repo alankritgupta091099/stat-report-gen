@@ -6,7 +6,8 @@ module.exports = {
     totalDocs,
     calculateRevenue,
     totalCustomers,
-    StatHistory7Days
+    StatHistory7Days,
+    coveragesScanned
 }
 
 function totalDocs(req,res) {
@@ -23,6 +24,29 @@ function totalDocs(req,res) {
             .catch(()=>{
                 return res.status(400).json({msg: 'Something Went Wrong'});
             })    
+    } catch (error) {
+        return res.status(400).json({msg: 'Something Went Wrong'})
+    }
+}
+
+function coveragesScanned(req,res){
+    try {
+        var total = 0;
+        User
+            .find({accountType:{$ne:'Admin'}})
+            .then((result) => {
+                for (let i = 0; i < result.length; i++) {
+                    const user = result[i];
+                    for (let j = 0; j < user.coveragesScanned.length; j++) {
+                        const element = user.coveragesScanned[j];
+                        if(moment(element.time).month()===moment().month())
+                            total+=element.count
+                    }
+                }
+                return res.status(200).json(total)
+            }).catch((err) => {
+                return res.status(400).json({msg: 'Something Went Wrong'})        
+            });
     } catch (error) {
         return res.status(400).json({msg: 'Something Went Wrong'})
     }
