@@ -137,6 +137,15 @@ const Stats = ({ className, ...rest }) => {
       {...rest}
     >
       <CardHeader
+        action={(
+          <Button
+            size="large"
+            variant="outlined"
+            color="primary"
+          >
+            Total: {newData[6]+oldData[6]}
+          </Button>
+        )}
         title="Publisher's Database"
       />
       <Divider />
