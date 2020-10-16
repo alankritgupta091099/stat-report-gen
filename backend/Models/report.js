@@ -1,10 +1,12 @@
 const jwt = require('jsonwebtoken');
 var fs = require("fs");
+const moment = require('moment');
 
 var nodemailer = require('nodemailer');
 var { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, Header, VerticalPositionAlign, VerticalPositionRelativeFrom, Table, TableRow, WidthType, TableCell, VerticalAlign, HyperlinkRef, HyperlinkType } = require("docx");
 
 var { webScraper , scrapStatShow } =  require('./webScraper.js');
+const User = require('../DB/user.modal.js');
 
 module.exports={
     generateReport:generateReport
@@ -16,6 +18,7 @@ module.exports={
 
 async function generateReport(req,res) {
 
+    var coverageScanned = 0;
     var list = req.body.list; 
     var format = req.body.format;
     var headerImg = req.body.headerImg;
@@ -32,6 +35,8 @@ async function generateReport(req,res) {
             console.log("Report item #",i+1)
             console.log(format.primaryTable)
             articleDetails = await webScraper(list[i],null,false,format.secondaryTable);
+            if(articleDetails.articleHeadline!=="N/A")
+                coverageScanned+=1;
             siteDetails = await scrapStatShow(list[i],null,false,format.primaryTable.stats,decoded);
             responseData.push({
                 articleDetails , 
@@ -44,14 +49,14 @@ async function generateReport(req,res) {
     }
 
     console.log("All data fetched !!!")
-    docxFile(responseData,format,headerImg)
+    docxFile(responseData,format,headerImg,{coverageScanned,decoded})
 }
 
 function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const docxFile = async (data,format,headerImg) => {
+const docxFile = async (data,format,headerImg,saveToDB) => {
     var links = {};    
     var secondaryPage = [];    
     var IMAGE_BUFFER = headerImg;
@@ -281,11 +286,11 @@ const docxFile = async (data,format,headerImg) => {
     Packer.toBuffer(doc).then(buff => {
         // fs.writeFileSync("My Document.docx", buff);
         // console.log("done")
-        sendMail(buff)
+        sendMail(buff,saveToDB)
     });
 }
 
-function sendMail(buff) {
+function sendMail(buff,saveToDB) {
 
     var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -310,7 +315,19 @@ function sendMail(buff) {
         if (error) {
             console.log(error);
         } else {
-            console.log('Email sent: ' + info.response);
+            console.log('Email sent to: ' + mailOptions.to,' Info: ', info);
+            User
+                .findOne({_id:saveToDB.decoded.id})
+                .then((result) => {
+                    result.coveragesScanned.push({
+                        count:saveToDB.coverageScanned,
+                        time:moment(new Date(Date.now())).format("YYYY-MM-DD")
+                    })
+                    result.save();
+                    console.log("DB updated")
+                }).catch((err) => {
+                    console.log(err)
+                });           
         }
     });
 }

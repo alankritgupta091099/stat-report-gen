@@ -1,6 +1,8 @@
 const mongoose = require ('mongoose');
 const moment = require ('moment');
 
+const coverageSchema = new mongoose.Schema({ count: Number , time: Date },{ _id : false });
+
 const userSchema = new mongoose.Schema({
     firstName:{
         type:String,
@@ -49,7 +51,9 @@ const userSchema = new mongoose.Schema({
             default:moment(Date.now()).add(15,'days')
         }
     },
-    coveragesScanned:0,
+    coveragesScanned:{
+        type:[coverageSchema]
+    },
     docsCreated:{
         type: Number,
         default:0
