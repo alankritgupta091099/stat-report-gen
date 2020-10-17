@@ -326,6 +326,7 @@ const RegisterView = (props) => {
                           'aria-label': 'change date',
                         }}
                         inputVariant="outlined"
+                        minDate={moment()}
                         fullWidth
                       />
                       </FormControl>
