@@ -301,8 +301,8 @@ function sendMail(buff,saveToDB) {
     });
 
     var mailOptions = {
-        from: process.env.MAIL_ID,
-        to: 'alankritgupta091099@gmail.com',
+        from: `"Get Measurements" <${process.env.MAIL_ID}>`,
+        to: saveToDB.decoded.email,
         subject: 'Client Report',
         text: 'This is an automatically generated email. Download the attached file and open in Ms Word, formatting will be perfectly fine.',
         attachments : [{
