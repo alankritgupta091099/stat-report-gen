@@ -17,7 +17,12 @@ function totalDocs(req,res) {
             .then((userList)=>{
                 var totalDocs = 0;
                 for (let i = 0; i < userList.length; i++) {
-                    totalDocs+= userList[i].coveragesScanned.length;                    
+                    const user = userList[i];
+                    for (let j = 0; j < user.coveragesScanned.length; j++) {
+                        const element = user.coveragesScanned[j];
+                        if(moment(element.time).month()===moment().month())
+                            totalDocs+=1
+                    }
                 }
                 return res.status(200).json(totalDocs);
             })

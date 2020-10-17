@@ -35,11 +35,10 @@ function editCustomer(req,res) {
                 plan:{
                     cost:req.body.cost,
                     validFrom:req.body.validFrom,
-                    validUntil:req.body.validUntil
+                    limit:req.body.limit
                 }
             }, {new:true})
             .then((result) => {
-               console.log(result);
                return res.status(200).json({msg: 'User Updated'}); 
             }).catch((err) => {
                 return res.status(400).json({msg: 'Something Went Wrong'});

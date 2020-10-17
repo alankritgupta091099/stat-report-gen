@@ -36,7 +36,8 @@ const Results = ({ className, customers, ...rest }) => {
     orgPos: "Organisation Position",
     cost:0,
     validFrom: moment(Date.now()),
-    validUntil: moment(Date.now())
+    limit:0,
+    limitLeft:0
   });
   const [selectedID, setselectedID] = useState("");
   const [notification, setnotification] = useState("");
@@ -48,6 +49,11 @@ const Results = ({ className, customers, ...rest }) => {
     var customer = customerslist.find((item)=>{
       return item._id === id
     })
+    var actualCoverages = 0;
+    customer.coveragesScanned.forEach(element => {
+      if(!moment(element.time).isBefore(customer.plan.validFrom))
+        actualCoverages+=1;
+    });
     setValues({
       firstName:customer.firstName,
       lastName:customer.lastName,
@@ -58,7 +64,9 @@ const Results = ({ className, customers, ...rest }) => {
       orgPos:customer.orgPosition,
       cost:customer.plan.cost,
       validFrom:customer.plan.validFrom,
-      validUntil:customer.plan.validUntil
+      limit:customer.plan.limit,
+      limitLeft:customer.plan.limit-actualCoverages,
+      coverages:actualCoverages
     })
     setOpen(true);
   };
@@ -126,7 +134,7 @@ const Results = ({ className, customers, ...rest }) => {
         console.log(values)
         setnotification(values.email+" Updated!!")
         setNotificationOpen(true);
-        window.location.reload();
+        // window.location.reload();
         setOpen(false);
       }).catch((err) => {
         console.log(err)
@@ -182,19 +190,10 @@ const Results = ({ className, customers, ...rest }) => {
                   Name
                 </TableCell>
                 <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
                   Organisation
                 </TableCell>
                 <TableCell>
-                  Designation
-                </TableCell>
-                <TableCell>
-                  Account Type
+                  Account Status
                 </TableCell>
                 <TableCell>
                   Cost
@@ -203,14 +202,23 @@ const Results = ({ className, customers, ...rest }) => {
                   Valid From<br/><small><i>(DD/MM/YYYY)</i></small>
                 </TableCell>
                 <TableCell>
-                  Valid Uptil<br/><small><i>(DD/MM/YYYY)</i></small>
+                  Credit Limit
+                </TableCell>
+                <TableCell>
+                  Credits Left
                 </TableCell>
                 <TableCell/>
               </TableRow>
             </TableHead>
             <TableBody>
               {
-                customerslist ? customerslist.slice(page * limit, page * limit + limit).map((customer) => (
+                customerslist ? customerslist.slice(page * limit, page * limit + limit).map((customer) =>{ 
+                  var actualCoverages = 0;
+                  customer.coveragesScanned.forEach(element => {
+                    if(!moment(element.time).isBefore(customer.plan.validFrom))
+                      actualCoverages+=1;
+                  });
+                  return (
                 <TableRow
                   hover
                   key={customer._id}
@@ -226,17 +234,8 @@ const Results = ({ className, customers, ...rest }) => {
                   <TableCell>
                     {customer.firstName +" "+ customer.lastName}
                   </TableCell>
-                  <TableCell>
-                    {customer.email}
-                  </TableCell>
-                  <TableCell>
-                    {customer.mobNumber}
-                  </TableCell>
-                  <TableCell>
+                  <TableCell> 
                     {customer.orgName}
-                  </TableCell>
-                  <TableCell>
-                    {customer.orgPosition}
                   </TableCell>
                   <TableCell>
                     {customer.accountType}
@@ -248,7 +247,10 @@ const Results = ({ className, customers, ...rest }) => {
                     {moment(customer.plan.validFrom).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
-                    {moment(customer.plan.validUntil).format('DD/MM/YYYY')}
+                    {customer.plan.limit}
+                  </TableCell>
+                  <TableCell>
+                    {customer.plan.limit-actualCoverages}
                   </TableCell>
                   <TableCell>
                     <Button variant="contained" size="small" color="primary" onClick={event=>handleClickOpen(event,customer._id)}>
@@ -256,7 +258,7 @@ const Results = ({ className, customers, ...rest }) => {
                     </Button>
                   </TableCell>
                 </TableRow>
-              )) : <CircularProgress style={{position:'fixed',margin:'1% 36%'}}/>
+              )}) : <CircularProgress style={{position:'fixed',margin:'1% 36%'}}/>
               }
             </TableBody>
           </Table>
@@ -283,57 +285,17 @@ const Results = ({ className, customers, ...rest }) => {
                 title="Customer Details"
               />
               <Divider/>
+              <br/>
               <CardContent>
                 <Grid
                   container
                   spacing={3}
-                >
-                <MuiPickersUtilsProvider utils={MomentUtils}>
+                > 
                   <Grid
                     item
                     md={6}
                     xs={12}
-                  >                    
-                    <KeyboardDatePicker
-                      disableToolbar
-                      variant="inline"
-                      format="DD/MM/YYYY"
-                      margin="normal"
-                      label="Account Valid From"
-                      name="validFrom"
-                      value={values.validFrom}
-                      onChange={date=>setValues({...values,validFrom:moment(date).format()})}
-                      KeyboardButtonProps = {{
-                        'aria-label': 'change date',
-                      }}
-                    />                  
-                  </Grid>
-                  <Grid
-                    item
-                    md={6}
-                    xs={12}
-                  >                    
-                    <KeyboardDatePicker
-                      disableToolbar
-                      variant="inline"
-                      format="DD/MM/YYYY"
-                      margin="normal"
-                      label="Account Valid Until"
-                      name="validUntil"
-                      value={values.validUntil}
-                      onChange={date=>setValues({...values,validUntil:moment(date).format()})}
-                      KeyboardButtonProps = {{
-                        'aria-label': 'change date',
-                      }}
-                      minDate={moment(values.validFrom)}
-                    />                  
-                  </Grid>
-                </MuiPickersUtilsProvider>
-                  <Grid
-                    item
-                    md={6}
-                    xs={12}
-                  >                
+                  >
                     <FormControl variant="outlined" className={classes.formControl}>
                       <InputLabel id="demo-simple-select-outlined-label">Account Type</InputLabel>
                       <Select
@@ -341,8 +303,21 @@ const Results = ({ className, customers, ...rest }) => {
                         id="demo-simple-select-outlined"
                         value={values.type}
                         name="type"
-                        onChange={handleChange}
+                        onChange={(e)=>{
+                          if(e.target.value==='Trial'){
+                            setValues({
+                              ...values,
+                              cost:0,
+                              limit:250,
+                              [e.target.name]: e.target.value
+                            })                            
+                          } else setValues({
+                            ...values,
+                            [e.target.name]: e.target.value
+                          })
+                        }}
                         label="Account Type"
+                        autoFocus
                       >
                         <MenuItem value="Trial">Trial</MenuItem>
                         <MenuItem value="Paid">Paid</MenuItem>
@@ -363,16 +338,76 @@ const Results = ({ className, customers, ...rest }) => {
                         onChange={handleChange}
                         value={values.cost}
                         variant="outlined"
+                        disabled={(values.type==='Trial'||values.type==='Expired')?true:false}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid
+                    item
+                    md={6}
+                    xs={12}
+                  >                    
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <KeyboardDatePicker
+                        disableToolbar
+                        variant="inline"
+                        format="DD/MM/YYYY"
+                        margin="normal"
+                        label="Account Valid From"
+                        name="validFrom"
+                        value={values.validFrom}
+                        onChange={date=>setValues({...values,validFrom:moment(date).format()})}
+                        KeyboardButtonProps = {{
+                          'aria-label': 'change date',
+                        }}
+                        inputVariant="outlined"
+                        minDate={values.validFrom}
+                      />   
+                    </FormControl>
+                  </MuiPickersUtilsProvider> 
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                  <br/>
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <TextField
+                        label="Credit Limit"
+                        name="limit"
+                        onChange={(e)=>{
+                          setValues({
+                            ...values,
+                            [e.target.name]: e.target.value,
+                            limitLeft: e.target.value - values.coverages
+                          })
+                        }}
+                        value={values.limit}
+                        variant="outlined"
+                        type="number"
+                        InputProps={{ inputProps: { min: 0} }}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                  <br/>
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <TextField
+                        label="Credits Left"
+                        value={values.limitLeft}
+                        variant="outlined"
+                        type="number"
+                        disabled
                       />
                     </FormControl>
                   </Grid>
                 </Grid>
               </CardContent>
+              <br/>
               <Divider/>
               <CardHeader
                 subheader="Personal Information"
               />
               <Divider/>
+              <br/>
               <CardContent>                
                 <Grid
                   container
@@ -389,8 +424,7 @@ const Results = ({ className, customers, ...rest }) => {
                       name="firstName"
                       value={values.firstName}
                       onChange={handleChange}
-                      variant="outlined"
-                      autoFocus
+                      variant="outlined"                      
                     />
                   </Grid>
                   <Grid
@@ -466,6 +500,7 @@ const Results = ({ className, customers, ...rest }) => {
                   </Grid>
                 </Grid>
               </CardContent>
+              <br/>
               <Divider/>
           </form>
         </DialogContent>
