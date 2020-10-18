@@ -3,13 +3,14 @@ import { Box, Container, Card, CardContent, Typography , Grid , List , ListItem 
 import CloseIcon from '@material-ui/icons/Close';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { useDropzone } from 'react-dropzone';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import { OutTable , ExcelRenderer } from 'react-excel-renderer';
-import { saveAs } from "file-saver";
 import { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, Header, VerticalPositionAlign, VerticalPositionRelativeFrom, Table, TableRow, WidthType, TableCell, VerticalAlign, HyperlinkRef, HyperlinkType } from "docx";
 import { makeStyles } from '@material-ui/core/styles';
 
+import { SET_LIST } from "src/actions/types.js";
 import store from "src/store.js";
 import { API_URL } from 'src/helpers/utils.js';
 import Page from 'src/components/Page';
@@ -78,83 +79,9 @@ function FileDropView(props) {
   const {acceptedFiles, getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject} = useDropzone({accept:"text/csv , application/vnd.oasis.opendocument.spreadsheet , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
   const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [backdrop, setbackdrop] = useState(false)
   const [table, setTable] = useState(false)
-  const [dialog, setDialog] = useState(false);
-  const [dialogCloseBtn, setDialogCloseBtn] = useState(true);
   const [finalList, setFinalList] = useState([]);
-  const [imgHeader, setimgHeader] = useState({name:"*Nothing Selected*"})
-
-  const handleClose = () => {
-    setDialog(false);
-  };
-
-  function getBase64(file, cb) {
-      let reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = function () {
-          cb(reader.result)
-      };
-      reader.onerror = function (error) {
-          console.log('Error: ', error);
-      };
-  }
-
-  const genButton = async (format) => {
-    var IMAGE_BUFFER = "";
-
-    if(format.header){
-      if(imgHeader.size){
-        setDialog(false)
-        setbackdrop(true)
-        await getBase64(imgHeader, (result) => {
-          IMAGE_BUFFER = result.split(",")[1]
-          console.log(IMAGE_BUFFER)
-          axios({
-            method:'post',
-            url:`${API_URL}/report/gen`,
-            headers:{
-              'x-auth-token': store.getState().auth.token
-            },
-            data:{
-              list:finalList,
-              format,
-              headerImg:IMAGE_BUFFER
-            }
-          })
-          .then(res=>{        
-            setnotification(res.data.msg)        
-            setNotificationOpen(true);
-            setbackdrop(false);
-            window.location.reload();
-          })
-          .catch(err=>console.log(err))
-        });
-      } else alert("Upload header image first!")
-    } else{ 
-      setDialog(false)
-      setbackdrop(true)
-      axios({
-        method:'post',
-        url:`${API_URL}/report/gen`,
-        headers:{
-          'x-auth-token': store.getState().auth.token
-        },
-        data:{
-          list:finalList,
-          format,
-          headerImg:IMAGE_BUFFER
-        }
-      })
-      .then(res=>{        
-        setnotification(res.data.msg)        
-        setNotificationOpen(true);
-        setbackdrop(false);
-        window.location.reload();
-      })
-      .catch(err=>console.log(err))
-    }
-  }
+  const navigate = useNavigate();
 
   const files = acceptedFiles.map(file => {  
     ExcelRenderer(file, (err, resp) => {
@@ -170,6 +97,10 @@ function FileDropView(props) {
             linksKiList.push(item[0])
           });
           setFinalList(linksKiList)
+          store.dispatch({
+              type:SET_LIST,
+              payload:linksKiList
+          })
         } else {
           //error handling
         }
@@ -184,9 +115,6 @@ function FileDropView(props) {
 
   return (
     <Page title="Generate Report" >
-      <Backdrop className={classes.backdrop} open={backdrop}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
       <Container>
         <Box mt={3}>
         <Snackbar open={notificationOpen} autoHideDuration={4000} onClose={()=>setNotificationOpen(false)}>
@@ -196,7 +124,7 @@ function FileDropView(props) {
         </Snackbar>
           <Card>
             <CardContent>
-              <Typography gutterBottom variant="h1">Generate your report</Typography>
+              <Typography gutterBottom variant="h1">Generate Report</Typography>
               <div className="container">
                 <DropBox {...getRootProps({ className: 'dropzone', isDragActive, isDragAccept, isDragReject })}>{/* Later add Hover styling and others as well */}
                   <input {...getInputProps()} />
@@ -214,7 +142,7 @@ function FileDropView(props) {
                                 <Typography variant="subtitle1" color="textSecondary">{files}</Typography>
                               </Typography>
                               <br/>
-                              <Button variant="contained" color="primary" disableElevation onClick={()=>setDialog(true)}>
+                              <Button variant="contained" color="primary" disableElevation onClick={()=>navigate('/app/report-gen/format')}>
                                 Select Formating Option
                               </Button>
                             </>
@@ -253,20 +181,6 @@ function FileDropView(props) {
           </Card>
         </Box>
       </Container>
-      <Dialog fullScreen open={dialog} onClose={handleClose} TransitionComponent={Transition}>
-        <AppBar>
-          <Toolbar>
-          {
-            dialogCloseBtn ? <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-              <CloseIcon />
-            </IconButton> : ""
-          }            
-          </Toolbar>
-        </AppBar>
-        <br/><br/>
-        <br/><br/>
-        <FormatForm genButton={genButton} imgHeader={imgHeader} setimgHeader={setimgHeader}/>
-      </Dialog>
     </Page>
   );
 }

@@ -2,13 +2,17 @@ import React, { useState , useEffect , useRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, TextField, makeStyles , Typography, Paper, Tabs, Tab , useTheme , Switch , Tooltip , IconButton , Radio, RadioGroup, FormControlLabel, FormControl, FormLabel , CardActions , Fab } from '@material-ui/core';
+import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, TextField, makeStyles , Typography, Paper, Tabs, Tab , useTheme , Switch , Tooltip , IconButton , Radio, RadioGroup, FormControlLabel, FormControl, FormLabel , CardActions , Fab  , Backdrop , CircularProgress , Snackbar} from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import SwipeableViews from 'react-swipeable-views';
-
+import axios from 'axios';
 import InfoIcon from '@material-ui/icons/Info';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import ClearIcon from '@material-ui/icons/Clear';
+import { useNavigate , Navigate } from 'react-router-dom';
 
+import store from "src/store.js";
+import { API_URL } from 'src/helpers/utils.js';
 import Page from 'src/components/Page';
 
 function TabPanel(props) {
@@ -45,7 +49,11 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '100%',
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2)
-  }
+  },
+   backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 const FormatForm = (props) => {
@@ -67,13 +75,100 @@ const FormatForm = (props) => {
     secondaryTable:true,
     header: true
   })
-  //const [Header, setHeader] = useState(format.header)
 
+  const [backdrop, setbackdrop] = useState(false)
+  const [imgHeader, setimgHeader] = useState({name:"*Nothing Selected*"})
+  const [notification, setnotification] = useState("");
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const navigate = useNavigate()
+
+  const genButton = async () => {
+    var IMAGE_BUFFER = "";
+
+    if(format.header){
+      if(imgHeader.size){
+        setbackdrop(true)
+        await getBase64(imgHeader, (result) => {
+          IMAGE_BUFFER = result.split(",")[1]
+          axios({
+            method:'post',
+            url:`${API_URL}/report/gen`,
+            headers:{
+              'x-auth-token': store.getState().auth.token
+            },
+            data:{
+              list:store.getState().auth.list,
+              format,
+              headerImg:IMAGE_BUFFER
+            }
+          })
+          .then(res=>{        
+            setnotification(res.data.msg)        
+            setNotificationOpen(true);
+            setbackdrop(false);
+            setTimeout(() => {
+              navigate('/app/report-gen')
+            }, 4000);
+          })
+          .catch(err=>console.log(err))
+        });
+      } else alert("Upload header image first!")
+    } else {
+      setbackdrop(true)
+      axios({
+        method:'post',
+        url:`${API_URL}/report/gen`,
+        headers:{
+          'x-auth-token': store.getState().auth.token
+        },
+        data:{
+          list:store.getState().auth.list,
+          format,
+          headerImg:IMAGE_BUFFER
+        }
+      })
+      .then(res=>{        
+        setnotification(res.data.msg)        
+        setNotificationOpen(true);
+        setbackdrop(false);
+        setTimeout(() => {
+          navigate('/app/report-gen')
+        }, 4000);
+      })
+      .catch(err=>console.log(err))
+    }
+  }
+
+  function getBase64(file, cb) {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function () {
+        cb(reader.result)
+    };
+    reader.onerror = function (error) {
+        console.log('Error: ', error);
+    };
+  }
+
+  useEffect(() => {
+    setnotification("Number of links in the list: "+store.getState().auth.list.length)
+    setNotificationOpen(true)
+  }, [])
+
+  if(store.getState().auth.list.length!=0)
   return (
     <Page
       className={classes.root}
       title="Account"
     >
+    <Backdrop className={classes.backdrop} open={backdrop}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
+    <Snackbar open={notificationOpen} autoHideDuration={4000} onClose={()=>setNotificationOpen(false)}>
+      <Alert onClose={()=>setNotificationOpen(false)} elevation={6} variant="filled" severity="success">
+        {notification}
+      </Alert>
+    </Snackbar>
       <Container maxWidth="lg">
         <form
           autoComplete="off"
@@ -81,12 +176,10 @@ const FormatForm = (props) => {
           className={clsx(classes.root, className)}
           {...rest}
         >
-          <Card>
-            <CardHeader
-              title="Format your Report"
-            />
-            <Divider />            
+          <Card>      
             <CardContent>
+              <Typography gutterBottom variant="h3">Generate Report > <small>Format</small> </Typography>
+              <Divider/>              
               <Typography variant="body2">
                 Upload Header Logo
                 <Tooltip title={infoMEssages.headerLogoOption} placement="top">
@@ -98,7 +191,7 @@ const FormatForm = (props) => {
                   checked={format.header}
                   onChange={()=>{
                     if(format.header===false){
-                      props.setimgHeader({name:"*Nothing Selected*"})
+                      setimgHeader({name:"*Nothing Selected*"})
                     }
                     setFormat(prevState=>{
                       prevState.header=!prevState.header
@@ -131,11 +224,11 @@ const FormatForm = (props) => {
                         type="file"
                         accept="image/*"
                         style={{ display: "none" }}
-                        onChange={(e)=>props.setimgHeader(e.target.files[0])}
+                        onChange={(e)=>setimgHeader(e.target.files[0])}
                       />
                     </IconButton>
                     <Typography variant="caption">
-                      <i> {props.imgHeader.name}</i>
+                      <i> {imgHeader.name}</i>
                     </Typography>
                     </Grid>
                   </Grid>
@@ -374,7 +467,7 @@ const FormatForm = (props) => {
               }
             </CardContent>
             <CardActions style={{padding:"2rem 18rem"}}>
-                <Button variant="contained" color="primary" fullWidth size="large" onClick={()=>props.genButton(format)}>
+                <Button variant="contained" color="primary" fullWidth size="large" onClick={()=>genButton()}>
                   Generate Report
                 </Button>
             </CardActions>
@@ -382,7 +475,8 @@ const FormatForm = (props) => {
         </form>
       </Container>
     </Page>
-  );
+  ) 
+  else return <Navigate to="/app/report-gen"/>
 };
 
 FormatForm.propTypes = {

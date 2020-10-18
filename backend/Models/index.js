@@ -2,7 +2,7 @@ const { webScraper , scrapStatShow } = require('./webScraper.js');
 const { fetchFollowerCount } = require('./instaFetch.js');
 const { generateReport } = require('./report.js');
 const { createUser , loginUser , getUserFromToken } = require('./user.js');
-const { fetchCustomers , editCustomer } = require('./customer.js');
+const { fetchCustomers , editCustomer , fetchCustomerHistory } = require('./customer.js');
 const { totalDocs , calculateRevenue , totalCustomers , StatHistory7Days , coveragesScanned } = require('./dashboardStats.js');
 
 module.exports = {
@@ -31,5 +31,6 @@ module.exports = {
     calculateRevenue,
     totalCustomers,
     StatHistory7Days,
-    coveragesScanned
+    coveragesScanned,
+    fetchCustomerHistory
 }

@@ -2,18 +2,8 @@ import React, { useState , useEffect , useRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  TextField,
-  makeStyles
-} from '@material-ui/core';
-
+import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField, makeStyles } from '@material-ui/core';
+import moment from 'moment';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -30,26 +20,25 @@ const ProfileDetails = (props) => {
     email: "Email",
     phone: "Mobile Number",
     type: "Account Type",
-    //add account validity
+    cost: 0,
+    validFrom: moment(),
+    limit:0,
+    limitLeft:0
   });
-
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
 
   useEffect(() => {
     userProp.current=props.user;
-    console.log(userProp.current)
     if(userProp.current){
       setValues({
         firstName: props.user.firstName,
         lastName: props.user.lastName,
         email: props.user.email,
         phone: props.user.mobNumber,
-        type: props.user.accountType
+        type: props.user.accountType,
+        cost: props.user.plan.cost,
+        validFrom: moment(props.user.plan.validFrom).format('DD/MM/YYYY'),
+        limit: props.user.plan.limit,
+        limitLeft: props.user.plan.limit - props.user.coveragesScanned.length
       })    
     }    
   }, [props.user])
@@ -142,6 +131,81 @@ const ProfileDetails = (props) => {
                 label="Account Type"
                 name="type"
                 value={values.type}
+                variant="outlined"
+                disabled
+                id="outlined-disabled"
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+      <br/>
+      <Card>
+        <CardHeader
+          subheader="The information can not be edited"
+          title="Plan"
+        />
+        <Divider />
+        <CardContent>
+          <Grid
+            container
+            spacing={3}
+          >
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
+                label="Cost"
+                name="cost"
+                value={values.cost}
+                variant="outlined"
+                disabled
+                id="outlined-disabled"
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
+                label="Valid From"
+                name="validFrom"
+                value={values.validFrom}
+                variant="outlined"
+                disabled
+                id="outlined-disabled"
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
+                label="Credit Limit"
+                name="limit"
+                value={values.limit}
+                variant="outlined"
+                disabled
+                id="outlined-disabled"
+              />
+            </Grid>
+            <Grid
+              item
+              md={6}
+              xs={12}
+            >
+              <TextField
+                fullWidth
+                label="Credits Left"
+                name="limitLeft"
+                value={values.limitLeft}
                 variant="outlined"
                 disabled
                 id="outlined-disabled"

@@ -15,3 +15,6 @@ export const CLEAR_ERRORS = "CLEAR_ERRORS";
 //Notification
 export const GET_NOTIFICATION = "GET_NOTIFICATION";
 export const CLEAR_NOTIFICATION = "CLEAR_NOTIFICATION";
+
+//Set List
+export const SET_LIST = "SET_LIST";

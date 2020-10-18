@@ -6,14 +6,16 @@ import {
     LOGIN_FAIL , 
     LOGOUT_SUCCESS , 
     REGISTER_SUCCESS , 
-    REGISTER_FAIL  
+    REGISTER_FAIL,
+    SET_LIST
 } from "../actions/types.js";
 
 const initialState={
     token: localStorage.getItem('user-token'),
     isAuthenticated: null,
     isLoading: false,
-    user: null
+    user: null,
+    list:[]
 }
 
 export default function( state = initialState , action ) {
@@ -55,6 +57,11 @@ export default function( state = initialState , action ) {
                 isAuthenticated:false,
                 isLoading:false
             };
+        case SET_LIST:
+            return{
+                ...state,
+                list:action.payload
+            }
         default:
             return state;
     }

@@ -9,6 +9,7 @@ import {
   Card,
   CardActions,
   CardContent,
+  CardFooter,
   Divider,
   Typography,
   makeStyles
@@ -19,7 +20,11 @@ const useStyles = makeStyles(() => ({
   avatar: {
     height: 100,
     width: 100
-  }
+  },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+  },
 }));
 
 const Profile = (props) => {
@@ -83,6 +88,12 @@ const Profile = (props) => {
           </Typography>
         </Box>
       </CardContent>
+      <CardActions>
+        <Button href="/app/account/history" color="primary" 
+          className={clsx(classes.expand)}>
+          Check History
+        </Button>
+      </CardActions>
     </Card>
   );
 };

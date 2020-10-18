@@ -321,7 +321,7 @@ function sendMail(buff,saveToDB) {
                 .then((result) => {
                     result.coveragesScanned.push({
                         count:saveToDB.coverageScanned,
-                        time:moment(new Date(Date.now())).format("YYYY-MM-DD")
+                        time:moment(new Date(Date.now()))
                     })
                     result.save();
                     console.log("DB updated")

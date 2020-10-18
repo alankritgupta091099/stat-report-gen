@@ -2,7 +2,8 @@ const User = require('../DB/user.modal.js');
 
 module.exports = {
     fetchCustomers,
-    editCustomer
+    editCustomer,
+    fetchCustomerHistory
 }
 
 function fetchCustomers (req,res) {
@@ -40,6 +41,21 @@ function editCustomer(req,res) {
             }, {new:true})
             .then((result) => {
                return res.status(200).json({msg: 'User Updated'}); 
+            }).catch((err) => {
+                return res.status(400).json({msg: 'Something Went Wrong'});
+            });
+    } catch (error) {
+        return res.status(400).json({msg: 'Something Went Wrong'})
+    }
+}
+
+function fetchCustomerHistory (req,res) {
+    try {
+        User
+            .findOne({_id:req.params.id})
+            .select('-password')
+            .then((user) => {
+                return res.status(200).json(user.coveragesScanned);
             }).catch((err) => {
                 return res.status(400).json({msg: 'Something Went Wrong'});
             });

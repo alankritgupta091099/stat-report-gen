@@ -217,6 +217,7 @@ const Results = ({ className, customers, ...rest }) => {
                   customer.coveragesScanned.forEach(element => {
                     if(!moment(element.time).isBefore(customer.plan.validFrom))
                       actualCoverages+=1;
+                    console.log(customer.coveragesScanned)
                   });
                   return (
                 <TableRow
