@@ -39,7 +39,7 @@ const LoginView = (props) => {
       setTimeout(() => {
         setnotification("");
         props.clearNotifications();
-        navigate('/app/dashboard', { replace: true });
+        navigate('/app/report-gen', { replace: true });
       }, 900);
     }
   }, [props.notification])

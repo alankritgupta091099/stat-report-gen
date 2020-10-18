@@ -134,7 +134,7 @@ const Results = ({ className, customers, ...rest }) => {
         console.log(values)
         setnotification(values.email+" Updated!!")
         setNotificationOpen(true);
-        // window.location.reload();
+        window.location.reload();
         setOpen(false);
       }).catch((err) => {
         console.log(err)

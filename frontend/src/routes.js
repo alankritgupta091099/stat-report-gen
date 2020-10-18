@@ -25,8 +25,6 @@ const routes = [
       { path: 'report-gen', element: <PrivateRoute component={FileDropView}/> },
       { path: 'customers', element: <PrivateRoute component={CustomerListView}/> },
       { path: 'dashboard', element: <PrivateRoute component={DashboardView}/> },
-      // { path: 'products', element: <PrivateRoute component={ProductListView}/> },
-      // { path: 'settings', element: <PrivateRoute component={SettingsView}/> },
       { path: '/', element: <Navigate to="/404" /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]

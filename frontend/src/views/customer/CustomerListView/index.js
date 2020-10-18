@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Container,
-  makeStyles,
-} from '@material-ui/core';
+import React, { useState , useEffect , useRef } from 'react';
+import { Box, Container, makeStyles } from '@material-ui/core';
+import { connect } from 'react-redux';
+
 import Page from 'src/components/Page';
 import Results from './Results';
 import Toolbar from './Toolbar';
+import Unauthorized from 'src/views/errors/unauthorized.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,9 +16,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const CustomerListView = () => {
+const CustomerListView = (props) => {
   const classes = useStyles();
-  //Need to make searchbar active
+  const [user, setUser] = useState("")
+  const userProp = useRef(props.user)
+
+  useEffect(() => {    
+    userProp.current=props.user;    
+    if(userProp.current){
+      setUser(userProp.current.accountType)
+    }
+  }, [props.user])
+
+  if(userProp.current && userProp.current.accountType=="Admin")
   return (
     <Page
       className={classes.root}
@@ -32,7 +41,12 @@ const CustomerListView = () => {
         </Box>
       </Container>
     </Page>
-  );
+  ) 
+  else return <Unauthorized/>
 };
 
-export default CustomerListView;
+const mapStateToProps = state => ({
+  user:state.auth.user
+})
+
+export default connect(mapStateToProps,null)(CustomerListView);

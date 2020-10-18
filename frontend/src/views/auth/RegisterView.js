@@ -1,4 +1,4 @@
-import React , { useState , useEffect } from 'react';
+import React , { useState , useEffect , useRef } from 'react';
 import * as Yup from 'yup';
 import { Formik , useField , useFormikContext } from 'formik';
 import { connect } from 'react-redux';
@@ -13,6 +13,7 @@ import Page from 'src/components/Page';
 import { registerUser } from 'src/actions/authActions.js';
 import { clearNotifications } from 'src/actions/notificationActions.js';
 import { clearErrors } from 'src/actions/errorActions.js';
+import Unauthorized from 'src/views/errors/unauthorized.js'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,9 +31,19 @@ const RegisterView = (props) => {
   const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [error, setError] = useState(false);
+  const [user, setUser] = useState("")
 
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
   const formikVal = useFormikContext();
+
+  const userProp = useRef(props.user)
+
+  useEffect(() => {    
+    userProp.current=props.user;    
+    if(userProp.current){
+      setUser(userProp.current.accountType)
+    }
+  }, [props.user])
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -64,6 +75,7 @@ const RegisterView = (props) => {
     }
   }, [props.error])
 
+  if(userProp.current && userProp.current.accountType=="Admin")
   return (
     <Page
       className={classes.root}
@@ -387,14 +399,14 @@ const RegisterView = (props) => {
       </CardContent>
       </Card>
       </Box>
-    </Page>
-  );
+    </Page>) 
+  else return <Unauthorized/>  
 };
 
 const mapStateToProps = state => ({
   notification:state.notification,
-  error:state.error
+  error:state.error,
+  user:state.auth.user
 })
-
 
 export default connect(mapStateToProps, { registerUser , clearNotifications , clearErrors })(RegisterView);

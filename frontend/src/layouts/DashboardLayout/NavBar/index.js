@@ -28,61 +28,6 @@ import {
 import NavItem from './NavItem';
 import { connect } from 'react-redux';
 
-// const user = {
-//   avatar: 'A',
-//   orgName: 'Organisation Name',
-//   name: 'Name'
-// };
-
-const items = [
-  {
-    href: '/app/dashboard',
-    icon: BarChartIcon,
-    title: 'Dashboard'
-  },
-  {
-    href:'/app/report-gen',
-    icon: FilePlusIcon,
-    title: 'Generate Report'
-  },
-  {
-    href: '/app/register-new',
-    icon: UserPlusIcon,
-    title: 'Create New User'
-  },
-  {
-    href: '/app/customers',
-    icon: UsersIcon,
-    title: 'Customers'
-  },
-  // {
-  //   href: '/app/products',
-  //   icon: ShoppingBagIcon,
-  //   title: 'Products'
-  // },
-  {
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Account'
-  },
-  // {
-  //   href: '/app/settings',
-  //   icon: SettingsIcon,
-  //   title: 'Settings'
-  // },
-  // {
-  //   href: '/login',
-  //   icon: LockIcon,
-  //   title: 'Login'
-  // }
-  // ,
-  // {
-  //   href: '/404',
-  //   icon: AlertCircleIcon,
-  //   title: 'Error'
-  // }
-];
-
 const useStyles = makeStyles(() => ({
   mobileDrawer: {
     width: 256
@@ -111,6 +56,19 @@ const NavBar = (props) => {
     name: 'Name'
   });
 
+  const [items, setitems] = useState([  
+    {
+      href:'/app/report-gen',
+      icon: FilePlusIcon,
+      title: 'Generate Report'
+    },
+    {
+      href: '/app/account',
+      icon: UserIcon,
+      title: 'Account'
+    },
+  ])
+
   useEffect(() => {
     if (openMobile && onMobileClose) {
       onMobileClose();
@@ -118,13 +76,39 @@ const NavBar = (props) => {
   }, [location.pathname]);
 
   useEffect(() => {    
-    userProp.current=props.user;
+    userProp.current=props.user;    
     if(userProp.current){
       setUser({
         avatar: userProp.current.firstName.charAt(0),
         orgName: userProp.current.orgName,
         name: userProp.current.firstName+" "+userProp.current.lastName
-      })        
+      })
+      if(userProp.current.accountType==="Admin")
+        setitems([{
+        href: '/app/dashboard',
+        icon: BarChartIcon,
+        title: 'Dashboard'
+      },
+      {
+        href: '/app/register-new',
+        icon: UserPlusIcon,
+        title: 'Create New User'
+      },
+      {
+        href: '/app/customers',
+        icon: UsersIcon,
+        title: 'Customers'
+      },
+      {
+        href:'/app/report-gen',
+        icon: FilePlusIcon,
+        title: 'Generate Report'
+      },
+      {
+        href: '/app/account',
+        icon: UserIcon,
+        title: 'Account'
+      }])
     }
   }, [props.user])
 
