@@ -2,7 +2,7 @@ import React, { useState , useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Avatar, Box, Button, Card, Checkbox, TextField, TableContainer, Table, TableBody, TableCell, TableHead, TablePagination, TableRow,  Typography, makeStyles , CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, CardContent, CardHeader, Grid ,Divider, FormControl, InputLabel, Select, MenuItem , Snackbar} from '@material-ui/core';
+import { Avatar, Box, Button, Card, Checkbox, TextField, TableContainer, Table, TableBody, TableCell, TableHead, TablePagination, TableRow,  Typography, makeStyles , CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, CardContent , DialogTitle , CardHeader, Grid ,Divider, FormControl, InputLabel, Select, MenuItem , Snackbar , Container , Paper} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
@@ -43,6 +43,9 @@ const Results = ({ className, customers, ...rest }) => {
   const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [error, setError] = useState(false);
+  const [historyDialog, sethistoryDialog] = useState(false)
+  const [history, sethistory] = useState([])
+  const [validfrom, setvalidfrom] = useState(new Date())
 
   const handleClickOpen = ( event, id) => {
     setselectedID(id)
@@ -65,8 +68,18 @@ const Results = ({ className, customers, ...rest }) => {
     setOpen(true);
   };
 
+  const handleHistoryclickOpen = (id) => {
+    var customer = customerslist.find((item)=>{
+      return item._id === id
+    })
+    sethistory(customer.coveragesScanned)
+    setvalidfrom(customer.plan.validFrom)
+    sethistoryDialog(true)
+  }
+
   const handleClose = () => {
     setOpen(false);
+    sethistoryDialog(false);
   };
 
   const handleChange = (event) => {
@@ -202,6 +215,7 @@ const Results = ({ className, customers, ...rest }) => {
                   Credits Left
                 </TableCell>
                 <TableCell/>
+                <TableCell/>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -240,6 +254,11 @@ const Results = ({ className, customers, ...rest }) => {
                   </TableCell>
                   <TableCell>
                     {customer.plan.limitLeft}
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="outlined" size="small" color="primary" onClick={event=>handleHistoryclickOpen(customer._id)} >
+                      History
+                    </Button>
                   </TableCell>
                   <TableCell>
                     <Button variant="contained" size="small" color="primary" onClick={event=>handleClickOpen(event,customer._id)}>
@@ -498,6 +517,60 @@ const Results = ({ className, customers, ...rest }) => {
           </Button>
           <Button onClick={handleSubmit} color="primary">
             Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+    <div>
+       <Dialog
+        maxWidth={"xl"}
+        fullWidth={true}
+        open={historyDialog}
+        onClose={handleClose}
+        scroll={'paper'}
+      >
+        <DialogTitle id="scroll-dialog-title">User History</DialogTitle>
+        <DialogContent dividers={'paper'}>
+          <TableContainer component={Paper}>
+              <Table stickyHeader>
+                  <TableHead>
+                  <TableRow>
+                      <TableCell>Links Requested</TableCell>
+                      <TableCell>Links Generated</TableCell>
+                      <TableCell>Mailing Date</TableCell>
+                      <TableCell>Mailing Time</TableCell>                            
+                  </TableRow>
+                  </TableHead>
+                  <TableBody>
+                  {/* Add search bar here */}
+                  { history.length === 0 ? <h1>No Data to show</h1> : history.map((row) => (
+                      (!moment(row.time).isBefore(validfrom)) ? <TableRow>
+                          <TableCell component="th" scope="row">
+                              {row.listLength}
+                          </TableCell>
+                          <TableCell component="th" scope="row">
+                              {row.count}
+                          </TableCell>
+                          <TableCell>{moment(row.time).format('DD MMM YYYY')}</TableCell>
+                          <TableCell>{moment(row.time).format('LT')}</TableCell>
+                      </TableRow> : <TableRow>
+                          <TableCell component="th" scope="row">
+                              <i>(Old)</i> {row.listLength}
+                          </TableCell>
+                          <TableCell component="th" scope="row">
+                              {row.count}
+                          </TableCell>
+                          <TableCell>{moment(row.time).format('DD MMM YYYY')}</TableCell>
+                          <TableCell>{moment(row.time).format('LT')}</TableCell>
+                      </TableRow>
+                  ))}
+                  </TableBody>
+              </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

@@ -43,7 +43,7 @@ function editCustomer(req,res) {//limitLeft set to 0 after reset account
                 result.plan = {
                     cost:req.body.cost,
                     validFrom:req.body.validFrom,
-                    limitLeft:result.plan.limit-count,
+                    limitLeft:req.body.limit-count,
                     limit:req.body.limit,
                 }
                 result.save();
@@ -62,7 +62,12 @@ function fetchCustomerHistory (req,res) {
             .findOne({_id:req.params.id})
             .select('-password')
             .then((user) => {
-                return res.status(200).json(user.coveragesScanned);
+                var arrToSend = [];
+                user.coveragesScanned.forEach(coverage => {
+                    if(!moment(coverage.time).isBefore(user.plan.validFrom))
+                        arrToSend.push(coverage)
+                });
+                return res.status(200).json(arrToSend);
             }).catch((err) => {
                 return res.status(400).json({msg: 'Something Went Wrong'});
             });
