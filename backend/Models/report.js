@@ -49,7 +49,8 @@ async function generateReport(req,res) {
     }
 
     console.log("All data fetched !!!")
-    docxFile(responseData,format,headerImg,{coverageScanned,decoded})
+    var listLength = list.length;
+    docxFile(responseData,format,headerImg,{coverageScanned,decoded, listLength})
 }
 
 function capitalize(string) {
@@ -320,6 +321,7 @@ function sendMail(buff,saveToDB) {
                 .findOne({_id:saveToDB.decoded.id})
                 .then((result) => {
                     result.coveragesScanned.push({
+                        listLength:saveToDB.listLength,
                         count:saveToDB.coverageScanned,
                         time:moment(new Date(Date.now()))
                     })

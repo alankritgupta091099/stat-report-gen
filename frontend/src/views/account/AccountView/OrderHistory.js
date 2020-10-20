@@ -47,6 +47,7 @@ function OrderHistory(props) {
                             <Table className={classes.table} aria-label="simple table">
                                 <TableHead>
                                 <TableRow>
+                                    <TableCell>Links Requested</TableCell>
                                     <TableCell>Links Generated</TableCell>
                                     <TableCell>Mailing Date</TableCell>
                                     <TableCell>Mailing Time</TableCell>                            
@@ -56,10 +57,13 @@ function OrderHistory(props) {
                                 {history.map((row) => (
                                     <TableRow>
                                         <TableCell component="th" scope="row">
+                                            {row.listLength}
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
                                             {row.count}
                                         </TableCell>
                                         <TableCell>{moment(row.time).format('DD MMM YYYY')}</TableCell>
-                                        <TableCell>{moment(row.time).format('LTS')}</TableCell>
+                                        <TableCell>{moment(row.time).format('LT')}</TableCell>
                                     </TableRow>
                                 ))}
                                 </TableBody>

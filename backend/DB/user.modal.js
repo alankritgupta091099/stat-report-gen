@@ -1,7 +1,7 @@
 const mongoose = require ('mongoose');
 const moment = require ('moment');
 
-const coverageSchema = new mongoose.Schema({ count: Number , time: Date },{ _id : false });
+const coverageSchema = new mongoose.Schema({ listLength: Number, count: Number , time: Date },{ _id : false });
 
 const userSchema = new mongoose.Schema({
     firstName:{
