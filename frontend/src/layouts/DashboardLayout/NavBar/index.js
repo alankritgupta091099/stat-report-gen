@@ -1,29 +1,9 @@
 import React, { useEffect , useRef , useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  Avatar,
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  Hidden,
-  List,
-  Typography,
-  makeStyles
-} from '@material-ui/core';
-import {
-  AlertCircle as AlertCircleIcon,
-  BarChart as BarChartIcon,
-  FilePlus as FilePlusIcon,
-  Lock as LockIcon,
-  LogOut as LogOutIcon,
-  Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
-  User as UserIcon,
-  UserPlus as UserPlusIcon,
-  Users as UsersIcon
-} from 'react-feather';
+import { Avatar, Box, Button, Divider, Drawer, Hidden, List, Typography, makeStyles } from '@material-ui/core';
+import { BarChart as BarChartIcon, FilePlus as FilePlusIcon, LogOut as LogOutIcon, User as UserIcon, UserPlus as UserPlusIcon, Users as UsersIcon } from 'react-feather';
+import Alert from '@material-ui/lab/Alert';
 
 import NavItem from './NavItem';
 import { connect } from 'react-redux';
@@ -53,8 +33,12 @@ const NavBar = (props) => {
   const [user, setUser] = useState({
     avatar: 'A',
     orgName: 'Organisation Name',
-    name: 'Name'
+    name: 'Name',
+    limitLeft:0,
+    limit:0,
+    type:'Trial'
   });
+  const [sev, setsev] = useState("error")
 
   const [items, setitems] = useState([  
     {
@@ -76,13 +60,24 @@ const NavBar = (props) => {
   }, [location.pathname]);
 
   useEffect(() => {    
-    userProp.current=props.user;    
+    userProp.current=props.user;
     if(userProp.current){
       setUser({
         avatar: userProp.current.firstName.charAt(0),
         orgName: userProp.current.orgName,
-        name: userProp.current.firstName+" "+userProp.current.lastName
+        name: userProp.current.firstName+" "+userProp.current.lastName,        
+        limit: userProp.current.plan.limit,
+        type: userProp.current.accountType,
+        limitLeft: userProp.current.plan.limitLeft 
+        ////////////////////////////////////////////disable user to create report if credits expire
       })
+
+      if(userProp.current.plan.limitLeft<250)
+        setsev("warning")
+      else if(userProp.current.plan.limitLeft<=50)
+        setsev("error")
+      else setsev("success")
+
       if(userProp.current.accountType==="Admin")
         setitems([{
         href: '/app/dashboard',
@@ -108,7 +103,7 @@ const NavBar = (props) => {
         href: '/app/account',
         icon: UserIcon,
         title: 'Account'
-      }])
+      }])      
     }
   }, [props.user])
 
@@ -158,9 +153,33 @@ const NavBar = (props) => {
           ))}
         </List>
       </Box>
+      <Divider/>
+      <Box m={2}>
+        <Alert severity={sev}>
+        <Typography
+          color="textSecondary"
+          variant="body2"
+        >
+        <strong>Account Type:</strong> <i>{user.type}</i>
+        </Typography>
+        <Typography
+          color="textSecondary"
+          variant="body2"
+        >
+        <strong>Credit Limit: </strong>{user.limit}
+        </Typography>
+        <Typography
+          color="textSecondary"
+          variant="body2"
+        >
+        <strong>Credits Left: </strong>{user.limitLeft}
+        </Typography>
+      </Alert>
+      </Box>
+      <Divider/>
       <Box
         ml={7.5}
-        mt={17}
+        mt={3}
       >
         <Button
             color="primary"
@@ -170,6 +189,7 @@ const NavBar = (props) => {
             href="/"
             startIcon={<LogOutIcon/>}
             variant="outlined"
+            ml={7.5}
           >
             &nbsp;Logout
           </Button>

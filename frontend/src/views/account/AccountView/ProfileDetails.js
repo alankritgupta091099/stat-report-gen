@@ -38,7 +38,7 @@ const ProfileDetails = (props) => {
         cost: props.user.plan.cost,
         validFrom: moment(props.user.plan.validFrom).format('DD/MM/YYYY'),
         limit: props.user.plan.limit,
-        limitLeft: props.user.plan.limit - props.user.coveragesScanned.length
+        limitLeft: props.user.plan.limitLeft
       })    
     }    
   }, [props.user])

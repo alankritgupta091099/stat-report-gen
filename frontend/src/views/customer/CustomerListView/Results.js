@@ -49,11 +49,6 @@ const Results = ({ className, customers, ...rest }) => {
     var customer = customerslist.find((item)=>{
       return item._id === id
     })
-    var actualCoverages = 0;
-    customer.coveragesScanned.forEach(element => {
-      if(!moment(element.time).isBefore(customer.plan.validFrom))
-        actualCoverages+=1;
-    });
     setValues({
       firstName:customer.firstName,
       lastName:customer.lastName,
@@ -65,8 +60,7 @@ const Results = ({ className, customers, ...rest }) => {
       cost:customer.plan.cost,
       validFrom:customer.plan.validFrom,
       limit:customer.plan.limit,
-      limitLeft:customer.plan.limit-actualCoverages,
-      coverages:actualCoverages
+      limitLeft:customer.plan.limitLeft
     })
     setOpen(true);
   };
@@ -212,13 +206,7 @@ const Results = ({ className, customers, ...rest }) => {
             </TableHead>
             <TableBody>
               {
-                customerslist ? customerslist.slice(page * limit, page * limit + limit).map((customer) =>{ 
-                  var actualCoverages = 0;
-                  customer.coveragesScanned.forEach(element => {
-                    if(!moment(element.time).isBefore(customer.plan.validFrom))
-                      actualCoverages+=1;
-                    console.log(customer.coveragesScanned)
-                  });
+                customerslist ? customerslist.slice(page * limit, page * limit + limit).map((customer) =>{                   
                   return (
                 <TableRow
                   hover
@@ -251,7 +239,7 @@ const Results = ({ className, customers, ...rest }) => {
                     {customer.plan.limit}
                   </TableCell>
                   <TableCell>
-                    {customer.plan.limit-actualCoverages}
+                    {customer.plan.limitLeft}
                   </TableCell>
                   <TableCell>
                     <Button variant="contained" size="small" color="primary" onClick={event=>handleClickOpen(event,customer._id)}>
@@ -378,7 +366,6 @@ const Results = ({ className, customers, ...rest }) => {
                           setValues({
                             ...values,
                             [e.target.name]: e.target.value,
-                            limitLeft: e.target.value - values.coverages
                           })
                         }}
                         value={values.limit}

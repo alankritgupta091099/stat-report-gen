@@ -317,6 +317,7 @@ function sendMail(buff,saveToDB) {
             console.log(error);
         } else {
             console.log('Email sent to: ' + mailOptions.to,' Info: ', info);
+            var limitLeft=0;
             User
                 .findOne({_id:saveToDB.decoded.id})
                 .then((result) => {
@@ -325,6 +326,13 @@ function sendMail(buff,saveToDB) {
                         count:saveToDB.coverageScanned,
                         time:moment(new Date(Date.now()))
                     })
+                    for (let i = 0; i < result.coveragesScanned.length; i++) {
+                        const element = result.coveragesScanned[i];
+                        if(!moment(element.time).isBefore(result.plan.validFrom))
+                            limitLeft+=element.count
+                    }
+                    if(result.accountType!=='Admin')
+                        result.plan.limitLeft=result.plan.limit-limitLeft;
                     result.save();
                     console.log("DB updated")
                 }).catch((err) => {

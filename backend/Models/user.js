@@ -20,7 +20,7 @@ function createUser(req,res){
     }
 
     const userData= new User({ 
-        firstName , email , lastName , orgName , orgPosition , mobNumber , password , accountType:type , plan: {cost , limit , validFrom}
+        firstName , email , lastName , orgName , orgPosition , mobNumber , password , accountType:type , plan: {cost , limit , validFrom , limitLeft:limit }
     })
     User.findOne({
         email
@@ -88,7 +88,8 @@ function loginUser(req,res){
                                 orgName:user.orgName,
                                 orgPosition:user.orgPosition,
                                 mobNumber:user.mobNumber,
-                                date:user.date
+                                date:user.date,
+                                plan:user.plan
                             }
                         })
                     }

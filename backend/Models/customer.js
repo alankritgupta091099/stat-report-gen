@@ -1,4 +1,5 @@
 const User = require('../DB/user.modal.js');
+const moment = require('moment');
 
 module.exports = {
     fetchCustomers,
@@ -21,26 +22,32 @@ function fetchCustomers (req,res) {
     }
 }
 
-function editCustomer(req,res) {
+function editCustomer(req,res) {//limitLeft set to 0 after reset account
     try {
-        console.log(req.params.id)
         User
-            .findOneAndUpdate({_id:req.params.id},{
-                firstName:req.body.firstName,
-                lastName:req.body.lastName,
-                email:req.body.email,
-                orgName:req.body.orgName,
-                orgPosition:req.body.orgPos,
-                mobNumber:req.body.phone,
-                accountType:req.body.type,
-                plan:{
+            .findOne({_id:req.params.id})
+            .then((result) => {
+                var count=0;
+                for (let i = 0; i < result.coveragesScanned.length; i++) {
+                    const element = result.coveragesScanned[i];
+                    if(!moment(element.time).isBefore(req.body.validFrom))
+                        count+=element.count
+                }
+                result.firstName=req.body.firstName,
+                result.lastName=req.body.lastName,
+                result.email=req.body.email,
+                result.orgName=req.body.orgName,
+                result.orgPosition=req.body.orgPos,
+                result.mobNumber=req.body.phone,
+                result.accountType=req.body.type,
+                result.plan = {
                     cost:req.body.cost,
                     validFrom:req.body.validFrom,
-                    limit:req.body.limit
+                    limitLeft:result.plan.limit-count,
+                    limit:req.body.limit,
                 }
-            }, {new:true})
-            .then((result) => {
-               return res.status(200).json({msg: 'User Updated'}); 
+                result.save();
+                return res.status(200).json({msg: 'User Updated'}); 
             }).catch((err) => {
                 return res.status(400).json({msg: 'Something Went Wrong'});
             });

@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema({
         limit:{
             type:Number,
             required:true
+        },
+        limitLeft:{
+            type: Number,
+            required:true
         }
     },
     coveragesScanned:{
