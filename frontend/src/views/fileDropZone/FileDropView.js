@@ -97,50 +97,6 @@ function FileDropView(props) {
   })
   var listStore = useRef(store.getState().auth.list)
 
-  // useEffect(() => {
-  //   listStore.current=store.getState().auth.list;
-  //   if(listStore.current.length>0){
-  //     setsev('error')
-  //     setnotification(listStore.current.length)
-  //     setNotificationOpen(true)
-  //     console.log("object")
-  //   }
-  // }, [store.getState().auth.list])
-
-  // var files = ""
-
-  // files = acceptedFiles.map(file => {  
-  //   console.log(file)
-  //   var reader = new FileReader();
-  //   ExcelRenderer(file, (err, resp) => {
-  //     if(err){
-  //       console.log(err);            
-  //     }
-  //     else{
-  //       const {rows , cols} = resp;
-  //       if( cols.length == 1 ){
-  //         setTable(true)
-  //         var linksKiList = [];
-  //         rows.slice(1).forEach(item => {
-  //           linksKiList.push(item[0])
-  //         });
-  //         setFinalList(linksKiList)
-  //         store.dispatch({  
-  //             type:SET_LIST,
-  //             payload:linksKiList
-  //         })
-  //       } else {
-  //         //error handling
-  //       }
-  //     }
-  //   });     
-  //   return (
-  //     <li key={file.path}>
-  //       {file.path} - {file.size} bytes
-  //     </li>
-  //   )}
-  // );
-
   // Create a reference to the hidden file input element
   const hiddenFileInput = useRef(null);
   
@@ -153,45 +109,49 @@ function FileDropView(props) {
   // to handle the user-selected file 
   const handleChange = event => {
       var firstElement=event.target.files[0];
-      console.log(firstElement);
       if(firstElement.type=="text/csv" || firstElement.type=="application/vnd.oasis.opendocument.spreadsheet" || firstElement.type=="application/vnd.ms-excel" || firstElement.type=="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"){
         setfiles({
           name:firstElement.name,
           size:firstElement.size
         })
-        console.log(firstElement);
         ExcelRenderer(firstElement, (err, resp) => {
-        if(err){
-          setsev("error")
-          setnotification("Something went wrong")
-          setNotificationOpen(true)
-          console.log(err);            
-        }
-        else{
-          const {rows , cols} = resp;
-          console.log(cols);
-          if( cols.length == 1 ){
-            setTable(true)
-            var linksKiList = [];
-            rows.slice(1).forEach(item => {
-              linksKiList.push(item[0])
-            });
-            setFinalList(linksKiList)
-            store.dispatch({  
-                type:SET_LIST,
-                payload:linksKiList
-            })
-            setsev("success")
-            setnotification("Number of links in the list: "+linksKiList.length)
-            setNotificationOpen(true)
-          } else {
+          if(err){
             setsev("error")
-            setnotification("More that one number of column received")
+            setnotification("Something went wrong")
             setNotificationOpen(true)
-            setTable(false)
+            console.log(err);            
           }
-        }
-      });    
+          else{
+            const {rows , cols} = resp;            
+              if( cols.length == 1 ){
+                setTable(true)
+                var linksKiList = [];
+                rows.slice(1).forEach(item => {
+                  linksKiList.push(item[0])
+                });
+                if(store.getState().auth.user.plan.limitLeft>linksKiList.length){
+                  setFinalList(linksKiList)
+                  store.dispatch({  
+                      type:SET_LIST,
+                      payload:linksKiList
+                  })
+                  setsev("success")
+                  setnotification("Number of links in the list: "+linksKiList.length)
+                  setNotificationOpen(true)
+                } else {
+                  setsev("error")
+                  setnotification("INSUFFICIENT CREDIT LIMIT!!")
+                  setNotificationOpen(true)
+                  setTable(false)
+                }
+              } else {
+                setsev("error")
+                setnotification("More that one number of column received")
+                setNotificationOpen(true)
+                setTable(false)
+              }            
+          }
+        })      
     } else {
       setsev("error")
       setnotification("Unacceptable file format")
@@ -211,13 +171,6 @@ function FileDropView(props) {
           <Card>
             <CardContent>
               <Typography gutterBottom variant="h1">Generate Report</Typography>
-              {/* <div className="container">
-                <DropBox {...getRootProps({ className: 'dropzone', isDragActive, isDragAccept, isDragReject })}>
-                  <input {...getInputProps()} />
-                  <h3>Drag 'n' drop some files here, or click on this section to upload files</h3><br/>
-                  <h4>Accepted formats xlsx, xls, csv, odf</h4>
-                </DropBox>
-              </div> */}
               <input
                 accept="text/csv , application/vnd.oasis.opendocument.spreadsheet , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 className={classes.input}
