@@ -129,7 +129,7 @@ function FileDropView(props) {
                 rows.slice(1).forEach(item => {
                   linksKiList.push(item[0])
                 });
-                if(store.getState().auth.user.plan.limitLeft>linksKiList.length){
+                if(store.getState().auth.user.plan.limitLeft>linksKiList.length && store.getState().auth.user.accountType!=="Expired"){
                   setFinalList(linksKiList)
                   store.dispatch({  
                       type:SET_LIST,
@@ -140,7 +140,10 @@ function FileDropView(props) {
                   setNotificationOpen(true)
                 } else {
                   setsev("error")
-                  setnotification("INSUFFICIENT CREDIT LIMIT!!")
+                  if(store.getState().auth.user.accountType==="Expired") 
+                    setnotification("Your account has expired!!")
+                  else 
+                    setnotification("INSUFFICIENT CREDIT LIMIT!!")
                   setNotificationOpen(true)
                   setTable(false)
                 }

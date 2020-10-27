@@ -69,12 +69,11 @@ const NavBar = (props) => {
         limit: userProp.current.plan.limit,
         type: userProp.current.accountType,
         limitLeft: userProp.current.plan.limitLeft 
-        ////////////////////////////////////////////disable user to create report if credits expire
       })
 
       if(userProp.current.plan.limitLeft<250)
         setsev("warning")
-      else if(userProp.current.plan.limitLeft<=50)
+      else if(userProp.current.plan.limitLeft<=50 || userProp.current.accountType=="Expired")
         setsev("error")
       else setsev("success")
 
