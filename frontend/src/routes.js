@@ -7,6 +7,8 @@ import OrderHistory from 'src/views/account/AccountView/OrderHistory';
 import CustomerListView from 'src/views/customer/CustomerListView';
 import DashboardView from 'src/views/reports/DashboardView';
 import LoginView from 'src/views/auth/LoginView';
+import ForgotView from 'src/views/auth/Forgotview';
+import ResetPasswordview from 'src/views/auth/ResetPasswordview';
 import NotFoundView from 'src/views/errors/NotFoundView';
 import ProductListView from 'src/views/product/ProductListView';
 import RegisterView from 'src/views/auth/RegisterView';
@@ -47,7 +49,13 @@ const routes = [
     path: '/',
     element: <MainLayout />,
     children: [
-      { path: 'login', element: <LoginView /> },      
+      { path: 'login', element: <LoginView /> },
+      { path: 'forgot', element: <ForgotView /> },
+      { path: 'resetpassword/', 
+        children:[
+          { path: '*', element: <ResetPasswordview /> },
+        ] 
+      },
       { path: '404', element: <NotFoundView /> },
       { path: '/', element: <Home /> },
       { path: '*', element: <Navigate to="/404" /> }

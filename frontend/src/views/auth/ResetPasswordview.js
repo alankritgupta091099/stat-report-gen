@@ -1,15 +1,16 @@
 import React , { useState , useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Alert from '@material-ui/lab/Alert';
-import { Box , Button , Container , Grid , Link , Snackbar , TextField , Typography , makeStyles } from '@material-ui/core';
+import { Box , Button , Container , Grid , Link , Snackbar , TextField , Typography , makeStyles , IconButton } from '@material-ui/core';
+import axios from 'axios';
+import { useNavigate , Navigate } from 'react-router-dom';
 
 import Page from 'src/components/Page';
-import { loginUser } from 'src/actions/authActions.js';
-import { clearNotifications } from 'src/actions/notificationActions.js';
-import { clearErrors } from 'src/actions/errorActions.js';
+import { API_URL } from '../../helpers/utils.js';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,39 +26,19 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const LoginView = (props) => {
+const ResetPasswordview = (props) => {
   const classes = useStyles();
-  const navigate = useNavigate();
   const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [error, setError] = useState(false);
-
-  useEffect(() => {
-    if(props.notification.id=="LOGIN_SUCCESS"){
-      setNotificationOpen(true);
-      setnotification(props.notification.msg);
-      setTimeout(() => {
-        setnotification("");
-        props.clearNotifications();
-        navigate('/app/report-gen', { replace: true });
-      }, 900);
-    }
-  }, [props.notification])
-
-  useEffect(() => {    
-    if(props.error.id=="LOGIN_FAIL"){
-      setError(true);
-      setTimeout(() => {
-        setError(false);
-        props.clearErrors();
-      }, 2000);
-    }
-  }, [props.error])
+  const [errormsg, seterrormsg] = useState("")
+  const [passwordMask, setpasswordMask] = useState("text")
+  const navigate = useNavigate()
 
   return (
     <Page
       className={classes.root}
-      title="Login"
+      title="Reset Password"
     >
       <Box
         display="flex"
@@ -65,28 +46,38 @@ const LoginView = (props) => {
         height="100%"
         justifyContent="center"
       >
-        <Snackbar open={notificationOpen} autoHideDuration={900} onClose={()=>setNotificationOpen(false)}>
+        <Snackbar open={notificationOpen} autoHideDuration={2000} onClose={()=>setNotificationOpen(false)}>
           <Alert onClose={()=>setNotificationOpen(false)} elevation={6} variant="filled" severity="success">
             {notification}
           </Alert>
         </Snackbar>
         <Snackbar open={error} autoHideDuration={2000} onClose={()=>setError(false)}>
           <Alert onClose={()=>setError(false)} elevation={6} variant="filled" severity="error">
-            {props.error.msg}
+            {errormsg}
           </Alert>
         </Snackbar>
         <Container maxWidth="sm" className={classes.formStyle}>
           <Formik
             initialValues={{
-              email: '',
               password: ''
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={(values,{setSubmitting}) => {
-              props.loginUser(values)
+              var link = window.location.pathname.split('/')
+              axios.post(`${API_URL}/post/user/reset`,{values,userId:link[2],token:link[3]})
+              .then(res=>{
+                setNotificationOpen(true);
+                setnotification(res.data.msg);
+                setTimeout(() => {
+                  navigate('/login')
+                }, 2000);
+              })
+              .catch(err=>{
+                setError(true);
+                seterrormsg("Invalid Route")
+              })    
               setSubmitting(false)
             }}
           >
@@ -105,22 +96,9 @@ const LoginView = (props) => {
                     color="textPrimary"
                     variant="h2"
                   >
-                    Log in
+                    Reset Your Password
                   </Typography>
                 </Box>
-                <TextField
-                  error={Boolean(touched.email && errors.email)}
-                  fullWidth
-                  helperText={touched.email && errors.email}
-                  label="Email Address"
-                  margin="normal"
-                  name="email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="email"
-                  value={values.email}
-                  variant="outlined"
-                />
                 <TextField
                   error={Boolean(touched.password && errors.password)}
                   fullWidth
@@ -133,6 +111,8 @@ const LoginView = (props) => {
                   type="password"
                   value={values.password}
                   variant="outlined"
+                  type={passwordMask}
+                  InputProps={{endAdornment: <><IconButton size="small" onClick={()=>(passwordMask=="text") ? setpasswordMask("password") : setpasswordMask("text")}>{(passwordMask=="text") ? <VisibilityIcon/> : <VisibilityOffIcon/>}</IconButton></>}}
                 />
                 <Box my={2}>
                   <Button
@@ -143,37 +123,9 @@ const LoginView = (props) => {
                     type="submit"
                     variant="contained"
                   >
-                    Log in now
-                  </Button>                  
-                </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Don&apos;t have an account?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/#"
-                    variant="h6"
-                  >
-                    Contact Us
-                  </Link>
-                </Typography>
-                 <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                 Forgot Password?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/forgot"
-                    variant="h6"
-                  >
-                    Click Here
-                  </Link>
-                </Typography>
+                    Reset password
+                  </Button>
+                </Box>                
               </form>
             )}
           </Formik>
@@ -183,9 +135,4 @@ const LoginView = (props) => {
   );
 };
 
-const mapStateToProps = state => ({
-  notification:state.notification,
-  error:state.error
-})
-
-export default connect(mapStateToProps,{ loginUser , clearNotifications , clearErrors })(LoginView);
+export default ResetPasswordview;

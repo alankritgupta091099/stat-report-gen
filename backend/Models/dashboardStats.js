@@ -66,7 +66,7 @@ function calculateRevenue(req,res) {
         console.log(startOfMonth)
         User
             .find({
-                "accountType":"Paid",
+                "accountType":{$in:["Paid","Expired"]},
                 "plan.validFrom":{$gte:startOfMonth,$lte:endOfMonth}
             })
             .then((userList) => {        

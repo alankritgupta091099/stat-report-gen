@@ -8,6 +8,8 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/picker
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
 import AddIcon from '@material-ui/icons/Add';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
 import Page from 'src/components/Page';
 import { registerUser } from 'src/actions/authActions.js';
@@ -32,6 +34,7 @@ const RegisterView = (props) => {
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [error, setError] = useState(false);
   const [user, setUser] = useState("")
+  const [passwordMask, setpasswordMask] = useState("text")
 
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
   const formikVal = useFormikContext();
@@ -367,13 +370,14 @@ const RegisterView = (props) => {
                       label="Password"
                       margin="normal"
                       name="password"
+                      type={passwordMask}
                       onBlur={handleBlur}
                       onChange={handleChange}
                       value={values.password}
                       variant="outlined"
-                      InputProps={{endAdornment: <IconButton size="small" onClick={()=>{
+                      InputProps={{endAdornment: <><IconButton size="small" onClick={()=>{
                         setFieldValue("password",Math.random().toString(36).slice(-8));
-                      }}><AddIcon/></IconButton>}}
+                      }}><AddIcon/></IconButton><IconButton size="small" onClick={()=>(passwordMask=="text") ? setpasswordMask("password") : setpasswordMask("text")}>{(passwordMask=="text") ? <VisibilityIcon/> : <VisibilityOffIcon/>}</IconButton></>}}
                     />
                     </FormControl>
                   </Grid>
