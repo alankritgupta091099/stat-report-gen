@@ -6,6 +6,8 @@ import { Search as SearchIcon } from 'react-feather';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -17,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Toolbar = ({ className, ddValues, setselectedDD, getAllCustomers, setgetSelectedCustomers, setistableData, ...rest }) => {
+const Toolbar = ({ className, ddValues, setselectedDD, getAllCustomers, setgetSelectedCustomers, setistableData, getSelectedCustomers, ...rest }) => {
   const classes = useStyles();
   const [dd, setdd] = React.useState(ddValues[0].value)
   const [searchBarType, setsearchBarType] = React.useState("text")
@@ -106,7 +108,29 @@ const Toolbar = ({ className, ddValues, setselectedDD, getAllCustomers, setgetSe
         display="flex"
         justifyContent="flex-end"
       >
-        <Button className={classes.exportButton}>
+        <Button className={classes.exportButton} onClick={()=>{
+          var exportArr = [];
+          var arr = getSelectedCustomers.length === 0 ? getAllCustomers : getSelectedCustomers
+          arr.forEach(element => {
+            exportArr.push({
+              Name: element.firstName+" "+element.lastName,
+              Email: element.email,
+              Phone_Number : element.mobNumber,
+              Organisation : element.orgName,
+              Designation : element.orgPosition,
+              Account_Status: element.accountType,
+              Cost : element.plan.cost,
+              Account_Valid_From : element.plan.validFrom,
+              Total_Credits : element.plan.limit,
+              Credits_Left : element.plan.limitLeft
+            })
+          });
+          const ws = XLSX.utils.json_to_sheet(exportArr);
+          const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+          const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+          const data = new Blob([excelBuffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8"});
+          FileSaver.saveAs(data,"Customers.xlsx");
+        }}>
           Export
         </Button>
         <Button

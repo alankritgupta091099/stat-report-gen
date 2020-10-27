@@ -98,7 +98,7 @@ const CustomerListView = (props) => {
       title="Customers"
     >
       <Container maxWidth={false}>
-        <Toolbar ddValues={ddValues} setselectedDD={setselectedDD} getAllCustomers={getAllCustomers} setgetSelectedCustomers={setgetSelectedCustomers} setistableData={setistableData}/>
+        <Toolbar ddValues={ddValues} setselectedDD={setselectedDD} getAllCustomers={getAllCustomers} setgetSelectedCustomers={setgetSelectedCustomers} setistableData={setistableData} getSelectedCustomers={getSelectedCustomers}/>
         <Box mt={3}>
           <Results getAllCustomers={getAllCustomers} getSelectedCustomers={getSelectedCustomers} istableData={istableData}/>
         </Box>
