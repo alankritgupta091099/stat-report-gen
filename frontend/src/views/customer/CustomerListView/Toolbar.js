@@ -1,17 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  InputAdornment,
-  SvgIcon,
-  makeStyles
-} from '@material-ui/core';
+import { Box, Button, Card, CardContent, TextField, InputAdornment, SvgIcon, makeStyles, Grid , Select , MenuItem , FormControl } from '@material-ui/core';
 import { Search as SearchIcon } from 'react-feather';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
+import MomentUtils from "@date-io/moment";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -23,8 +17,85 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ className, ddValues, setselectedDD, getAllCustomers, setgetSelectedCustomers, setistableData, ...rest }) => {
   const classes = useStyles();
+  const [dd, setdd] = React.useState(ddValues[0].value)
+  const [searchBarType, setsearchBarType] = React.useState("text")
+  const [dateSearchBox, setdateSearchBox] = React.useState(false)
+  const [date, setDate] = React.useState(new Date())
+
+  const handleChange = (event) => {
+    setselectedDD(event.target.value)
+    setdd(event.target.value);
+    setdateSearchBox(false)
+    if(event.target.value === "limit-less" || event.target.value === "limit-more")
+      setsearchBarType("number")
+    else if(event.target.value ==='validFrom' || event.target.value ==='validUntil'){      
+      setdateSearchBox(true)
+      setistableData(true)      
+    } else 
+      setsearchBarType("text")
+  };
+
+  const handleSearchChange = (event) =>{
+    var newArr = [];
+    setistableData(true)
+    getAllCustomers.filter((cust)=>{
+      switch (dd) {
+        case "name":{
+          var name = cust.firstName+" "+cust.lastName
+          if(name.toLowerCase().search(event.target.value.toLowerCase())!=-1)
+            newArr.push(cust)
+          break;
+        }
+        case "orgName":{
+          var name = cust.orgName
+          if(name.toLowerCase().search(event.target.value.toLowerCase())!=-1)
+            newArr.push(cust)
+          break;
+        }
+        case "type":{
+          var name = cust.accountType
+          if(name.toLowerCase().search(event.target.value.toLowerCase())!=-1)
+            newArr.push(cust)
+          break;
+        }
+        case "email":{
+          var name = cust.email
+          if(name.toLowerCase().search(event.target.value.toLowerCase())!=-1)
+            newArr.push(cust)
+          break;
+        }
+        case "limit-less":{
+          var limit = cust.plan.limit
+          if(limit<event.target.value)
+            newArr.push(cust)
+          break;
+        }
+        case "limit-more":{
+          var limit = cust.plan.limit
+          if(limit>event.target.value)
+            newArr.push(cust)
+          break;
+        }
+        case "limitLeft-less":{
+          var limit = cust.plan.limitLeft
+          console.log(limit)
+          if(limit<event.target.value)
+            newArr.push(cust)
+          break;
+        }
+        case "limitLeft-more":{
+          var limit = cust.plan.limitLeft
+          console.log(limit)
+          if(limit>event.target.value)
+            newArr.push(cust)
+          break;
+        }
+      }
+    })
+    newArr.length===0 ? setistableData(false):setgetSelectedCustomers(newArr)
+  }
 
   return (
     <div
@@ -35,15 +106,13 @@ const Toolbar = ({ className, ...rest }) => {
         display="flex"
         justifyContent="flex-end"
       >
-        <Button className={classes.importButton}>
-          Import
-        </Button>
         <Button className={classes.exportButton}>
           Export
         </Button>
         <Button
           color="primary"
           variant="contained"
+          href="/app/register-new"
         >
           Add customer
         </Button>
@@ -51,25 +120,95 @@ const Toolbar = ({ className, ...rest }) => {
       <Box mt={3}>
         <Card>
           <CardContent>
-            <Box maxWidth={500}>
-              <TextField
-                fullWidth
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SvgIcon
-                        fontSize="small"
-                        color="action"
-                      >
-                        <SearchIcon />
-                      </SvgIcon>
-                    </InputAdornment>
-                  )
-                }}
-                placeholder="Search customer"
-                variant="outlined"
-              />
-            </Box>
+          <Grid
+            container
+            spacing={3}
+          >            
+            <Grid
+              item
+              sm={6}
+              xs={12}
+            >
+              {
+                dateSearchBox ? 
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <KeyboardDatePicker
+                        disableToolbar
+                        variant="inline"
+                        format="DD/MM/YYYY"
+                        name="validFrom"
+                        value={date}
+                        onChange={(date)=>{
+                          setDate(moment(date))
+                          setistableData(true)
+                          var newArr = [];
+                          getAllCustomers.filter((cust)=>{
+                            switch (dd) {
+                              case 'validFrom':{
+                                var dateValidFrom = cust.plan.validFrom
+                                if(moment(date).isBefore(dateValidFrom))
+                                  newArr.push(cust)
+                                break;
+                              }
+                              case 'validUntil':{
+                                var dateValidFrom = cust.plan.validFrom
+                                if(!moment(date).isBefore(dateValidFrom))
+                                  newArr.push(cust)
+                                break;
+                              }
+                            }                            
+                          })
+                          newArr.length===0 ? setistableData(false):setgetSelectedCustomers(newArr)
+                        }}
+                        KeyboardButtonProps = {{
+                          'aria-label': 'change date',
+                        }}
+                        inputVariant="outlined"
+                      />   
+                    </FormControl>
+                  </MuiPickersUtilsProvider> 
+                : 
+                  <TextField
+                      fullWidth
+                      onChange={handleSearchChange}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <SvgIcon
+                              fontSize="small"
+                              color="action"
+                            >
+                              <SearchIcon />
+                            </SvgIcon>
+                          </InputAdornment>
+                        )
+                      }}
+                      placeholder="Search"
+                      variant="outlined"
+                      type={searchBarType}
+                    />
+              }              
+            </Grid>
+            <Grid
+              item
+              sm={1}
+              xs={12}
+            >
+              <FormControl variant="outlined">
+                <Select
+                  value={dd}
+                  onChange={handleChange}
+                  displayEmpty
+                  className={classes.selectEmpty}
+                >
+                  {ddValues.map((item)=>{
+                    return <MenuItem value={item.value}>{item.key}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
           </CardContent>
         </Card>
       </Box>

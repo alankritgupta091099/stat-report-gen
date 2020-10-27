@@ -16,10 +16,13 @@ const useStyles = makeStyles((theme) => ({
   root: {},
   formControl: {
     minWidth: 428,
+  },
+  center:{
+    margin: '2rem 0 2rem 2rem'
   }
 }));
 
-const Results = ({ className, customers, ...rest }) => {
+const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, istableData, ...rest }) => {
   const classes = useStyles();
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(5);
@@ -49,9 +52,15 @@ const Results = ({ className, customers, ...rest }) => {
 
   const handleClickOpen = ( event, id) => {
     setselectedID(id)
-    var customer = customerslist.find((item)=>{
-      return item._id === id
-    })
+    var customer="";
+    if(getSelectedCustomers.length!==0)    
+      customer=getSelectedCustomers.find((item)=>{
+        return item._id === id
+      })
+    else 
+      customer=getAllCustomers.find((item)=>{
+        return item._id === id
+      })
     setValues({
       firstName:customer.firstName,
       lastName:customer.lastName,
@@ -69,9 +78,15 @@ const Results = ({ className, customers, ...rest }) => {
   };
 
   const handleHistoryclickOpen = (id) => {
-    var customer = customerslist.find((item)=>{
-      return item._id === id
-    })
+    var customer = "";
+    if(getSelectedCustomers.length!==0)    
+      customer=getSelectedCustomers.find((item)=>{
+        return item._id === id
+      })
+    else 
+      customer=getAllCustomers.find((item)=>{
+        return item._id === id
+      })
     sethistory(customer.coveragesScanned)
     setvalidfrom(customer.plan.validFrom)
     sethistoryDialog(true)
@@ -88,38 +103,6 @@ const Results = ({ className, customers, ...rest }) => {
       [event.target.name]: event.target.value
     });
   };
-
-  // const handleSelectAll = (event) => {
-  //   let newSelectedCustomerIds;
-
-  //   if (event.target.checked) {
-  //     newSelectedCustomerIds = customerslist.map((customer) => customer._id);
-  //   } else {
-  //     newSelectedCustomerIds = [];
-  //   }
-
-  //   setSelectedCustomerIds(newSelectedCustomerIds);
-  // };
-
-  // const handleSelectOne = (event, id) => {
-  //   const selectedIndex = selectedCustomerIds.indexOf(id);
-  //   let newSelectedCustomerIds = [];
-
-  //   if (selectedIndex === -1) {
-  //     newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
-  //   } else if (selectedIndex === 0) {
-  //     newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-  //   } else if (selectedIndex === selectedCustomerIds.length - 1) {
-  //     newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelectedCustomerIds = newSelectedCustomerIds.concat(
-  //       selectedCustomerIds.slice(0, selectedIndex),
-  //       selectedCustomerIds.slice(selectedIndex + 1)
-  //     );
-  //   }
-
-  //   setSelectedCustomerIds(newSelectedCustomerIds);
-  // };
 
   const handleLimitChange = (event) => {
     setLimit(parseInt(event.target.value,10));
@@ -148,19 +131,6 @@ const Results = ({ className, customers, ...rest }) => {
       });
   }
 
-  useEffect(() => {
-    axios({
-        method:'get',
-        url:`${API_URL}/get/customers/all`,
-        headers:{'x-auth-token': store.getState().auth.token}
-      })
-      .then((result) => {
-        setcustomerslist(result.data)
-      }).catch((err) => {
-        console.log(err)
-      });
-  }, [])
-
   return (
     <>
     <Card
@@ -178,21 +148,10 @@ const Results = ({ className, customers, ...rest }) => {
         </Alert>
       </Snackbar>
       <PerfectScrollbar>
-        <Box minWidth={1050}>
+        <Box minWidth={1550}>
           <Table aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {/* <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === (customerslist ? customerslist.length : 0)}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < (customerslist ? customerslist.length : 0)
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell> */}
                 <TableCell>
                   Name
                 </TableCell>
@@ -216,24 +175,78 @@ const Results = ({ className, customers, ...rest }) => {
                 </TableCell>
                 <TableCell/>
                 <TableCell/>
+                <TableCell>
+                  Email
+                </TableCell>
+                <TableCell>
+                  Mobile number
+                </TableCell>
+                <TableCell>
+                  Designation
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {
-                customerslist ? customerslist.slice(page * limit, page * limit + limit).map((customer) =>{                   
+                (getSelectedCustomers.length!==0) ? 
+                  !istableData ? 
+                    <Typography variant="h5" className={classes.center}>
+                      No match found
+                    </Typography> :
+                    getSelectedCustomers.slice(page * limit, page * limit + limit).map((customer) =>{                   
+                    return (
+                      <TableRow
+                        hover
+                        key={customer._id}
+                      >
+                        <TableCell>
+                          {customer.firstName +" "+ customer.lastName}
+                        </TableCell>
+                        <TableCell> 
+                          {customer.orgName}
+                        </TableCell>
+                        <TableCell>
+                          {customer.accountType}
+                        </TableCell>
+                        <TableCell>
+                          {customer.plan.cost}
+                        </TableCell>
+                        <TableCell>
+                          {moment(customer.plan.validFrom).format('DD/MM/YYYY')}
+                        </TableCell>
+                        <TableCell>
+                          {customer.plan.limit}
+                        </TableCell>
+                        <TableCell>
+                          {customer.plan.limitLeft}
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="outlined" size="small" color="primary" onClick={event=>handleHistoryclickOpen(customer._id)} >
+                            History
+                          </Button>
+                        </TableCell>
+                        <TableCell>
+                          <Button variant="contained" size="small" color="primary" onClick={event=>handleClickOpen(event,customer._id)}>
+                            Edit
+                          </Button>
+                        </TableCell>
+                        <TableCell>
+                          {customer.email}
+                        </TableCell>
+                        <TableCell>
+                          {customer.mobNumber}
+                        </TableCell>
+                        <TableCell>
+                          {customer.orgPosition}
+                        </TableCell>
+                      </TableRow>
+                     )}) :
+                getAllCustomers ? getAllCustomers.slice(page * limit, page * limit + limit).map((customer) =>{                   
                   return (
                 <TableRow
                   hover
                   key={customer._id}
-                  // selected={selectedCustomerIds.indexOf(customer._id) !== -1}
                 >
-                  {/* <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer._id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer._id)}
-                      value="true"
-                    />
-                  </TableCell> */}
                   <TableCell>
                     {customer.firstName +" "+ customer.lastName}
                   </TableCell>
@@ -265,6 +278,15 @@ const Results = ({ className, customers, ...rest }) => {
                       Edit
                     </Button>
                   </TableCell>
+                  <TableCell>
+                    {customer.email}
+                  </TableCell>
+                  <TableCell>
+                    {customer.mobNumber}
+                  </TableCell>
+                  <TableCell>
+                    {customer.orgPosition}
+                  </TableCell>
                 </TableRow>
               )}) : <CircularProgress style={{position:'fixed',margin:'1% 36%'}}/>
               }
@@ -274,7 +296,7 @@ const Results = ({ className, customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customerslist ? customerslist.length : 0}
+        count={(getSelectedCustomers.length===0) ? getAllCustomers.length : getSelectedCustomers.length}
         onChangePage={handlePageChange}
         onChangeRowsPerPage={handleLimitChange}
         page={page}
@@ -543,7 +565,9 @@ const Results = ({ className, customers, ...rest }) => {
                   </TableHead>
                   <TableBody>
                   {/* Add search bar here */}
-                  { history.length === 0 ? <h1>No Data to show</h1> : history.map((row) => (
+                  { history.length === 0 ? <Typography variant="h5" className={classes.center}>
+                      No data to show
+                    </Typography> : history.map((row) => (
                       (!moment(row.time).isBefore(validfrom)) ? <TableRow>
                           <TableCell component="th" scope="row">
                               {row.listLength}
@@ -555,7 +579,7 @@ const Results = ({ className, customers, ...rest }) => {
                           <TableCell>{moment(row.time).format('LT')}</TableCell>
                       </TableRow> : <TableRow>
                           <TableCell component="th" scope="row">
-                              <i>(Old)</i> {row.listLength}
+                              {row.listLength}<i>(Old)</i> 
                           </TableCell>
                           <TableCell component="th" scope="row">
                               {row.count}
