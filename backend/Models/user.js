@@ -9,7 +9,8 @@ module.exports = {
     loginUser,
     getUserFromToken,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    checkResetPasswordRoute
 }
 
 // @route POST /post/user/reg
@@ -138,7 +139,7 @@ function forgotPassword(req,res) {
     });
 }
 
-// @route POST /post/user/forgot
+// @route POST /post/user/reset
 // @desc Login User and assign token
 // @access PUBLIC
 function resetPassword(req,res) {
@@ -164,6 +165,29 @@ function resetPassword(req,res) {
                     return res.status(400).json({msg: 'Something Went Wrong'})
                 })
         })
+    }).catch((err) => {
+        return res.status(400).json({msg:'Something Went Wrong!!'});
+    });
+}
+
+// @route POST /post/user/checkReset
+// @desc Login User and assign token
+// @access PUBLIC
+function checkResetPasswordRoute(req,res) {
+    const { userId , token } = req.body;
+    User.findOne({
+        _id:userId
+    })
+    .then((user) => {
+        console.log(user)
+        if(!user) 
+            return res.status(400).json({msg:"User Does Not Exist"})
+        var secret = `${user.password}-${moment(user.date_created).format('x')}`;
+        var payload = jwt.verify(token, secret);
+        if(payload.email===user.email)
+            return res.status(200).json({msg:"Valid Route"})
+        else 
+            return res.status(200).json({msg:"Invalid Route"})
     }).catch((err) => {
         return res.status(400).json({msg:'Something Went Wrong!!'});
     });

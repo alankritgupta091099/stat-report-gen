@@ -35,6 +35,20 @@ const ResetPasswordview = (props) => {
   const [passwordMask, setpasswordMask] = useState("text")
   const navigate = useNavigate()
 
+  useEffect(() => {
+  var link = window.location.pathname.split('/')
+  console.log(link)
+  axios.post(`${API_URL}/post/user/checkReset`,{userId:link[2],token:link[3]})
+  .catch(err=>{
+    console.log(err)    
+    setError(true);
+    seterrormsg("Invalid Route")
+    setTimeout(() => {
+      navigate('/404')
+    }, 800);
+  })  
+}, [])
+
   return (
     <Page
       className={classes.root}

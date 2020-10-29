@@ -1,7 +1,7 @@
 const { webScraper , scrapStatShow } = require('./webScraper.js');
 const { fetchFollowerCount } = require('./instaFetch.js');
 const { generateReport } = require('./report.js');
-const { createUser , loginUser , getUserFromToken , forgotPassword , resetPassword } = require('./user.js');
+const { createUser , loginUser , getUserFromToken , forgotPassword , resetPassword , checkResetPasswordRoute } = require('./user.js');
 const { fetchCustomers , editCustomer , fetchCustomerHistory } = require('./customer.js');
 const { totalDocs , calculateRevenue , totalCustomers , StatHistory7Days , coveragesScanned } = require('./dashboardStats.js');
 
@@ -23,6 +23,7 @@ module.exports = {
     getUserFromToken,
     forgotPassword,
     resetPassword,
+    checkResetPasswordRoute,
 
     //customer
     fetchCustomers: fetchCustomers,
