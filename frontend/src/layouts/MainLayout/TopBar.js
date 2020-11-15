@@ -28,7 +28,8 @@ const TopBar = ({ className, ...rest }) => {
       <Toolbar className={classes.toolbar}>
         <RouterLink to="/">
           <Logo />
-        </RouterLink>
+        </RouterLink>        
+        <a class="ml-auto my-2 my-lg-0" href="/login" style={{color:"white"}}>Login</a>
       </Toolbar>
     </AppBar>
   );
