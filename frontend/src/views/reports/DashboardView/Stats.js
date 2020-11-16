@@ -13,8 +13,6 @@ import {
   makeStyles,
   colors, Grid
 } from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import moment from 'moment';
 import axios from 'axios';
 

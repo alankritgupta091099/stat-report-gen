@@ -1,9 +1,9 @@
 import React , { useState , useEffect , useRef } from 'react';
 import * as Yup from 'yup';
-import { Formik , useField , useFormikContext } from 'formik';
+import { Formik } from 'formik';
 import { connect } from 'react-redux';
 import Alert from '@material-ui/lab/Alert';
-import { Box , Button , Checkbox , Container, FormHelperText , Grid , Link , Snackbar , TextField , Typography , makeStyles , Card , CardContent , Divider , Select , MenuItem , FormControl , InputLabel , IconButton } from '@material-ui/core';
+import { Box , Button , Container, Grid , Snackbar , TextField , Typography , makeStyles , Card , CardContent , Divider , Select , MenuItem , FormControl , InputLabel , IconButton } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
@@ -22,10 +22,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.dark,
     height: 'auto',
     padding: theme.spacing(3),
-  },
-  // formControl: {
-  //   minWidth: 432,
-  // }
+  }
 }));
 
 const RegisterView = (props) => {
@@ -37,7 +34,6 @@ const RegisterView = (props) => {
   const [passwordMask, setpasswordMask] = useState("text")
 
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
-  const formikVal = useFormikContext();
 
   const userProp = useRef(props.user)
 
@@ -48,17 +44,8 @@ const RegisterView = (props) => {
     }
   }, [props.user])
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setnotification("");
-    props.clearNotifications()
-    setNotificationOpen(false);
-  };
-
   useEffect(() => {
-    if(props.notification.id=="REGISTER_SUCCESS"){
+    if(props.notification.id==="REGISTER_SUCCESS"){
       setNotificationOpen(true);
       setnotification(props.notification.msg);
       setTimeout(() => {
@@ -69,7 +56,7 @@ const RegisterView = (props) => {
   }, [props.notification])
 
   useEffect(() => {    
-    if(props.error.id=="REGISTER_FAIL"){
+    if(props.error.id==="REGISTER_FAIL"){
       setError(true);
       setTimeout(() => {
         setError(false);
@@ -78,7 +65,7 @@ const RegisterView = (props) => {
     }
   }, [props.error])
 
-  if(userProp.current && userProp.current.accountType=="Admin")
+  if(userProp.current && userProp.current.accountType==="Admin")
   return (
     <Page
       className={classes.root}

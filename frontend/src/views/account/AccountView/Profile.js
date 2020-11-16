@@ -9,8 +9,6 @@ import {
   Card,
   CardActions,
   CardContent,
-  CardFooter,
-  Divider,
   Typography,
   makeStyles
 } from '@material-ui/core';

@@ -2,13 +2,12 @@ import React, { useState , useEffect , useRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Box, Button, Card, CardContent, CardHeader, Container, Divider, Grid, TextField, makeStyles , Typography, Paper, Tabs, Tab , useTheme , Switch , Tooltip , IconButton , Radio, RadioGroup, FormControlLabel, FormControl, FormLabel , CardActions , Fab  , Backdrop , CircularProgress , Snackbar} from '@material-ui/core';
-import { Alert, AlertTitle } from '@material-ui/lab';
+import { Box, Button, Card, CardContent, Container, Divider, Grid, makeStyles , Typography, Paper, Tabs, Tab , useTheme , Switch , Tooltip , IconButton , Radio, RadioGroup, FormControlLabel, FormControl, CardActions , Backdrop , CircularProgress , Snackbar} from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import SwipeableViews from 'react-swipeable-views';
 import axios from 'axios';
 import InfoIcon from '@material-ui/icons/Info';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import ClearIcon from '@material-ui/icons/Clear';
 import { useNavigate , Navigate } from 'react-router-dom';
 
 import store from "src/store.js";

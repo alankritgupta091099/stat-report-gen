@@ -10,14 +10,11 @@ import LoginView from 'src/views/auth/LoginView';
 import ForgotView from 'src/views/auth/Forgotview';
 import ResetPasswordview from 'src/views/auth/ResetPasswordview';
 import NotFoundView from 'src/views/errors/NotFoundView';
-import ProductListView from 'src/views/product/ProductListView';
 import RegisterView from 'src/views/auth/RegisterView';
-import SettingsView from 'src/views/settings/SettingsView';
 import FileDropView from 'src/views/fileDropZone/FileDropView';
 import FormatForm from 'src/views/fileDropZone/FormatForm';
 import Home from 'src/views/home';
 import PrivateRoute from "./protectedRoutes.js";
-import store from './store';
 
 const routes = [
   {

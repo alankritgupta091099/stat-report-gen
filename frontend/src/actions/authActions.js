@@ -1,10 +1,8 @@
 import axios from 'axios';
-import { useRef } from "react";
-import { useNavigate } from 'react-router-dom';
 
 import { USER_LOADING , USER_LOADED , AUTH_ERROR , LOGIN_SUCCESS , LOGIN_FAIL , LOGOUT_SUCCESS , REGISTER_SUCCESS , REGISTER_FAIL } from "../actions/types.js";
 import { returnErrors , clearErrors } from './errorActions';
-import { returnNotifications , clearNotifications } from './notificationActions';
+import { returnNotifications } from './notificationActions';
 import { API_URL } from '../helpers/utils.js';
 
 export const logoutUser = () => (dispatch) =>{
@@ -13,7 +11,7 @@ export const logoutUser = () => (dispatch) =>{
     }) 
 }
 
-export const loginUser = ( user ) => ( dispatch , getState ) => {
+export const loginUser = ( user ) => ( dispatch ) => {
     axios.post(`${API_URL}/post/user/login`,user)
         .then(res=>{
             //console.log(res.data)

@@ -1,8 +1,8 @@
-import React, { useState , useEffect } from 'react';
+import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Avatar, Box, Button, Card, Checkbox, TextField, TableContainer, Table, TableBody, TableCell, TableHead, TablePagination, TableRow,  Typography, makeStyles , CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, CardContent , DialogTitle , CardHeader, Grid ,Divider, FormControl, InputLabel, Select, MenuItem , Snackbar , Container , Paper} from '@material-ui/core';
+import { Box, Button, Card, TextField, TableContainer, Table, TableBody, TableCell, TableHead, TablePagination, TableRow,  Typography, makeStyles , CircularProgress, Dialog, DialogActions, DialogContent, CardContent , DialogTitle , CardHeader, Grid ,Divider, FormControl, InputLabel, Select, MenuItem , Snackbar , Paper} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
@@ -24,10 +24,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, istableData, ...rest }) => {
   const classes = useStyles();
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(0);
-  const [customerslist, setcustomerslist] = useState(null)
   const [open, setOpen] = React.useState(false);
   const [values, setValues] = useState({
     firstName: "First Name",

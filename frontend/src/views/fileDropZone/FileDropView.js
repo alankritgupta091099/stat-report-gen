@@ -1,20 +1,13 @@
-import React,{ useState , useEffect , useRef } from 'react';
-import { Box, Container, Card, CardContent, Typography , Grid , List , ListItem , ListItemText , Button , Snackbar , Dialog , Slide , AppBar , IconButton , Toolbar , Backdrop , CircularProgress , Fab } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import { useDropzone } from 'react-dropzone';
+import React,{ useState , useRef } from 'react';
+import { Box, Container, Card, CardContent, Typography , Grid , List , ListItem , ListItemText , Button , Snackbar } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
-import axios from 'axios';
-import { OutTable , ExcelRenderer } from 'react-excel-renderer';
-import { Document, HorizontalPositionAlign, HorizontalPositionRelativeFrom, Media, Packer, Paragraph, Header, VerticalPositionAlign, VerticalPositionRelativeFrom, Table, TableRow, WidthType, TableCell, VerticalAlign, HyperlinkRef, HyperlinkType } from "docx";
+import { ExcelRenderer } from 'react-excel-renderer';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { SET_LIST } from "src/actions/types.js";
 import store from "src/store.js";
-import { API_URL } from 'src/helpers/utils.js';
 import Page from 'src/components/Page';
-import FormatForm from './FormatForm.js'
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -30,72 +23,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const getColor = (props) => {
-  if (props.isDragAccept) {
-      return '#00e676';
-  }
-  if (props.isDragReject) {
-      return '#ff1744';
-  }
-  if (props.isDragActive) {
-      return '#2196f3';
-  }
-  return '#eeeeee';
-}
-
-const DropBox = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 100px;
-  border-width: 2px;
-  border-radius: 2px;
-  border-color: ${props => getColor(props)};
-  border-style: dashed;
-  background-color: #fafafa;
-  color: #bdbdbd;
-  outline: none;
-  transition: border .24s ease-in-out;
-`;
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-var secondaryPage = [];
-
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-var returnTableFromRows = (rows) => {
-    return new Table({
-        cantSplit: true,
-        columnWidths: [20,80],
-        width: {
-            size: 100,
-            type: WidthType.PERCENTAGE,
-        },
-        rows: [rows.secondaryTableData_Publication, rows.secondaryTableData_Headline, rows.secondaryTableData_DailyPageViews] 
-    }) 
-}
-
 function FileDropView(props) {
   const classes = useStyles();
-  const {acceptedFiles, getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject} = useDropzone({accept:"text/csv , application/vnd.oasis.opendocument.spreadsheet , application/vnd.ms-excel , application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
   const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [table, setTable] = useState(false)
   const [finalList, setFinalList] = useState([]);
   const navigate = useNavigate();
-  const [enableFileSelection, setenableFileSelection] = useState(true);
   const [sev, setsev] = useState("success");
   const [files, setfiles] = useState({
     name:"",
     size:""
   })
-  var listStore = useRef(store.getState().auth.list)
 
   // Create a reference to the hidden file input element
   const hiddenFileInput = useRef(null);
@@ -109,7 +48,7 @@ function FileDropView(props) {
   // to handle the user-selected file 
   const handleChange = event => {
       var firstElement=event.target.files[0];
-      if(firstElement.type=="text/csv" || firstElement.type=="application/vnd.oasis.opendocument.spreadsheet" || firstElement.type=="application/vnd.ms-excel" || firstElement.type=="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"){
+      if(firstElement.type==="text/csv" || firstElement.type==="application/vnd.oasis.opendocument.spreadsheet" || firstElement.type==="application/vnd.ms-excel" || firstElement.type==="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"){
         setfiles({
           name:firstElement.name,
           size:firstElement.size
@@ -123,7 +62,7 @@ function FileDropView(props) {
           }
           else{
             const {rows , cols} = resp;            
-              if( cols.length == 1 ){
+              if( cols.length === 1 ){
                 setTable(true)
                 var linksKiList = [];
                 rows.slice(1).forEach(item => {

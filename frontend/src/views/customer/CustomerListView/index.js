@@ -91,7 +91,7 @@ const CustomerListView = (props) => {
   ]
   const [selectedDD, setselectedDD] = useState(ddValues[0].value)
   
-  if(userProp.current && userProp.current.accountType=="Admin")
+  if(userProp.current && userProp.current.accountType==="Admin")
   return (
     <Page
       className={classes.root}

@@ -11,7 +11,7 @@ const StaticWebsite = () => {
                     <h1 class="mb-4">Generate your reports faster</h1>
                     <p class="mb-4">Get-measurements lets you to make report generation process<br/>
                     faster, easier and efficient</p>
-                    <a href="#" class="btn btn-primary rounded-pill">Get App Now</a>
+                    <a href="/#" class="btn btn-primary rounded-pill">Get App Now</a>
                     </div>
                     <div class="col-lg-6 d-none d-lg-block  zoomIn">
                     <div class="img-place mobile-preview shadow floating-animate">
@@ -155,29 +155,29 @@ const StaticWebsite = () => {
                 <div class="col-sm-6 col-lg-2 py-3">
                     <h5 class="mb-3">Pages</h5>
                     <ul class="menu-link">
-                    <li><a href="#" class="">Features</a></li>
-                    <li><a href="#" class="">Customers</a></li>
-                    <li><a href="#" class="">Pricing</a></li>
-                    <li><a href="#" class="">GDPR</a></li>
+                    <li><a href="/#" class="">Features</a></li>
+                    <li><a href="/#" class="">Customers</a></li>
+                    <li><a href="/#" class="">Pricing</a></li>
+                    <li><a href="/#" class="">GDPR</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-6 col-lg-2 py-3">
                     <h5 class="mb-3">Company</h5>
                     <ul class="menu-link">
-                    <li><a href="#" class="">About</a></li>
-                    <li><a href="#" class="">Team</a></li>
-                    <li><a href="#" class="">Leadership</a></li>
-                    <li><a href="#" class="">Careers</a></li>
-                    <li><a href="#" class="">HIRING!</a></li>
+                    <li><a href="/#" class="">About</a></li>
+                    <li><a href="/#" class="">Team</a></li>
+                    <li><a href="/#" class="">Leadership</a></li>
+                    <li><a href="/#" class="">Careers</a></li>
+                    <li><a href="/#" class="">HIRING!</a></li>
                     </ul>
                 </div>
                 <div class="col-md-6 col-lg-4 py-3">
                     <h5 class="mb-3">Contact</h5>
                     <ul class="menu-link">
-                    <li><a href="#" class="">Contact Us</a></li>
-                    <li><a href="#" class="">Office Location</a></li>
-                    <li><a href="#" class="">admin@get-measurements.media</a></li>
-                    <li><a href="#" class="">+91 9654682943</a></li>
+                    <li><a href="/#" class="">Contact Us</a></li>
+                    <li><a href="/#" class="">Office Location</a></li>
+                    <li><a href="/#" class="">admin@get-measurements.media</a></li>
+                    <li><a href="/#" class="">+91 9654682943</a></li>
                     </ul>
                 </div>
                 <div class="col-md-6 col-lg-4 py-3">
@@ -192,10 +192,10 @@ const StaticWebsite = () => {
                     </div>
                     </form>
                     <div class="mt-4">
-                    <a href="#" class="btn btn-fab btn-primary fg-white"><span class="mai-logo-facebook"></span></a>
-                    <a href="#" class="btn btn-fab btn-primary fg-white"><span class="mai-logo-twitter"></span></a>
-                    <a href="#" class="btn btn-fab btn-primary fg-white"><span class="mai-logo-instagram"></span></a>
-                    <a href="#" class="btn btn-fab btn-primary fg-white"><span class="mai-logo-google"></span></a>
+                    <a href="/#" class="btn btn-fab btn-primary fg-white"><span class="mai-logo-facebook"></span></a>
+                    <a href="/#" class="btn btn-fab btn-primary fg-white"><span class="mai-logo-twitter"></span></a>
+                    <a href="/#" class="btn btn-fab btn-primary fg-white"><span class="mai-logo-instagram"></span></a>
+                    <a href="/#" class="btn btn-fab btn-primary fg-white"><span class="mai-logo-google"></span></a>
                     </div>
                 </div>
                 </div>
@@ -211,9 +211,9 @@ const StaticWebsite = () => {
                 </div>
                 <div class="col-12 col-md-6 py-2">
                     <ul class="nav justify-content-end">
-                    <li class="nav-item"><a href="#" class="nav-link">Terms of Use</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Privacy Policy</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Cookie Policy</a></li>
+                    <li class="nav-item"><a href="/#" class="nav-link">Terms of Use</a></li>
+                    <li class="nav-item"><a href="/#" class="nav-link">Privacy Policy</a></li>
+                    <li class="nav-item"><a href="/#" class="nav-link">Cookie Policy</a></li>
                     </ul>
                 </div>
                 </div>

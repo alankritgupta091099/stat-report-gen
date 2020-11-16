@@ -1,11 +1,10 @@
 import React , { useState , useEffect } from 'react';
-import { connect } from 'react-redux';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Alert from '@material-ui/lab/Alert';
-import { Box , Button , Container , Grid , Link , Snackbar , TextField , Typography , makeStyles , IconButton } from '@material-ui/core';
+import { Box , Button , Container , Snackbar , TextField , Typography , makeStyles , IconButton } from '@material-ui/core';
 import axios from 'axios';
-import { useNavigate , Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Page from 'src/components/Page';
 import { API_URL } from '../../helpers/utils.js';

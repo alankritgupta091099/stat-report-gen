@@ -4,7 +4,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 import Alert from '@material-ui/lab/Alert';
-import { Box , Button , Container , Grid , Link , Snackbar , TextField , Typography , makeStyles } from '@material-ui/core';
+import { Box , Button , Container , Link , Snackbar , TextField , Typography , makeStyles } from '@material-ui/core';
 
 import Page from 'src/components/Page';
 import { loginUser } from 'src/actions/authActions.js';
@@ -33,7 +33,7 @@ const LoginView = (props) => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    if(props.notification.id=="LOGIN_SUCCESS"){
+    if(props.notification.id==="LOGIN_SUCCESS"){
       setNotificationOpen(true);
       setnotification(props.notification.msg);
       setTimeout(() => {
@@ -45,7 +45,7 @@ const LoginView = (props) => {
   }, [props.notification])
 
   useEffect(() => {    
-    if(props.error.id=="LOGIN_FAIL"){
+    if(props.error.id==="LOGIN_FAIL"){
       setError(true);
       setTimeout(() => {
         setError(false);
