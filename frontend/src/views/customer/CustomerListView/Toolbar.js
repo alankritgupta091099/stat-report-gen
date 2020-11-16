@@ -46,25 +46,25 @@ const Toolbar = ({ className, ddValues, setselectedDD, getAllCustomers, setgetSe
       switch (dd) {
         case "name":{
           var name = cust.firstName+" "+cust.lastName
-          if(name.toLowerCase().search(event.target.value.toLowerCase())!=-1)
+          if(name.toLowerCase().search(event.target.value.toLowerCase())!==-1)
             newArr.push(cust)
           break;
         }
         case "orgName":{
           var name = cust.orgName
-          if(name.toLowerCase().search(event.target.value.toLowerCase())!=-1)
+          if(name.toLowerCase().search(event.target.value.toLowerCase())!==-1)
             newArr.push(cust)
           break;
         }
         case "type":{
           var name = cust.accountType
-          if(name.toLowerCase().search(event.target.value.toLowerCase())!=-1)
+          if(name.toLowerCase().search(event.target.value.toLowerCase())!==-1)
             newArr.push(cust)
           break;
         }
         case "email":{
           var name = cust.email
-          if(name.toLowerCase().search(event.target.value.toLowerCase())!=-1)
+          if(name.toLowerCase().search(event.target.value.toLowerCase())!==-1)
             newArr.push(cust)
           break;
         }

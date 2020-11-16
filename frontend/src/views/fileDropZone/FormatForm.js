@@ -58,11 +58,8 @@ const useStyles = makeStyles((theme) => ({
 const FormatForm = (props) => {
   const { className, ...rest } = props;
   const classes = useStyles();
-  const userProp = useRef(props.user)
   const [value_1, setValue_1] = useState(3);
-  const [index_1, setIndex_1] = useState(0);
   const [value_2, setValue_2] = useState(2);
-  const [index_2, setIndex_2] = useState(0);
   const theme = useTheme();
   const [format, setFormat] = useState({
     primaryTable:{
@@ -177,7 +174,7 @@ const FormatForm = (props) => {
         >
           <Card>      
             <CardContent>
-              <Typography gutterBottom variant="h3">Generate Report > <small>Format</small> </Typography>
+              <Typography gutterBottom variant="h3">Generate Report &gt; <small>Format</small> </Typography>
               <Divider/>              
               <Typography variant="body2">
                 Upload Header Logo
