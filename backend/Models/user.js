@@ -38,6 +38,9 @@ function createUser(req,res){
                 userData
                     .save()
                     .then(user=>{
+                        var text = 'Welcome '+firstName +" "+lastName+',\n\nYour account has been successfully created and is all set for the use.\n\n' +
+                        'To reset your password, visit: http://localhost:3000/forgot \n\n'+'To Login, visit: http://localhost:3000/login \n\n' + 'Account Details:\n\n' + 'Email Address: '+email+' \n\n' + 'Password: '+password+' \n\n' + 'Account Type: '+type+' \n\n' + 'Amount Paid: Rs '+cost+' \n\n' + 'Credit Limit: '+limit+' \n\n' + 'Account Valid From: '+moment(validFrom).format('MMMM Do YYYY, h:mm:ss a')+' \n\n'+'For account renewal, contact us.';
+                        sendMail(text,"Account to Get-Measurements.media !",email)
                         return res.status(200).json({status:user.email+' Registered!!'})
                     })
                     .catch(err=>{
