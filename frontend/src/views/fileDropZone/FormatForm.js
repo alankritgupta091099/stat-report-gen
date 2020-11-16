@@ -2,7 +2,7 @@ import React, { useState , useEffect , useRef } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Box, Button, Card, CardContent, Container, Divider, Grid, makeStyles , Typography, Paper, Tabs, Tab , useTheme , Switch , Tooltip , IconButton , Radio, RadioGroup, FormControlLabel, FormControl, CardActions , Backdrop , CircularProgress , Snackbar} from '@material-ui/core';
+import { Box, Button, Card, CardContent, Container, Divider, Grid, makeStyles , Typography, Paper, Tabs, Tab , useTheme , Switch , Tooltip , IconButton , Radio, RadioGroup, FormControlLabel, FormControl, CardActions , Backdrop , CircularProgress , Snackbar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import SwipeableViews from 'react-swipeable-views';
 import axios from 'axios';
@@ -55,6 +55,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const FormatForm = (props) => {
   const { className, ...rest } = props;
   const classes = useStyles();
@@ -76,6 +80,7 @@ const FormatForm = (props) => {
   const [imgHeader, setimgHeader] = useState({name:"*Nothing Selected*"})
   const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const [confirm, setconfirm] = useState(false)
   const navigate = useNavigate()
 
   const genButton = async () => {
@@ -98,7 +103,8 @@ const FormatForm = (props) => {
               headerImg:IMAGE_BUFFER
             }
           })
-          .then(res=>{        
+          .then(res=>{
+            setconfirm(false)
             setnotification(res.data.msg)        
             setNotificationOpen(true);
             setbackdrop(false);
@@ -123,7 +129,8 @@ const FormatForm = (props) => {
           headerImg:IMAGE_BUFFER
         }
       })
-      .then(res=>{        
+      .then(res=>{
+        setconfirm(false)
         setnotification(res.data.msg)        
         setNotificationOpen(true);
         setbackdrop(false);
@@ -463,12 +470,38 @@ const FormatForm = (props) => {
               }
             </CardContent>
             <CardActions style={{padding:"2rem 18rem"}}>
-                <Button variant="contained" color="primary" fullWidth size="large" onClick={()=>genButton()}>
+                <Button variant="contained" color="primary" fullWidth size="large" onClick={()=>{setconfirm(true)}}>
                   Generate Report
                 </Button>
             </CardActions>
           </Card>
         </form>
+        <Dialog
+          open={confirm}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={()=>setconfirm(false)}
+          aria-labelledby="alert-dialog-slide-title"
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle id="alert-dialog-slide-title">{"Please confirm your actions"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              Are you sure you want to generate the report?<br/><br/>
+              <b>Usable Credits: </b> {store.getState().auth.user.plan.limitLeft}<br/>
+              <b>Credits Required: </b> {store.getState().auth.list.length}<br/>
+              <b>Credits left after use: </b> {store.getState().auth.user.plan.limitLeft-store.getState().auth.list.length}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=>setconfirm(false)} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={()=>genButton()} color="primary">
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </Page>
   ) 

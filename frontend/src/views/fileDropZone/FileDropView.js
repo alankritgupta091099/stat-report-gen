@@ -63,28 +63,34 @@ function FileDropView(props) {
           else{
             const {rows , cols} = resp;            
               if( cols.length === 1 ){
-                setTable(true)
                 var linksKiList = [];
                 rows.slice(1).forEach(item => {
                   linksKiList.push(item[0])
                 });
-                if(store.getState().auth.user.plan.limitLeft>linksKiList.length && store.getState().auth.user.accountType!=="Expired"){
-                  setFinalList(linksKiList)
-                  store.dispatch({  
-                      type:SET_LIST,
-                      payload:linksKiList
-                  })
-                  setsev("success")
-                  setnotification("Number of links in the list: "+linksKiList.length)
-                  setNotificationOpen(true)
+                if(linksKiList.length!==0){
+                  setTable(true)
+                  if(store.getState().auth.user.plan.limitLeft>=linksKiList.length && store.getState().auth.user.accountType!=="Expired"){
+                    setFinalList(linksKiList)
+                    store.dispatch({  
+                        type:SET_LIST,
+                        payload:linksKiList
+                    })
+                    setsev("success")
+                    setnotification("Number of links in the list: "+linksKiList.length)
+                    setNotificationOpen(true)
+                  } else {
+                    setsev("error")
+                    if(store.getState().auth.user.accountType==="Expired") 
+                      setnotification("Your account has expired!!")
+                    else 
+                      setnotification("INSUFFICIENT CREDIT LIMIT!!")
+                      setNotificationOpen(true)
+                      setTable(false)
+                  }
                 } else {
                   setsev("error")
-                  if(store.getState().auth.user.accountType==="Expired") 
-                    setnotification("Your account has expired!!")
-                  else 
-                    setnotification("INSUFFICIENT CREDIT LIMIT!!")
+                  setnotification("Please add some links in the file")
                   setNotificationOpen(true)
-                  setTable(false)
                 }
               } else {
                 setsev("error")
@@ -159,7 +165,7 @@ function FileDropView(props) {
                       </ListItem>
                       <ListItem>
                         <ListItemText>
-                          2. Make sure that the file has single column only and value of First Row as "Links" <i><a href="./sample.xlsx" download>Sample File</a></i>
+                          2. Make sure that the file has single column only and value of First Row as "Links" <i><a href={require("./sample.xlsx")} download="sample.xlsx">Sample File</a></i>
                         </ListItemText>
                       </ListItem>
                       <ListItem>

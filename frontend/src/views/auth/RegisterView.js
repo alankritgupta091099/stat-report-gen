@@ -128,7 +128,6 @@ const RegisterView = (props) => {
               handleChange,
               handleSubmit,
               setFieldValue,
-              handleReset,
               isSubmitting,
               touched,
               values
