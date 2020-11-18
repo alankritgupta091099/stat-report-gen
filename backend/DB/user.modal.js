@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
             required:true
         }
     },
+    generatingReport:{
+        type: Boolean,
+        default: false
+    },
     coveragesScanned:{
         type:[coverageSchema]
     },

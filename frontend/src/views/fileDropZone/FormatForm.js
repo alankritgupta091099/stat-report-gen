@@ -81,6 +81,8 @@ const FormatForm = (props) => {
   const [notification, setnotification] = useState("");
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [confirm, setconfirm] = useState(false)
+  const [errorOpen, seterrorOpen] = useState(false)
+  const [errormsg, seterror] = useState("");
   const navigate = useNavigate()
 
   const genButton = async () => {
@@ -105,12 +107,17 @@ const FormatForm = (props) => {
           })
           .then(res=>{
             setconfirm(false)
-            setnotification(res.data.msg)        
-            setNotificationOpen(true);
-            setbackdrop(false);
+            if(res.data.wait){
+              seterror(res.data.msg)
+              seterrorOpen(true)
+            } else {
+              setnotification(res.data.msg)        
+              setNotificationOpen(true)
+            }
             setTimeout(() => {
+              setbackdrop(false);
               navigate('/app/report-gen')
-            }, 4000);
+            }, 3000);
           })
           .catch(err=>console.log(err))
         });
@@ -131,12 +138,17 @@ const FormatForm = (props) => {
       })
       .then(res=>{
         setconfirm(false)
-        setnotification(res.data.msg)        
-        setNotificationOpen(true);
-        setbackdrop(false);
+        if(res.data.wait){
+          seterror(res.data.msg)
+          seterrorOpen(true)
+        } else {
+          setnotification(res.data.msg)        
+          setNotificationOpen(true)
+        }
         setTimeout(() => {
+          setbackdrop(false);
           navigate('/app/report-gen')
-        }, 4000);
+        }, 3000);
       })
       .catch(err=>console.log(err))
     }
@@ -170,6 +182,11 @@ const FormatForm = (props) => {
     <Snackbar open={notificationOpen} autoHideDuration={4000} onClose={()=>setNotificationOpen(false)}>
       <Alert onClose={()=>setNotificationOpen(false)} elevation={6} variant="filled" severity="success">
         {notification}
+      </Alert>
+    </Snackbar>
+    <Snackbar open={errorOpen} autoHideDuration={4000} onClose={()=>seterrorOpen(false)}>
+      <Alert onClose={()=>seterrorOpen(false)} elevation={6} variant="filled" severity="error">
+        {errormsg}
       </Alert>
     </Snackbar>
       <Container maxWidth="lg">
@@ -490,7 +507,7 @@ const FormatForm = (props) => {
               Are you sure you want to generate the report?<br/><br/>
               <b>Usable Credits: </b> {store.getState().auth.user.plan.limitLeft}<br/>
               <b>Credits Required: </b> {store.getState().auth.list.length}<br/>
-              <b>Credits left after use: </b> {store.getState().auth.user.plan.limitLeft-store.getState().auth.list.length}
+              <b>Credits left after use <i>(Extected)</i>: </b> {store.getState().auth.user.plan.limitLeft-store.getState().auth.list.length}
             </DialogContentText>
           </DialogContent>
           <DialogActions>

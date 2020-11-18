@@ -18,39 +18,49 @@ module.exports={
 
 async function generateReport(req,res) {
 
-    var coverageScanned = 0;
-    var list = req.body.list; 
-    var format = req.body.format;
-    var headerImg = req.body.headerImg;
-
-    res.status(200).json({msg:"You will receive the file on your registered Email Id"})
-    var articleDetails, siteDetails, responseData = [];
-
-    console.log("Fetching data for report...")
-
     const decoded = jwt.verify( req.header('x-auth-token') , process.env.SECRET_KEY )
 
-    try {
-        for (let i = 0; i < list.length; i++) {
-            console.log("Report item #",i+1)
-            console.log(format.primaryTable)
-            articleDetails = await webScraper(list[i],null,false,format.secondaryTable);
-            if(articleDetails.articleHeadline!=="N/A")
-                coverageScanned+=1;
-            siteDetails = await scrapStatShow(list[i],null,false,format.primaryTable.stats,decoded);
-            responseData.push({
-                articleDetails , 
-                siteDetails
-            })
-        }
-    } catch (error) {
-        res.status(400).json({msg:"Something went Wrong"})
-        console.log(error)       
-    }
+    User.findOne({_id:decoded.id})
+        .then(async (user) => {
+            if(user.generatingReport)
+                return res.status(200).json({wait:true, msg:"Please wait while we are already making your report"})
+            else {
+                user.generatingReport=true;
+                user.save();
+                var coverageScanned = 0;
+                var list = req.body.list; 
+                var format = req.body.format;
+                var headerImg = req.body.headerImg;
 
-    console.log("All data fetched !!!")
-    var listLength = list.length;
-    docxFile(responseData,format,headerImg,{coverageScanned,decoded, listLength})
+                res.status(200).json({wait:false, msg:"You will receive the file on your registered Email Id"})
+                var articleDetails, siteDetails, responseData = [];
+
+                console.log("Fetching data for report...")
+
+                try {
+                    for (let i = 0; i < list.length; i++) {
+                        console.log("Report item #",i+1)
+                        console.log(format.primaryTable)
+                        articleDetails = await webScraper(list[i],null,false,format.secondaryTable);
+                        if(articleDetails.articleHeadline!=="N/A")
+                            coverageScanned+=1;
+                        siteDetails = await scrapStatShow(list[i],null,false,format.primaryTable.stats,decoded);
+                        responseData.push({
+                            articleDetails , 
+                            siteDetails
+                        })
+                    }
+                } catch (error) {
+                    res.status(400).json({msg:"Something went Wrong"})
+                    console.log(error)       
+                }
+                console.log("All data fetched !!!")
+                var listLength = list.length;
+                docxFile(responseData,format,headerImg,{coverageScanned,decoded, listLength})
+            }
+        }).catch((err) => {
+            return res.status(400).json({msg:"Something went Wrong"})
+        });    
 }
 
 function capitalize(string) {
@@ -333,6 +343,7 @@ function sendMail(buff,saveToDB) {
                     }
                     if(result.accountType!=='Admin')
                         result.plan.limitLeft=result.plan.limit-limitLeft;
+                    result.generatingReport=false;
                     result.save();
                     console.log("DB updated")
                 }).catch((err) => {
