@@ -133,8 +133,8 @@ function forgotPassword(req,res) {
         var token = jwt.sign(payload, secret);
         var text = 'Dear User,\n\n You are receiving this because we have received a request to reset the password this account.\n\n' +
           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://localhost:3000/resetpassword/'+payload.id+"/"+token+ '\n\n' +
-          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+          'https://get-measurements.media/resetpassword/'+payload.id+"/"+token+ '\n\n' +
+          'If you did not request this, please ignore this email.\n'
         sendMail(text,"Reset your password",email)
         return res.status(200).json({msg:"Password reset link successfully sent to the registered email id"})
     }).catch((err) => {
