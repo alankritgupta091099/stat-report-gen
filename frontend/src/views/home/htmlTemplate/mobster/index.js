@@ -11,7 +11,7 @@ const StaticWebsite = () => {
                     <h1 class="mb-4">Generate your reports faster</h1>
                     <p class="mb-4">Get-measurements lets you to make report generation process<br/>
                     faster, easier and efficient</p>
-                    <a href="/#" class="btn btn-primary rounded-pill">Try now</a>
+                    <a href="/#" class="btn btn-primary rounded-pill">Try it now</a>
                     </div>
                     <div class="col-lg-6 d-none d-lg-block  zoomIn">
                     <div class="img-place mobile-preview shadow floating-animate">
