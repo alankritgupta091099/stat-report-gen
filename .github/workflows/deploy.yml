@@ -15,9 +15,9 @@ jobs:
                 uses: peterkimzz/aws-ssm-send-command@1.0.1
                 with:
                     aws-access-key-id: AKIAJLPQX6LYT3EJPIBA
-                aws-secret-access-key: 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
-                aws-region: ap-south-1
-                instance-ids: i-01300efc4df826b93
-                comment: Deploy the master branch
-                working-directory: /home/ubuntu/stat-report-gen
-                command: /bin/sh ./deploy.sh
+                    aws-secret-access-key: D1GjTwqPjfRBSPSqoAJzg+75spR3dvev8gxhW3JC
+                    aws-region: ap-south-1
+                    instance-ids: i-01300efc4df826b93
+                    comment: Deploy the master branch
+                    working-directory: /home/ubuntu/stat-report-gen
+                    command: /bin/sh ./deploy.sh
