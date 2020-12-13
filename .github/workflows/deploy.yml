@@ -9,10 +9,10 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v2
+            - name: Clone repo
+              uses: actions/checkout@v2
 
-            - name: AWS SSM Send Command
-              uses: peterkimzz/aws-ssm-send-command@1.0.1
+            - name: Execute commands              
               with:
                 aws-access-key-id: AKIAJLPQX6LYT3EJPIBA
                 aws-secret-access-key: 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
@@ -20,4 +20,14 @@ jobs:
                 instance-ids: i-01300efc4df826b93
                 comment: Deploy the master branch
                 working-directory: /home/ubuntu/stat-report-gen
-                command: /bin/sh ./deploy.sh
+              run: |
+                  git pull origin master
+                  cd backend
+                  sudo npm install
+                  sudo pm2 start index.js -i max --watch
+                  cd ..
+                  cd frontend
+                  sudo npm install
+                  sudo npm run build
+                  cd ..
+                  sudo systemctl restart nginx
