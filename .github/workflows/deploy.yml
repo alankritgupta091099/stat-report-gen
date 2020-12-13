@@ -10,7 +10,7 @@ jobs:
 
         steps:
             - name: Clone repo
-              uses: git pull origin master
+              run: git pull origin master
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
