@@ -12,14 +12,6 @@ jobs:
             - name: Clone repo
               uses: actions/checkout@v2
 
-            - name: Execute commands              
-              run: |
-                  cd frontend
-                  sudo npm install
-                  sudo npm run build
-                  cd ..
-                  sudo systemctl restart nginx
-
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v1
               with:
@@ -29,3 +21,20 @@ jobs:
                 instance-ids: i-01300efc4df826b93
                 comment: Deploy the master branch
                 working-directory: /home/ubuntu/stat-report-gen
+            
+            - name: Execute Backend commands              
+              run: |
+                  cd backend
+                  sudo npm install
+                  sudo npm install pm2 -g
+                  sudo pm2 start index.js -i max --watch
+                  cd ..
+
+            - name: Execute Frontend commands              
+              run: |
+                  cd frontend
+                  sudo npm install
+                  sudo npm run build
+                  cd ..
+                  sudo apt install nginx
+                  sudo systemctl restart nginx
