@@ -1,4 +1,4 @@
-git pull origin master
+# git pull origin master
 # cd backend
 # sudo npm install
 # sudo pm2 start index.js -i max --watch
