@@ -507,7 +507,8 @@ const FormatForm = (props) => {
               Are you sure you want to generate the report?<br/><br/>
               <b>Usable Credits: </b> {store.getState().auth.user.plan.limitLeft}<br/>
               <b>Credits Required: </b> {store.getState().auth.list.length}<br/>
-              <b>Credits left after use <i>(Extected)</i>: </b> {store.getState().auth.user.plan.limitLeft-store.getState().auth.list.length}
+              <b>Credits left after use <i>(Extected)</i>: </b> {store.getState().auth.user.plan.limitLeft-store.getState().auth.list.length}<br/><br/>
+              <i><small>( You will receive the report on <b>"{store.getState().auth.user.email}"</b> in<b> Approx. {store.getState().auth.list.length/2} mins</b> )</small></i>
             </DialogContentText>
           </DialogContent>
           <DialogActions>

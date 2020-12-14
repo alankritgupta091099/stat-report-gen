@@ -62,7 +62,7 @@ const TotalDocs = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              TOTAL DOUMENTS<br/><small><i> in {moment().format('MMMM')}</i></small>
+              TOTAL DOCUMENTS<br/><small><i> in {moment().format('MMMM')}</i></small>
             </Typography>
             <Typography
               color="textPrimary"
