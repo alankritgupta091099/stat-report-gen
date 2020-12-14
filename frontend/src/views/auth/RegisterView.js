@@ -31,7 +31,7 @@ const RegisterView = (props) => {
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [error, setError] = useState(false);
   const [user, setUser] = useState("")
-  const [passwordMask, setpasswordMask] = useState("text")
+  const [passwordMask, setpasswordMask] = useState("password")
 
   const phoneRegExp = /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
 
@@ -102,7 +102,9 @@ const RegisterView = (props) => {
               type:'Trial',
               cost:0,
               limit:250,
-              validFrom: moment(Date.now()),
+              validFrom: moment(),
+              validUntil: moment().add(1, 'months').calendar(),
+              password: Math.random().toString(36).slice(-8)
             }}
             validationSchema={
               Yup.object().shape({
@@ -299,7 +301,7 @@ const RegisterView = (props) => {
                   </Grid>
                   <Grid item md={6} xs={12}>
                     <FormControl variant="outlined" className={classes.formControl} fullWidth>
-                      <TextField //disable this section and set it to 0 when account type is not paid
+                      <TextField
                         label="Cost"
                         name="cost"
                         onChange={handleChange}
@@ -333,21 +335,45 @@ const RegisterView = (props) => {
                       </FormControl>
                     </MuiPickersUtilsProvider>
                   </Grid>
+                  <Grid item md={6} xs={12} >
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <KeyboardDatePicker
+                        disableToolbar
+                        variant="inline"
+                        format="DD/MM/YYYY"
+                        margin="normal"
+                        label="Account Valid Until"
+                        name="validUntil"
+                        value={values.validUntil}
+                        onChange={date=>setFieldValue('validUntil',moment(date))}
+                        KeyboardButtonProps = {{
+                          'aria-label': 'change date',
+                        }}
+                        inputVariant="outlined"
+                        minDate={moment()}
+                        fullWidth
+                        disabled={(values.type==='Trial')?true:false}
+                      />
+                      </FormControl>
+                    </MuiPickersUtilsProvider>
+                  </Grid>
                   <Grid item md={6} xs={12}>
-                  <br/>
                     <FormControl variant="outlined" className={classes.formControl} fullWidth>
                       <TextField
                         label="Credit Limit"
                         name="limit"
                         onChange={handleChange}
-                        value={values.limit}
+                        value={(values.type==='Trial')? values.limit:9999}
+                        margin="normal"
                         variant="outlined"
                         type="number"
                         InputProps={{ inputProps: { min: 0} }}
+                        disabled={(values.type==='Trial')?false:true}
                       />
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>{/*Forget password section*/}
+                  <Grid item xs={6}>
                     <FormControl variant="outlined" className={classes.formControl} fullWidth>
                     <TextField
                       error={Boolean(touched.password && errors.password)}

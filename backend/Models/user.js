@@ -18,14 +18,14 @@ module.exports = {
 // @access PRIVATE
 
 function createUser(req,res){
-    const { firstName , email , lastName , orgName , orgPosition , mobNumber , password , type , cost , limit , validFrom } = req.body;
+    const { firstName , email , lastName , orgName , orgPosition , mobNumber , password , type , cost , limit , validFrom , validUntil} = req.body;
 
-    if( !firstName || !email || !lastName || !orgName || !orgPosition || !mobNumber || !password || !type || !limit || !validFrom){
+    if( !firstName || !email || !lastName || !orgName || !orgPosition || !mobNumber || !password || !type || !limit || !validFrom || !validUntil){
         return res.status(400).json({msg:'Please enter all fields'})
     }
 
     const userData= new User({ 
-        firstName , email , lastName , orgName , orgPosition , mobNumber , password , accountType:type , plan: {cost , limit , validFrom , limitLeft:limit }
+        firstName , email , lastName , orgName , orgPosition , mobNumber , password , accountType:type , plan: {cost , limit , validFrom , validUntil, limitLeft:limit }
     })
     User.findOne({
         email
@@ -39,8 +39,14 @@ function createUser(req,res){
                     .save()
                     .then(user=>{
                         var text = 'Welcome '+firstName +" "+lastName+',\n\nYour account has been successfully created and is all set for the use.\n\n' +
-                        'To reset your password, visit: http://localhost:3000/forgot \n\n'+'To Login, visit: http://localhost:3000/login \n\n' + 'Account Details:\n\n' + 'Email Address: '+email+' \n\n' + 'Password: '+password+' \n\n' + 'Account Type: '+type+' \n\n' + 'Amount Paid: Rs '+cost+' \n\n' + 'Credit Limit: '+limit+' \n\n' + 'Account Valid From: '+moment(validFrom).format('MMMM Do YYYY, h:mm:ss a')+' \n\n'+'For account renewal, contact us.';
-                        sendMail(text,"Account to Get-Measurements.media !",email)
+                        'Please reset your password, visit: https://get-measurements.media/forgot \n\n'+'To Login, visit: https://get-measurements.media/login \n\n' + 'Account Details:\n\n' + 'Email Address: '+email+' \n\n' + 'Password: '+password+' \n\n' + 'Account Type: '+type+' \n\n' + 'Amount Paid: Rs '+cost+' \n\n';
+                        if(type==='Trial')
+                            text+='Credit Limit: '+limit+' \n\n'; 
+                        text+='Account Valid From: '+moment(validFrom).format('MMMM Do YYYY, h:mm:ss a')+' \n\n'
+                        if(type==='Paid')
+                            text+='Account Valid Until: '+moment(validUntil).format('MMMM Do YYYY, h:mm:ss a')+' \n\n'
+                        text+='For account renewal, contact us.';
+                        sendMail(text,"Get-Measurements.media Account Registeration",email)
                         return res.status(200).json({status:user.email+' Registered!!'})
                     })
                     .catch(err=>{

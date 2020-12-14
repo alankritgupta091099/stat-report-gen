@@ -36,7 +36,8 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
     orgName: "Organisation Name",
     orgPos: "Organisation Position",
     cost:0,
-    validFrom: moment(Date.now()),
+    validFrom: moment(),
+    validUntil: moment(),
     limit:0,
     limitLeft:0
   });
@@ -69,6 +70,7 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
       orgPos:customer.orgPosition,
       cost:customer.plan.cost,
       validFrom:customer.plan.validFrom,
+      validUntil:customer.plan.validUntil,
       limit:customer.plan.limit,
       limitLeft:customer.plan.limitLeft
     })
@@ -154,9 +156,6 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                   Name
                 </TableCell>
                 <TableCell>
-                  Organisation
-                </TableCell>
-                <TableCell>
                   Account Status
                 </TableCell>
                 <TableCell>
@@ -164,6 +163,9 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                 </TableCell>
                 <TableCell>
                   Valid From<br/><small><i>(DD/MM/YYYY)</i></small>
+                </TableCell>
+                <TableCell>
+                  Valid Until<br/><small><i>(DD/MM/YYYY)</i></small>
                 </TableCell>
                 <TableCell>
                   Credit Limit
@@ -178,6 +180,9 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                 </TableCell>
                 <TableCell>
                   Mobile number
+                </TableCell>
+                <TableCell>
+                  Organisation
                 </TableCell>
                 <TableCell>
                   Designation
@@ -200,9 +205,6 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                         <TableCell>
                           {customer.firstName +" "+ customer.lastName}
                         </TableCell>
-                        <TableCell> 
-                          {customer.orgName}
-                        </TableCell>
                         <TableCell>
                           {customer.accountType}
                         </TableCell>
@@ -211,6 +213,9 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                         </TableCell>
                         <TableCell>
                           {moment(customer.plan.validFrom).format('DD/MM/YYYY')}
+                        </TableCell>
+                        <TableCell>
+                          {moment(customer.plan.validUntil).format('DD/MM/YYYY')}
                         </TableCell>
                         <TableCell>
                           {customer.plan.limit}
@@ -234,6 +239,9 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                         <TableCell>
                           {customer.mobNumber}
                         </TableCell>
+                        <TableCell> 
+                          {customer.orgName}
+                        </TableCell>
                         <TableCell>
                           {customer.orgPosition}
                         </TableCell>
@@ -248,9 +256,6 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                   <TableCell>
                     {customer.firstName +" "+ customer.lastName}
                   </TableCell>
-                  <TableCell> 
-                    {customer.orgName}
-                  </TableCell>
                   <TableCell>
                     {customer.accountType}
                   </TableCell>
@@ -259,6 +264,9 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                   </TableCell>
                   <TableCell>
                     {moment(customer.plan.validFrom).format('DD/MM/YYYY')}
+                  </TableCell>
+                  <TableCell>
+                    {moment(customer.plan.validUntil).format('DD/MM/YYYY')}
                   </TableCell>
                   <TableCell>
                     {customer.plan.limit}
@@ -281,6 +289,9 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                   </TableCell>
                   <TableCell>
                     {customer.mobNumber}
+                  </TableCell>
+                  <TableCell> 
+                    {customer.orgName}
                   </TableCell>
                   <TableCell>
                     {customer.orgPosition}
@@ -339,7 +350,13 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                               limit:250,
                               [e.target.name]: e.target.value
                             })                            
-                          } else setValues({
+                          } else if(e.target.value==='Paid')
+                            setValues({
+                            ...values,
+                            limit:9999,
+                            [e.target.name]: e.target.value
+                          })
+                          else setValues({
                             ...values,
                             [e.target.name]: e.target.value
                           })
@@ -359,7 +376,7 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                     xs={12}
                   >                
                     <FormControl variant="outlined" className={classes.formControl}>
-                      <TextField //disable this section and set it to 0 when account type is not paid
+                      <TextField
                         fullWidth
                         label="Cost"
                         name="cost"
@@ -390,13 +407,39 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                           'aria-label': 'change date',
                         }}
                         inputVariant="outlined"
+                        minDate={moment()}
+                        disabled={(values.type==='Expired')?true:false}
+                      />   
+                    </FormControl>
+                  </MuiPickersUtilsProvider> 
+                  </Grid>
+                  <Grid
+                    item
+                    md={6}
+                    xs={12}
+                  >                    
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <FormControl variant="outlined" className={classes.formControl} fullWidth>
+                      <KeyboardDatePicker
+                        disableToolbar
+                        variant="inline"
+                        format="DD/MM/YYYY"
+                        margin="normal"
+                        label="Account Valid Until"
+                        name="validUntil"
+                        value={values.validUntil}
+                        onChange={date=>setValues({...values,validUntil:moment(date).format()})}
+                        KeyboardButtonProps = {{
+                          'aria-label': 'change date',
+                        }}
+                        inputVariant="outlined"
                         minDate={values.validFrom}
+                        disabled={(values.type==='Trial'||values.type==='Expired')?true:false}
                       />   
                     </FormControl>
                   </MuiPickersUtilsProvider> 
                   </Grid>
                   <Grid item md={6} xs={12}>
-                  <br/>
                     <FormControl variant="outlined" className={classes.formControl} fullWidth>
                       <TextField
                         label="Credit Limit"
@@ -411,11 +454,11 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                         variant="outlined"
                         type="number"
                         InputProps={{ inputProps: { min: 0} }}
+                        disabled={(values.type==='Paid'||values.type==='Expired')?true:false}
                       />
                     </FormControl>
                   </Grid>
                   <Grid item md={6} xs={12}>
-                  <br/>
                     <FormControl variant="outlined" className={classes.formControl} fullWidth>
                       <TextField
                         label="Credits Left"

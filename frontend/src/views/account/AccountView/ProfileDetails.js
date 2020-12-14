@@ -22,6 +22,7 @@ const ProfileDetails = (props) => {
     type: "Account Type",
     cost: 0,
     validFrom: moment(),
+    validUntil: moment(),
     limit:0,
     limitLeft:0
   });
@@ -37,6 +38,7 @@ const ProfileDetails = (props) => {
         type: props.user.accountType,
         cost: props.user.plan.cost,
         validFrom: moment(props.user.plan.validFrom).format('DD/MM/YYYY'),
+        validUntil: moment(props.user.plan.validUntil).format('DD/MM/YYYY'),
         limit: props.user.plan.limit,
         limitLeft: props.user.plan.limitLeft
       })    
@@ -52,7 +54,7 @@ const ProfileDetails = (props) => {
     >
       <Card>
         <CardHeader
-          subheader="The information can not be edited"
+          subheader="This information can not be edited"
           title="Profile"
         />
         <Divider />
@@ -142,7 +144,7 @@ const ProfileDetails = (props) => {
       <br/>
       <Card>
         <CardHeader
-          subheader="The information can not be edited"
+          subheader="This information can not be edited"
           title="Plan"
         />
         <Divider />
@@ -181,36 +183,64 @@ const ProfileDetails = (props) => {
                 id="outlined-disabled"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Credit Limit"
-                name="limit"
-                value={values.limit}
-                variant="outlined"
-                disabled
-                id="outlined-disabled"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Credits Left"
-                name="limitLeft"
-                value={values.limitLeft}
-                variant="outlined"
-                disabled
-                id="outlined-disabled"
-              />
-            </Grid>
+            {(()=>{
+              if(values.type==='Trial')
+                return (
+                  <>
+                    <Grid
+                      item
+                      md={6}
+                      xs={12}
+                    >
+                      <TextField
+                        fullWidth
+                        label="Credit Limit"
+                        name="limit"
+                        value={values.limit}
+                        variant="outlined"
+                        disabled
+                        id="outlined-disabled"
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      md={6}
+                      xs={12}
+                    >
+                      <TextField
+                        fullWidth
+                        label="Credits Left"
+                        name="limitLeft"
+                        value={values.limitLeft}
+                        variant="outlined"
+                        disabled
+                        id="outlined-disabled"
+                      />
+                    </Grid>
+                  </>
+                )
+                else if (values.type==='Paid')
+                  return(
+                    <>
+                      <Grid
+                        item
+                        md={6}
+                        xs={12}
+                      >
+                        <TextField
+                          fullWidth
+                          label="Valid Until"
+                          name="validUntil"
+                          value={values.validUntil}
+                          variant="outlined"
+                          disabled
+                          id="outlined-disabled"
+                        />
+                      </Grid>
+                    </>
+                  )
+            })()}
+            
           </Grid>
         </CardContent>
       </Card>

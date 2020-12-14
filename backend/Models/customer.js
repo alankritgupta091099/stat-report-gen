@@ -43,6 +43,7 @@ function editCustomer(req,res) {//limitLeft set to 0 after reset account
                 result.plan = {
                     cost:req.body.cost,
                     validFrom:req.body.validFrom,
+                    validUntil: req.body.validUntil,
                     limitLeft:req.body.limit-count,
                     limit:req.body.limit,
                 }

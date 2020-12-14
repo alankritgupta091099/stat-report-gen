@@ -71,9 +71,9 @@ const NavBar = (props) => {
         limitLeft: userProp.current.plan.limitLeft 
       })
 
-      if(userProp.current.plan.limitLeft<250)
+      if(userProp.current.accountType==='Trial')
         setsev("warning")
-      else if(userProp.current.plan.limitLeft<=50 || userProp.current.accountType=="Expired")
+      else if(userProp.current.accountType=="Expired")
         setsev("error")
       else setsev("success")
 
@@ -161,18 +161,43 @@ const NavBar = (props) => {
         >
         <strong>Account Type:</strong> <i>{user.type}</i>
         </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
-        <strong>Credit Limit: </strong>{user.limit}
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
-        <strong>Credits Left: </strong>{user.limitLeft}
-        </Typography>
+        {(()=>{
+          if(user.type==='Trial')
+            return (
+              <>
+                <Typography
+                  color="textSecondary"
+                  variant="body2"
+                >
+                <strong>Credit Limit: </strong>{user.limit}
+                </Typography>
+                <Typography
+                  color="textSecondary"
+                  variant="body2"
+                >
+                <strong>Credits Left: </strong>{user.limitLeft}
+                </Typography>
+              </>
+            )
+          else if(user.type==='Paid')
+              return (
+                <Typography
+                  color="textSecondary"
+                  variant="body2"
+                >
+                  <i><strong>Unlimited Access</strong></i>
+                </Typography>
+              )
+          else if(user.type==='Expired')
+              return (
+                <Typography
+                color="textSecondary"
+                variant="body2"
+                >
+                <strong><i>Contact Us!</i></strong>
+                </Typography>
+              )
+        })()}
       </Alert>
       </Box>
       <Divider/>

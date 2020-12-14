@@ -505,10 +505,22 @@ const FormatForm = (props) => {
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
               Are you sure you want to generate the report?<br/><br/>
-              <b>Usable Credits: </b> {store.getState().auth.user.plan.limitLeft}<br/>
-              <b>Credits Required: </b> {store.getState().auth.list.length}<br/>
-              <b>Credits left after use <i>(Extected)</i>: </b> {store.getState().auth.user.plan.limitLeft-store.getState().auth.list.length}<br/><br/>
-              <i><small>( You will receive the report on <b>"{store.getState().auth.user.email}"</b> in<b> Approx. {store.getState().auth.list.length/2} mins</b> )</small></i>
+              {(()=>{
+                if(store.getState().auth.user.accountType==='Trial')
+                  return (
+                    <>
+                      <b>Usable Credits: </b> {store.getState().auth.user.plan.limitLeft}<br/>
+                      <b>Credits Required: </b> {store.getState().auth.list.length}<br/>
+                      <b>Credits left after use <i>(Extected)</i>: </b> {store.getState().auth.user.plan.limitLeft-store.getState().auth.list.length}<br/><br/>
+                    </>
+                  )
+                else return(
+                  <>
+                    <b>Number of Links in File: </b> {store.getState().auth.list.length}<br/><br/>
+                  </>
+                )
+              })()}              
+              <i><small>( You will receive the report on <b>"{store.getState().auth.user.email}"</b> in<b> Approx. {Math.round((store.getState().auth.list.length/3)*10)/10} mins</b> )</small></i>
             </DialogContentText>
           </DialogContent>
           <DialogActions>

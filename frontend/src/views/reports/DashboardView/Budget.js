@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import MoneyIcon from '@material-ui/icons/Money';
 import axios from 'axios';
+import moment from 'moment';
 
 import { API_URL } from 'src/helpers/utils.js';
 import store from "src/store.js";
@@ -68,7 +69,7 @@ const Budget = ({ className, ...rest }) => {
               gutterBottom
               variant="h6"
             >
-              MONTHLY REVENUE
+              TOTAL REVENUE<br/><small><i> in {moment().format('MMMM')}</i></small>
             </Typography>
             <Typography
               color="textPrimary"

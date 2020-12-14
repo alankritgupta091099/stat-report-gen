@@ -46,6 +46,10 @@ const userSchema = new mongoose.Schema({
             type:Date,
             default:Date.now()
         },
+        validUntil:{
+            type:Date,
+            default:Date.now()
+        },
         limit:{
             type:Number,
             required:true
