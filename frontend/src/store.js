@@ -7,10 +7,16 @@ const initialState={};
 
 const middleware=[thunk];
 
-const composeEnhancers = process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ 
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ 
-        actionsBlacklist: ['REDUX_STORAGE_SAVE']}) 
-    : compose;
+// const composeEnhancers = process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ 
+//     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ 
+//         actionsBlacklist: ['REDUX_STORAGE_SAVE']}) 
+//     : compose;
+
+const composeEnhancers =
+  (process.env.NODE_ENV !== 'production' &&
+    typeof window !== 'undefined' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
 
 //Disable the redux extension in production environment
 
