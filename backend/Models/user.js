@@ -3,6 +3,7 @@ const bcrypt = require ('bcryptjs');
 const User = require('../DB/user.modal.js');
 const moment = require('moment');
 var nodemailer = require('nodemailer');
+const cron = require("node-cron");
 
 module.exports = {    
     createUser,
@@ -245,3 +246,22 @@ function sendMail(text,subject,email) {
         }
     });
 }
+
+cron.schedule('0 0 * * *', function() {
+    User
+        .find({accountType: "Paid" })
+        .then((users) => {
+            console.log("Cron job for Account Termination Started @ ", moment().format('MMMM Do YYYY, h:mm:ss a'))
+            users
+                .forEach((user)=>{
+                    if(moment(user.plan.validUntil).isSameOrBefore(moment())){
+                        user.accountType="Expired";
+                        console.log("User ",user.email," set to Expired");
+                        user.save();
+                    }                        
+                })
+            console.log("Cron job Ended!")
+        }).catch((err) => {
+            console.log('Could not complete the scheduled job due to - ',err)
+        });
+});
