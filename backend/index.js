@@ -28,6 +28,7 @@ const insta=require('./Routes/POST/insta.js');
 const reportGen=require('./Routes/POST/report-gen.js');
 const createUser=require('./Routes/POST/user.js');
 const editCustomer=require('./Routes/POST/customers.js');
+const toggleGeneratingReportButton=require('./Routes/POST/customers.js');
 //GET routes
 const verifyUser=require('./Routes/GET/user.js');
 const fetchCustomers=require('./Routes/GET/customer.js');
@@ -51,6 +52,7 @@ app.use('/report', Middlewares , reportGen);
 //Post
 app.use('/post/user',createUser);
 app.use('/post/customer', Middlewares, editCustomer);
+app.use('/post/customer', Middlewares, toggleGeneratingReportButton);
 //Get
 app.use('/get/user',verifyUser);
 app.use('/get/customers', Middlewares, fetchCustomers);

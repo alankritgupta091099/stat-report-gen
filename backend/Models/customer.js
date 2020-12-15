@@ -4,7 +4,8 @@ const moment = require('moment');
 module.exports = {
     fetchCustomers,
     editCustomer,
-    fetchCustomerHistory
+    fetchCustomerHistory,
+    toggleGeneratingReportButton
 }
 
 function fetchCustomers (req,res) {
@@ -22,7 +23,7 @@ function fetchCustomers (req,res) {
     }
 }
 
-function editCustomer(req,res) {//limitLeft set to 0 after reset account
+function editCustomer(req,res) {
     try {
         User
             .findOne({_id:req.params.id})
@@ -75,4 +76,16 @@ function fetchCustomerHistory (req,res) {
     } catch (error) {
         return res.status(400).json({msg: 'Something Went Wrong'})
     }
+}
+
+function toggleGeneratingReportButton (req,res){
+    User
+        .findOne({_id:req.params.id})
+        .then((customer) => {
+            customer.generatingReport=req.body.genBtn;
+            customer.save();
+            return res.status(200).json({msg:"Successfully toggled"});
+        }).catch((err) => {
+            return res.status(400).json({msg: 'Something Went Wrong'});
+        });
 }
