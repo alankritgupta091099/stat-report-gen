@@ -402,12 +402,11 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                         label="Account Valid From"
                         name="validFrom"
                         value={values.validFrom}
-                        onChange={date=>setValues({...values,validFrom:moment(date).format()})}
+                        onChange={date=>setValues({...values,validFrom:moment(date)})}
                         KeyboardButtonProps = {{
                           'aria-label': 'change date',
                         }}
                         inputVariant="outlined"
-                        minDate={moment()}
                         disabled={(values.type==='Expired')?true:false}
                       />   
                     </FormControl>
@@ -428,7 +427,7 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                         label="Account Valid Until"
                         name="validUntil"
                         value={values.validUntil}
-                        onChange={date=>setValues({...values,validUntil:moment(date).format()})}
+                        onChange={date=>setValues({...values,validUntil:moment(date).set({hour:0,minute:0,second:0,millisecond:0})})}
                         KeyboardButtonProps = {{
                           'aria-label': 'change date',
                         }}

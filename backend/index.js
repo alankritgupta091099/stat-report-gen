@@ -4,6 +4,7 @@ require('dotenv').config();
 var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors')
+var moment = require('moment');
 
 var app = express();
 app.use(cors());
@@ -15,8 +16,8 @@ app.use(bodyParser.urlencoded({extended:true}));
 const auth = require('./Middlewares/auth.js');
 const Middlewares = [auth];
 
-app.use(function (req,res,next) {
-    console.log("Request From ===>",req.url," @ ",Date(Date.now()).toString())
+app.use(function (req,res,next) {    
+    console.log("Request From ===>",req.url," @ ",moment().format('MMMM Do YYYY, h:mm:ss a'))
     next();
 })
 
