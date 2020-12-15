@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Box, Button, Card, TextField, TableContainer, Table, TableBody, TableCell, TableHead, TablePagination, TableRow,  Typography, makeStyles , CircularProgress, Dialog, DialogActions, DialogContent, CardContent , DialogTitle , CardHeader, Grid ,Divider, FormControl, InputLabel, Select, MenuItem , Snackbar , Paper} from '@material-ui/core';
+import { Box, Button, Card, TextField, TableContainer, Table, TableBody, TableCell, TableHead, TablePagination, TableRow,  Typography, makeStyles , CircularProgress, Dialog, DialogActions, DialogContent, CardContent , DialogTitle , CardHeader, Grid ,Divider, FormControl, InputLabel, Select, MenuItem , Snackbar , Paper , FormControlLabel , Checkbox} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@material-ui/pickers";
 import MomentUtils from "@date-io/moment";
@@ -176,6 +176,9 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                 <TableCell/>
                 <TableCell/>
                 <TableCell>
+                  Generate Button
+                </TableCell>
+                <TableCell>
                   Email
                 </TableCell>
                 <TableCell>
@@ -234,6 +237,9 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                           </Button>
                         </TableCell>
                         <TableCell>
+                          Generate Button
+                        </TableCell>
+                        <TableCell>
                           {customer.email}
                         </TableCell>
                         <TableCell>
@@ -283,6 +289,29 @@ const Results = ({ className, customers, getAllCustomers, getSelectedCustomers, 
                     <Button variant="contained" size="small" color="primary" onClick={event=>handleClickOpen(event,customer._id)}>
                       Edit
                     </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox
+                      checked={customer.generatingReport}
+                      onChange={()=>{
+                        axios({
+                          method:'post',
+                          url:`${API_URL}/post/customer/genBtn/${customer._id}`,
+                          headers:{'x-auth-token': store.getState().auth.token},
+                          data: {
+                            genBtn:!customer.generatingReport
+                          }
+                        })
+                        .then((result) => {
+                          console.log(result.data.msg)
+                          window.location.reload();
+                        }).catch((err) => {
+                          console.log(err)
+                        });
+                      }}
+                      name="checkedB"
+                      color="primary"
+                    />                  
                   </TableCell>
                   <TableCell>
                     {customer.email}
