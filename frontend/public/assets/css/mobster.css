@@ -1380,13 +1380,13 @@ hr {
 
 .btn-primary {
   color: #ffffff;
-  background-color: #3D58F3;
+  background-color: #475edd;
   border-color: transparent !important;
 }
 
 .btn-primary:hover {
   color: #ffffff;
-  background-color: #1737f1;
+  background-color: #3F51B5;
   box-shadow: 0 4px 12px rgba(61, 88, 243, 0.3);
 }
 
@@ -2229,9 +2229,6 @@ hr {
 }
 
 .mobile-preview {
-  width: 100%;
-  max-width: 233px;
-  height: auto;
   border-radius: 30px;
 }
 

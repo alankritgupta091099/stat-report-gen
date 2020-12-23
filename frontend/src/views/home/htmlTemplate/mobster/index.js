@@ -3,7 +3,7 @@ import React from 'react';
 const StaticWebsite = () => {
   return (
     <>
-        <div class="page-hero-section bg-image hero-home-1" style={{backgroundImage: "url(../assets/img/bg_hero_1.svg)"}}>
+        <div class="page-hero-section bg-image hero-home-1" style={{backgroundImage: "url(../assets/img/bg_hero_3.svg)"}}>
             <div class="hero-caption pt-5">
                 <div class="container h-100">
                 <div class="row align-items-center h-100">
@@ -13,9 +13,9 @@ const StaticWebsite = () => {
                     faster, easier and efficient</p>
                     <a href="/#" class="btn btn-primary rounded-pill">Try now</a>
                     </div>
-                    <div class="col-lg-6 d-none d-lg-block  zoomIn">
-                    <div class="img-place mobile-preview shadow floating-animate">
-                        <img src="../assets/img/app_preview_1.png" alt=""/>
+                    <div class="col-lg-6 d-none d-lg-block zoomIn ">
+                    <div class="img-place mobile-preview floating-animate">
+                        <img src="../assets/img/intro-img.svg" alt="" style={{margin:'0 0 20% 25%', width:'40rem',height:'auto'}} />
                     </div>
                     </div>
                 </div>
@@ -27,12 +27,12 @@ const StaticWebsite = () => {
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-5 py-3">
-                            <div class="img-place mobile-preview shadow zoomIn">
-                                <img src="../assets/img/app_preview_2.png" alt="" />
+                            <div class="img-place mobile-preview zoomIn">
+                                <img src="../assets/img/features.svg" alt="" />
                             </div>
                         </div>
                         <div class="col-lg-6 py-3 mt-lg-5">
-                            <div class="iconic-list">
+                            <div class="iconic-list" style={{marginLeft:'30%'}}>
                             <div class="iconic-item fadeInUp">
                                 <div class="iconic-md iconic-text bg-warning fg-white rounded-circle">
                                 <span class="mai-cube"></span>
@@ -151,38 +151,17 @@ const StaticWebsite = () => {
 
             <div class="page-footer-section bg-dark fg-white">
             <div class="container">
-                <div class="row mb-5 py-3">
-                <div class="col-sm-6 col-lg-2 py-3">
-                    <h5 class="mb-3">Pages</h5>
+                <div class="row mb-5 py-3">                
+                <div class="col-md-6 col-lg-6 py-3">
+                    <h5 class="mb-3">Contact us</h5>
                     <ul class="menu-link">
-                    <li><a href="/#" class="">Features</a></li>
-                    <li><a href="/#" class="">Customers</a></li>
-                    <li><a href="/#" class="">Pricing</a></li>
-                    <li><a href="/#" class="">GDPR</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-6 col-lg-2 py-3">
-                    <h5 class="mb-3">Company</h5>
-                    <ul class="menu-link">
-                    <li><a href="/#" class="">About</a></li>
-                    <li><a href="/#" class="">Team</a></li>
-                    <li><a href="/#" class="">Leadership</a></li>
-                    <li><a href="/#" class="">Careers</a></li>
-                    <li><a href="/#" class="">HIRING!</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-6 col-lg-4 py-3">
-                    <h5 class="mb-3">Contact</h5>
-                    <ul class="menu-link">
-                    <li><a href="/#" class="">Contact Us</a></li>
-                    <li><a href="/#" class="">Office Location</a></li>
                     <li><a href="/#" class="">admin@get-measurements.media</a></li>
                     <li><a href="/#" class="">+91 9654682943</a></li>
                     </ul>
                 </div>
                 <div class="col-md-6 col-lg-4 py-3">
                     <h5 class="mb-3">Subscribe</h5>
-                    <p>Get some offers, news, or update features of application</p>
+                    <p>Get some update features of application</p>
                     <form>
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Your email.."/>
