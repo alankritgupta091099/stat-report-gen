@@ -14,8 +14,8 @@ const StaticWebsite = () => {
                     <a href="/#" class="btn btn-primary rounded-pill">Try now</a>
                     </div>
                     <div class="col-lg-6 d-none d-lg-block zoomIn ">
-                    <div class="img-place mobile-preview floating-animate">
-                        <img src="../assets/img/intro-img.svg" alt="" style={{margin:'0 0 20% 25%', width:'40rem',height:'auto'}} />
+                    <div class="img-place mobile-preview floating-animate" style={{margin:'0 0 0 1rem',}}>
+                        <img src="../assets/img/intro-img.svg" alt=""/>
                     </div>
                     </div>
                 </div>
