@@ -304,7 +304,9 @@ const docxFile = async (data,format,headerImg,saveToDB) => {
 function sendMail(buff,saveToDB) {
 
     var transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.zoho.in',
+        secure: true,
+        port: 465,
         auth: {
             user: process.env.MAIL_ID,
             pass: process.env.MAIL_PASS

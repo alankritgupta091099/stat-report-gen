@@ -46,7 +46,7 @@ async function webScraper(req,res, Test_btn = true, ss = true) {
             width: 1080,
             height: 720,
         });
-        await page.goto(articleURL,{waitUntil:'load',timeout:45000});
+        await page.goto(articleURL,{waitUntil:'load',timeout:60000});
         articleTitle = await page.title(); //Date scrap - pending!
         if(ss) base64 = await page.screenshot(screenShotOptions);
         await browser.close();
